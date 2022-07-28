@@ -1,0 +1,133 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap");
+
+$ff: "Poppins", sans-serif;
+
+// color variables
+// color variables
+// color variables
+
+//main colors
+$background: #f8f6ef;
+$h1-intro: #827f7f;
+$h2: #686868; //Tag and Notes title
+$text-buttons: #827f7f;
+$placeholder-border: #b8b8b8;
+$light-violet: #d8d8ed;
+$input-line: #b3b3b3;
+
+//============================================
+
+//entries
+$background-page: #f3f1e5;
+
+//============================================
+
+//tag color
+$tag-text: #7c7c7c; //and filter icon
+//cremeish
+$background-tag-container: #f3f1e5;
+$background-tag: #e8e3d2;
+$tag-thumb: #d0ccbc;
+
+//blueish
+$background-tag-container: #e4eaef;
+$background-tag: #d1d2ee;
+$tag-thumb: #a5a6c3;
+
+//greenish
+$background-tag-container: #ebefe6;
+$background-tag: #dcdfe0;
+$tag-thumb: #cbcbcb;
+
+//============================================
+
+//graph colors
+$graph-background: #e8ede4;
+$graph-line-active: #9ab9c3;
+$graph-line-inactive: #ffff;
+$graph-line-tag-selected: #e08585;
+$graph-table-lines: #d3d3d2;
+$graph-table-numbers: #d3d3d2;
+$graph-sort-text: #939393;
+$graph-sort-inactive: #b7b7b7;
+$graph-sort-hovered: #827f7f;
+$graph-mood: #f7dabf;
+
+//============================================
+
+//notes colors
+//violet
+$background-note: #d8d8ed;
+$background-note-card: #c7c8f3;
+$note-icon-completed: #7d80cc;
+$note-icon-active: #fdfbf4;
+$filter: #827f7f;
+$filter-active: #443f3c;
+$filter-active-button: #fdfbf4;
+$note-text-active: #5a5a5a;
+$note-text-completed: #939393;
+$scroll-thumb: #9c9ed8;
+
+//creme
+$background-note-creme: #e8e3d2;
+$background-note-card-creme: #f1eede;
+$note-icon-completed-creme: #9394c7;
+$note-icon-active-creme: #fdfbf4;
+$filter-creme: #939393;
+$filter-active-creme: #827f7f;
+$filter-active-button-creme: #fdfbf4;
+$note-text-active-creme: #827f7f; //the delete icon will have the same color
+$note-text-completed-creme: #b8b8b8;
+$scroll-thumb-creme: #d0ccbc;
+
+// mixin media queries
+// mixin media queries
+// mixin media queries
+@mixin tablet-size {
+  @media only screen and (min-width: 600px) {
+    @content;
+  }
+}
+@mixin desktop-size {
+  @media only screen and (min-width: 1000px) {
+    @content;
+  }
+}
+
+// mixin elements
+// mixin elements
+// mixin elements
+@mixin auth-container {
+    
+}
+@mixin button-full {
+    
+}
+@mixin button-contour {
+
+}
+
+// details
+// details
+// details
+$radius-big: 7px;
+$radius-small: 2px;
+
+
+
+html {
+  box-sizing: border-box;
+}
+
+body {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+#app {
+  font-family: $ff;
+  background-color: $background;
+  font-size: 15px;
+  width: 100%;
+  min-height: 100vh;
+}
