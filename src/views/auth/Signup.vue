@@ -1,37 +1,81 @@
 <template>
   <div class="container">
-    <form @submit.prevent="handleSubmit">
-      <label for="name">Name</label>
-      <input type="text" name="name" required placeholder="name or nickname" />
-      <label for="email">Email</label>
-      <input type="email" name="email" required placeholder="email" />
-      <label for="password">Password</label>
-      <input type="password" name="password" required placeholder="password" />
-      <button>Sign Up</button>
-      <router-link :to="{ name: 'home' }">back</router-link>
-      <!-- <p v-if="error">{{error}}</p> -->
-    </form>
+    <div class="form-container">
+      <img
+        @click="backAuth"
+        class="logo"
+        src="../../assets/images/logo-mobile-auth.svg"
+        alt="logo app"
+      />
+      <form @submit.prevent="handleSubmit">
+        <p class="redirect">
+          Already have an account? <span @click="switchAuth">Log In</span>
+        </p>
+        <input v-model="username" type="text" required placeholder="Username" />
+        <input v-model="email" type="email" required placeholder="Email" />
+        <input
+          v-model="password"
+          class="password"
+          type="password"
+          required
+          placeholder="Password"
+        />
+        <button>Sign Up</button>
+        <p class="back" @click="backAuth">back</p>
+      </form>
+      <p class="error" v-if="error">{{ error }}</p>
+    </div>
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import useSignup from "../../composables/useSignup";
+
 export default {
-  setup() {},
+  setup() {
+    const username = ref("");
+    const email = ref("");
+    const password = ref("");
+    const { signup, error } = useSignup();
+
+    const router = useRouter();
+
+    const handleSubmit = async () => {
+      await signup(email.value, password.value);
+      if (error) {
+      }
+      if (!error.value) {
+        router.push("/");
+      }
+    };
+    if (error.value) {
+      error.value = "Password too short";
+    }
+    const switchAuth = () => {
+      router.push("/login");
+      error.value = null;
+    };
+    const backAuth = () => {
+      router.push("/");
+      error.value = null;
+    };
+    return {
+      username,
+      email,
+      password,
+      handleSubmit,
+      switchAuth,
+      backAuth,
+      error,
+    };
+  },
 };
 </script>
 
 <style scoped lang="scss">
 @import "@/assets/globalStyles.scss";
 
-.container {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  background-color: $background;
-  display: grid;
-  place-items: center;
-  form {
-    width: 90%;
-  }
-}
+@include auth-container;
 </style>

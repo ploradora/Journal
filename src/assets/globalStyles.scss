@@ -8,6 +8,7 @@ $ff: "Poppins", sans-serif;
 
 //main colors
 $background: #f8f6ef;
+$main-text: #7c7c7c;
 $h1-intro: #827f7f;
 $h2: #686868; //Tag and Notes title
 $text-buttons: #827f7f;
@@ -15,6 +16,8 @@ $placeholder-border: #b8b8b8;
 $light-violet: #d8d8ed;
 $input-line: #b3b3b3;
 
+//auth
+$background-form: #f3f0e4;
 //============================================
 
 //entries
@@ -83,8 +86,8 @@ $scroll-thumb-creme: #d0ccbc;
 // mixin media queries
 // mixin media queries
 // mixin media queries
-@mixin tablet-size {
-  @media only screen and (min-width: 600px) {
+@mixin mobile-end {
+  @media only screen and (min-width: 500px) {
     @content;
   }
 }
@@ -98,13 +101,115 @@ $scroll-thumb-creme: #d0ccbc;
 // mixin elements
 // mixin elements
 @mixin auth-container {
-    
+  .container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: $background;
+    display: grid;
+    place-items: center;
+    .form-container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      margin-top: -80px;
+      .logo {
+        display: block;
+        margin: auto;
+        margin-bottom: 50px;
+        cursor: pointer;
+      }
+      form {
+        position: relative;
+        margin: auto;
+        padding: 15px 15px;
+        // padding: 15px;
+
+        display: flex;
+        flex-direction: column;
+        border: 1px solid $placeholder-border;
+        border-radius: $radius-big;
+        background-color: $background-form;
+        .redirect {
+          margin: unset;
+          margin-bottom: 50px;
+          font-size: 13px;
+          color: $main-text;
+          span {
+            font-weight: 500;
+            color: #7d9ca6;
+            cursor: pointer;
+            &:hover {
+              color: darken(#7d9ca6, 10%);
+            }
+          }
+        }
+        .password {
+          margin-bottom: 70px;
+        }
+        input {
+          border: unset;
+          font-size: 14px;
+          background-color: unset;
+          margin-bottom: 30px;
+          padding-bottom: 2px;
+          color: $main-text;
+          border-bottom: 1px solid $input-line;
+          &::placeholder {
+            color: $placeholder-border;
+          }
+          &:focus {
+            position: relative;
+            outline: unset;
+            border-bottom: 1px solid #7d9ca6;
+            box-shadow: inset 0 -1px #7d9ca6;
+          }
+        }
+        button {
+          font-family: $ff;
+          position: absolute;
+          left: 50%;
+          bottom: 17px;
+          transform: translateX(-50%);
+          font-size: 14px;
+          padding: 5px 22px;
+          background-color: transparent;
+          color: $text-buttons;
+          border: 1.5px solid lighten($text-buttons, 10%);
+          border-radius: 10px;
+          cursor: pointer;
+          &:hover {
+            color: darken($text-buttons, 10%);
+            background-color: darken($background-form, 8%);
+            border-color: darken($background-form, 8%);
+          }
+        }
+        .back {
+          margin: unset;
+          width: fit-content;
+          color: $text-buttons;
+          text-decoration: none;
+          font-size: 14px;
+          cursor: pointer;
+          &:hover {
+            color: darken($text-buttons, 10%);
+          }
+        }
+      }
+      .error {
+        position: absolute;
+        bottom: 70px;
+        font-size: 13px;
+        left: 15px;
+        color: rgb(209, 89, 68);
+      }
+    }
+  }
 }
 @mixin button-full {
-    
 }
 @mixin button-contour {
-
 }
 
 // details
@@ -112,8 +217,6 @@ $scroll-thumb-creme: #d0ccbc;
 // details
 $radius-big: 7px;
 $radius-small: 2px;
-
-
 
 html {
   box-sizing: border-box;

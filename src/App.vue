@@ -17,11 +17,11 @@ export default {
 <style scoped lang="scss">
 @import "./assets/globalStyles.scss";
 
-.hero {
-  min-height: 100vh;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+// .hero {
+//   min-height: 100vh;
+//   text-align: center;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
 </style>
