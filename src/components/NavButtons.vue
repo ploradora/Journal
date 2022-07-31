@@ -5,18 +5,20 @@
       <div class="menu-intro">
         <span class="material-symbols-outlined icon-expand"> expand_more </span>
         <div class="welcome">
-          <h2>Welcome Sarah</h2>
+          <h2>Welcome {{ user.displayName }}</h2>
           <img src="../assets/images/smiley-face.svg" alt="" />
         </div>
       </div>
-      <button class="compose">
-        <router-link class="compose" :to="{ name: 'compose' }"
-          >Compose</router-link
-        >
-      </button>
-      <p class="current-date">{{ currentDate }}</p>
-      <div class="mobile-drop-button">
-        <button @click="handleClick">Log Out</button>
+      <div class="buttons">
+        <button class="compose">
+          <router-link class="compose" :to="{ name: 'compose' }"
+            >Compose</router-link
+          >
+        </button>
+        <p class="current-date">{{ currentDate }}</p>
+        <div class="mobile-drop-button">
+          <button @click="handleClick">Log Out</button>
+        </div>
       </div>
     </div>
   </nav>
@@ -34,7 +36,6 @@ export default {
     const { user } = getUser();
 
     const router = useRouter();
-
     const handleClick = () => {
       signOut(auth);
       router.push("/");

@@ -48,8 +48,8 @@ export default {
     const router = useRouter();
 
     const handleSubmit = async () => {
+      console.log(displayName);
       await signup(email.value, password.value, displayName.value);
-      console.log(displayName.value);
       
       if (!error.value) {
         router.push("/");
