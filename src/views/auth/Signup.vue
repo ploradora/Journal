@@ -11,7 +11,12 @@
         <p class="redirect">
           Already have an account? <span @click="switchAuth">Log In</span>
         </p>
-        <input v-model="username" type="text" required placeholder="Username" />
+        <input
+          v-model="displayName"
+          type="text"
+          required
+          placeholder="Username"
+        />
         <input v-model="email" type="email" required placeholder="Email" />
         <input
           v-model="password"
@@ -31,21 +36,21 @@
 <script>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import useSignup from "../../composables/useSignup";
+import useSignup from "@/composables/useSignup";
 
 export default {
   setup() {
-    const username = ref("");
+    const { signup, error } = useSignup();
+    const displayName = ref("");
     const email = ref("");
     const password = ref("");
-    const { signup, error } = useSignup();
 
     const router = useRouter();
 
     const handleSubmit = async () => {
-      await signup(email.value, password.value);
-      if (error) {
-      }
+      await signup(email.value, password.value, displayName.value);
+      console.log(displayName.value);
+      
       if (!error.value) {
         router.push("/");
       }
@@ -62,7 +67,7 @@ export default {
       error.value = null;
     };
     return {
-      username,
+      displayName,
       email,
       password,
       handleSubmit,

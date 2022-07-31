@@ -11,6 +11,7 @@ const signup = async (email, password) => {
 
   try {
     const res = await createUserWithEmailAndPassword(auth, email, password);
+    
     if (!res) {
       throw new Error("Could not complete sigup");
     }

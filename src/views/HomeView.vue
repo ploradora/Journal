@@ -1,13 +1,129 @@
 <template>
-  <div class="home">hey</div>
-  <AllPages />
+  <div v-if="!user" class="auth-buttons">
+    <div class="welcome">
+      <div class="logo">
+        <img
+          class="logo-mobile"
+          src="../assets/images/logo-mobile-auth.svg"
+          alt=""
+        />
+        <img
+          class="logo-tablet"
+          src="../assets/images/logo-tablet-auth.svg"
+          alt=""
+        />
+        <img
+          class="logo-desktop"
+          src="../assets/images/logo-desktop-auth.svg"
+          alt=""
+        />
+      </div>
+      <h1>
+        A safespace of your own,<br />
+        to keep track of your thoughts and journey
+      </h1>
+      <div class="buttons">
+        <router-link class="login" :to="{ name: 'login' }">Log In</router-link>
+        <router-link class="signup" :to="{ name: 'signup' }"
+          >Sign Up</router-link
+        >
+      </div>
+    </div>
+  </div>
+  <AllPages v-if="user" />
+  <router-view />
 </template>
 
 <script>
 import AllPages from "@/components/AllPages.vue";
+import getUser from "@/composables/getUser";
 export default {
   components: {
     AllPages,
   },
+  setup() {
+    const { user } = getUser();
+    return { user };
+  },
 };
 </script>
+
+<style scoped lang="scss">
+@import "../assets/globalStyles.scss";
+
+.auth-buttons {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  .welcome {
+    .logo {
+      width: fit-content;
+      margin: auto;
+      .logo-tablet,
+      .logo-desktop {
+        display: none;
+      }
+    }
+    h1 {
+      padding-bottom: 100px;
+      font-weight: 400;
+      font-size: clamp(13px, 2vw, 14px);
+      color: $h1-intro;
+      line-height: 18px;
+      text-align: center;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      a {
+        text-decoration: none;
+        color: $text-buttons;
+        padding: 7px 28px;
+      }
+      .login {
+        margin-right: 15px;
+        border-radius: $radius-big;
+        border: 2px solid $placeholder-border;
+        &:hover {
+          border-color: darken($placeholder-border, 15%);
+          color: darken($text-buttons, 15%);
+        }
+      }
+      .signup {
+        border: 2px solid $graph-background;
+        background-color: $graph-background;
+        border-radius: $radius-big;
+        &:hover {
+          border-color: darken($graph-background, 10%);
+          background-color: darken($graph-background, 10%);
+          color: darken($text-buttons, 15%);
+        }
+      }
+    }
+  }
+  @include mobile-end {
+    .welcome {
+      .logo {
+        .logo-mobile {
+          display: none;
+        }
+        .logo-tablet {
+          display: unset;
+        }
+      }
+    }
+  }
+  @include desktop-size {
+    .welcome {
+      .logo {
+        .logo-tablet {
+          display: none;
+        }
+        .logo-desktop {
+          display: unset;
+        }
+      }
+    }
+  }
+}
+</style>

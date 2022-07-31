@@ -1,6 +1,6 @@
 <template>
   <div class="hero">
-    <NavButtons />
+    <NavButtons/>
   </div>
   <router-view />
 </template>
@@ -9,8 +9,8 @@
 import NavButtons from "./components/NavButtons.vue";
 export default {
   components: {
-    NavButtons,
-  },
+    NavButtons
+},
 };
 </script>
 
