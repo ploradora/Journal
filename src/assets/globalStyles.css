@@ -3,15 +3,19 @@ html {
   box-sizing: border-box;
 }
 
-body {
+*,
+*::after,
+*::before {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
 }
 
-#app {
-  font-family: "Poppins", sans-serif;
+body {
   background-color: #f8f6ef;
+}
+body #app {
+  font-family: "Poppins", sans-serif;
   font-size: 15px;
   width: 100%;
   min-height: 100vh;

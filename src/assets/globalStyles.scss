@@ -206,8 +206,35 @@ $scroll-thumb-creme: #d0ccbc;
   }
 }
 @mixin button-full {
+  padding: 5px 20px;
+  border: 2px solid $background-note;
+  border-radius: $radius-big;
+  color: $note-text-active;
+  font-weight: 400;
+  background-color: $background-note;
+  font-family: $ff;
+  cursor: pointer;
+  transition: all 0.1s linear;
+  &:hover {
+    color: $background;
+    border-color: darken($background-note, 20%);
+    background-color: darken($background-note, 20%);
+  }
 }
 @mixin button-contour {
+  padding: 5px 20px;
+  border: 2px solid lighten($text-buttons, 10%);
+  border-radius: $radius-big;
+  color: $h2;
+  background-color: transparent;
+  font-family: $ff;
+  cursor: pointer;
+  transition: all 0.1s linear;
+  &:hover {
+    color: $background;
+    border-color: darken($background-note, 20%);
+    background-color: darken($background-note, 20%);
+  }
 }
 
 // details
@@ -220,15 +247,20 @@ html {
   box-sizing: border-box;
 }
 
-body {
+*,
+*::after,
+*::before {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
 }
-#app {
-  font-family: $ff;
+
+body {
   background-color: $background;
-  font-size: 15px;
-  width: 100%;
-  min-height: 100vh;
+  #app {
+    font-family: $ff;
+    font-size: 15px;
+    width: 100%;
+    min-height: 100vh;
+  }
 }

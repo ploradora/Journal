@@ -5,7 +5,7 @@ import { collection, onSnapshot } from "firebase/firestore";
 
 const getCollection = (c) => {
   const documents = ref(null);
-
+  
   let collectionRef = collection(db, c);
   const unsub = onSnapshot(collectionRef, (snapshot) => {
     let results = [];
