@@ -44,7 +44,7 @@ import getUser from "@/composables/getUser";
 
 import { auth } from "../firebase/config";
 import { signOut } from "firebase/auth";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 export default {
   setup() {
@@ -52,11 +52,23 @@ export default {
     const toggleMobile = ref(false);
 
     const router = useRouter();
-    const handleClick = () => {
-      signOut(auth);
-      router.push("/");
+
+    onMounted(() => {
+      window.addEventListener("resize", resizeWindow);
+    });
+    const resizeWindow = () => {
+      const windowWidth = window.innerWidth;
+
+      if (windowWidth >= 499) {
+        toggleMobile.value = false;
+      }
     };
 
+    const handleClick = () => {
+      signOut(auth);
+      toggleMobile.value = false;
+      router.push("/");
+    };
     const showMenu = () => {
       document.body.style.overflow = "hidden";
       toggleMobile.value = true;
@@ -75,7 +87,7 @@ export default {
         current.getFullYear();
       return date;
     });
-    return { handleClick, showMenu, hideMenu, toggleMobile, currentDate, user };
+    return { handleClick, showMenu, hideMenu, onMounted, toggleMobile, currentDate, user };
   },
 };
 </script>
@@ -149,7 +161,7 @@ nav {
         box-shadow: 0 5px 15px rgba(53, 53, 53, 0.2);
         transition: all 0.15s linear;
         opacity: 0;
-        z-index: 5;
+        z-index: 55;
         .wrapper-mobile-menu {
           width: 95%;
           margin: auto;
@@ -181,7 +193,7 @@ nav {
         backdrop-filter: blur(3px);
         cursor: pointer;
         opacity: 0;
-        z-index: 0;
+        z-index: 50;
         transition: all 0.1s linear;
       }
       .toggle-overlay {
@@ -199,6 +211,8 @@ nav {
     }
   }
   @include mobile-end {
+    width: 95%;
+    margin: auto;
     .home-nav {
       .icon-expand,
       .arrow-up,

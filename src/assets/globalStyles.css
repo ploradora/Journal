@@ -14,6 +14,16 @@ html {
 body {
   background-color: #f8f6ef;
 }
+body::-webkit-scrollbar {
+  width: 7px;
+}
+body::-webkit-scrollbar-thumb {
+  border-right: 1px solid #f8f6ef;
+  border-top: 1px solid #f8f6ef;
+  border-bottom: 1px solid #f8f6ef;
+  border-radius: 7px;
+  background-color: #7c7c7c;
+}
 body #app {
   font-family: "Poppins", sans-serif;
   font-size: 15px;

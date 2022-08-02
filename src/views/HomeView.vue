@@ -30,16 +30,27 @@
       </div>
     </div>
   </div>
-  <AllPages v-if="user" />
+  <main v-if="user">
+    <AllPages />
+    <AllTags />
+    <AllNotes />
+    <TheGraph />
+  </main>
   <router-view />
 </template>
 
 <script>
 import AllPages from "@/components/AllPages.vue";
+import AllNotes from "@/components/AllNotes.vue";
+import AllTags from "@/components/AllTags.vue";
+import TheGraph from "@/components/TheGraph.vue";
 import getUser from "@/composables/getUser";
 export default {
   components: {
     AllPages,
+    AllNotes,
+    AllTags,
+    TheGraph,
   },
   setup() {
     const { user } = getUser();
@@ -125,5 +136,10 @@ export default {
       }
     }
   }
+}
+main {
+  width: 95%;
+  margin: auto;
+  font-size: 14px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <p>Compose</p>
+  <p>here goes the graph</p>
 </template>
 
 <script>
@@ -9,5 +9,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/globalStyles.scss";
+@import "../assets/globalStyles.scss";
 </style>
