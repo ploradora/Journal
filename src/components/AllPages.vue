@@ -30,13 +30,17 @@
           </div>
         </div>
         <div class="page-main">
-          <div class="text">
-            <p class="page-content">
+          <div class="page-description">
+            <p class="text">
               {{ page.description }}
             </p>
             <span class="material-symbols-outlined arrow"> expand_more </span>
           </div>
-          <div class="tags"></div>
+          <div class="tags">
+            <div v-for="tag in page.tags" :key="tag" class="tag">
+              {{ tag }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -192,11 +196,27 @@ export default {
         }
       }
       .page-main {
-        .page-content {
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 3;
-          overflow: hidden;
+        .page-description {
+          .text {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+          }
+        }
+        .tags {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          .tag {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            padding: 5px 17px;
+            border-radius: $radius-tag;
+            color: $tag-text;
+            background-color: $main-tag-background;
+            cursor: pointer;
+          }
         }
       }
     }
