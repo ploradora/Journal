@@ -45,6 +45,7 @@ import AllNotes from "@/components/AllNotes.vue";
 import AllTags from "@/components/AllTags.vue";
 import TheGraph from "@/components/TheGraph.vue";
 import getUser from "@/composables/getUser";
+
 export default {
   components: {
     AllPages,
@@ -54,6 +55,7 @@ export default {
   },
   setup() {
     const { user } = getUser();
+
     return { user };
   },
 };
@@ -63,6 +65,7 @@ export default {
 @import "../assets/globalStyles.scss";
 
 .auth-buttons {
+  width: 100%;
   height: 100vh;
   display: grid;
   place-items: center;

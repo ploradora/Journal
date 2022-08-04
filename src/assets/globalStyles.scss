@@ -15,7 +15,7 @@ $text-buttons: #827f7f;
 $placeholder-border: #b8b8b8;
 $light-violet: #d8d8ed;
 $input-line: #b3b3b3;
-$main-tag-background: #E2E0DC;
+$main-tag-background: #e2e0dc;
 
 //auth
 $background-form: #f3f0e4;
@@ -29,19 +29,19 @@ $background-page: #f3f1e5;
 //tag color
 $tag-text: #7c7c7c; //and filter icon
 //cremeish
-$background-tag-container: #f3f1e5;
-$background-tag: #e8e3d2;
-$tag-thumb: #d0ccbc;
+$background-tag-container-creme: #f3f1e5;
+$background-tag-creme: #e8e3d2;
+$tag-thumb-creme: #d0ccbc;
 
 //blueish
-$background-tag-container: #e4eaef;
-$background-tag: #d1d2ee;
-$tag-thumb: #a5a6c3;
+$background-tag-container-blue: #e4eaef;
+$background-tag-blue: #d1d2ee;
+$tag-thumb-blue: #a5a6c3;
 
 //greenish
-$background-tag-container: #ebefe6;
-$background-tag: #dcdfe0;
-$tag-thumb: #cbcbcb;
+$background-tag-container-green: #ebefe6;
+$background-tag-green: #dcdfe0;
+$tag-thumb-green: #cbcbcb;
 
 //============================================
 
@@ -87,6 +87,11 @@ $scroll-thumb-creme: #d0ccbc;
 // mixin media queries
 // mixin media queries
 // mixin media queries
+@mixin details-brake-1 {
+  @media only screen and (min-width: 470px) {
+    @content;
+  }
+}
 @mixin mobile-end {
   @media only screen and (min-width: 499px) {
     @content;
@@ -191,7 +196,7 @@ $scroll-thumb-creme: #d0ccbc;
           width: fit-content;
           color: $text-buttons;
           text-decoration: none;
-          font-size: 14px;
+          font-size: 14px; 
           cursor: pointer;
           &:hover {
             color: darken($text-buttons, 10%);
@@ -279,3 +284,8 @@ body {
     min-height: 100vh;
   }
 }
+
+// .login,
+// .signup {
+//   max-height: 100vh;
+// }

@@ -1,6 +1,5 @@
 <template>
   <nav>
-    <!-- THIS WILL SHOW ONLY IF THE USER HAS LOGGED IN  -->
     <div v-if="user" class="home-nav">
       <p class="current-date">{{ currentDate }}</p>
       <div class="menu-intro">

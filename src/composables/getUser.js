@@ -11,6 +11,13 @@ const user = ref(auth.currentUser);
 onAuthStateChanged(auth, (_user) => {
   console.log("User state change. Current user is:", _user);
   user.value = _user;
+
+  if (user.value === null) {
+    document.body.style.position = 'fixed'
+    document.body.style.width = "100%";
+  } else {
+    document.body.style.position = 'relative'
+  }
 });
 
 const getUser = () => {

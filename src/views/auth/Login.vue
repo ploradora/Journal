@@ -40,6 +40,8 @@ export default {
 
     const router = useRouter();
 
+    document.body.style.position = "fixed";
+
     const handleSubmit = async () => {
       await login(email.value, password.value);
       if (!error.value) {
@@ -72,4 +74,10 @@ export default {
 <style scoped lang="scss">
 @import "@/assets/globalStyles.scss";
 @include auth-container;
+
+.container {
+  max-height: 100vh;
+  position: fixed;
+  overflow: hidden;
+}
 </style>
