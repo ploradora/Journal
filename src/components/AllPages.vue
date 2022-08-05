@@ -87,9 +87,9 @@
             </span>
           </div>
           <div class="tags">
-            <div v-for="tag in page.tags" :key="tag" class="tag">
+            <p v-for="tag in page.tags" :key="tag" class="tag">
               {{ tag }}
-            </div>
+            </p>
           </div>
         </div>
       </div>
@@ -171,6 +171,9 @@ export default {
     display: block;
     position: absolute;
     top: 83px;
+  }
+  @include desktop-size {
+    display: none;
   }
 }
 
@@ -392,6 +395,7 @@ article {
           align-items: center;
           flex-wrap: wrap;
           margin-top: 10px;
+          gap: 5px;
           &::after {
             width: 97%;
             height: 2px;
@@ -405,8 +409,7 @@ article {
           }
           .tag {
             font-size: clamp(11px, 3vw, 13px);
-            margin-right: 5px;
-            margin-bottom: 5px;
+            
             padding: 3px 10px;
             border-radius: $radius-tag;
             color: $tag-text;
@@ -425,7 +428,7 @@ article {
     }
   }
   .animate-expand {
-    height: calc(100vh - 175px);
+    height: calc(100vh - 180px);
     opacity: unset;
     margin-top: 10px;
     transition: all 0.15s linear;
@@ -436,7 +439,7 @@ article {
   }
   @include mobile-end {
     margin-top: 55px;
-    height: calc(100vh - 115px);
+    height: calc(100vh - 120px);
     overflow-x: hidden;
     @include scrollbar;
     .expand {
@@ -570,6 +573,10 @@ article {
         }
       }
     }
+  }
+  @include desktop-size {
+    margin-top: unset;
+    height: 100%;
   }
 }
 </style>

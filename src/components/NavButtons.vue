@@ -96,6 +96,7 @@ export default {
 nav {
   .home-nav {
     padding-top: 15px;
+    padding-bottom: 7px;
     .current-date {
       display: none;
       margin: unset;
@@ -144,6 +145,7 @@ nav {
       .compose {
         border: none;
         background-color: transparent;
+        z-index: 100;
         a {
           @include button-full;
           text-decoration: none;
@@ -239,7 +241,7 @@ nav {
         display: flex;
         align-items: center;
         .compose {
-          margin-right: 5px;
+          margin-right: 3px;
           a {
             font-weight: 500;
           }
@@ -266,6 +268,7 @@ nav {
     }
   }
   @include desktop-size {
+    width: 98%;
     padding-top: 15px;
     .home-nav {
       padding: unset;
@@ -273,6 +276,7 @@ nav {
       .current-date {
         display: unset;
         position: relative;
+        font-size: 13px;
         color: $text-buttons;
       }
       .menu-intro {

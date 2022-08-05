@@ -31,10 +31,18 @@
     </div>
   </div>
   <main v-if="user">
-    <AllPages />
-    <AllTags />
-    <AllNotes />
-    <TheGraph />
+    <div class="allpages">
+      <AllPages />
+    </div>
+    <div class="alltags">
+      <AllTags />
+    </div>
+    <div class="allnotes">
+      <AllNotes />
+    </div>
+    <div class="thegraph">
+      <TheGraph />
+    </div>
   </main>
   <router-view />
 </template>
@@ -144,5 +152,52 @@ main {
   width: 95%;
   margin: auto;
   font-size: 14px;
+  display: grid;
+  grid-gap: 10px;
+
+  @include mobile-end {
+    grid-template-columns: repeat(2, 1fr);
+    .allnotes {
+      background-color: red;
+    }
+    .thegraph {
+      background-color: lightsalmon;
+    }
+
+    .allpages,
+    .thegraph {
+      grid-column: 1 / 3;
+    }
+  }
+  @include desktop-size {
+    margin-top: 25px;
+    width: 98%;
+    height: calc(100vh - 90px);
+    grid-template-columns: 1fr 35%;
+    grid-template-rows: 37% 1fr 30%;
+    .allpages {
+      overflow: hidden;
+      grid-column: 1 / 2;
+      grid-row: 1 / 3;
+    }
+    .alltags {
+      overflow: hidden;
+      grid-column: 2 /3;
+    }
+    .allnotes {
+      background-color: red;
+      grid-column: 2 /3;
+      grid-row: 2 /3;
+    }
+    .thegraph {
+      grid-column: 1 / -1;
+      grid-row: 3/4;
+      background-color: lightsalmon;
+    }
+  }
+  @include desktop-size-big {
+    grid-template-columns: 1fr 25%;
+    grid-template-rows: 37% 1fr 33%;
+  }
 }
 </style>

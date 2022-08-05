@@ -117,6 +117,11 @@ $scroll-thumb-creme: #d0ccbc;
     @content;
   }
 }
+@mixin desktop-size-big {
+  @media only screen and (min-width: 1250px) {
+    @content;
+  }
+}
 
 // ============ COMPONENTS
 
@@ -131,6 +136,7 @@ $scroll-thumb-creme: #d0ccbc;
     background-color: $background;
     display: grid;
     place-items: center;
+    z-index: 60;
     .form-container {
       position: relative;
       width: 90%;
