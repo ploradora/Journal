@@ -1,4 +1,5 @@
 <template>
+  <p class="outside-title">Pages</p>
   <article>
     <div @click="showPages" :class="{ 'rotate-arrow': isOpen }" class="expand">
       <p>Pages</p>
@@ -49,7 +50,7 @@
                 {{ page.lastEntry }}
               </p>
             </div>
-            <div>
+            <div class="location-container">
               <p class="location">
                 <span class="detail-type">Location:</span> {{ page.location }}
               </p>
@@ -74,11 +75,12 @@
             :class="{ 'toggle-text': page.textOpen }"
             class="page-description"
           >
-            <p class="text">
+            <p :class="{ 'expand-text-tablet': page.textOpen }" class="text">
               {{ page.description }}
             </p>
             <span
-              @click="page.textOpen = false"
+              @click="page.textOpen = !page.textOpen"
+              :class="{ 'arrow-rotate': page.textOpen }"
               class="material-symbols-outlined arrow-text-mobile"
             >
               expand_less
@@ -131,20 +133,20 @@ export default {
       }, 500);
     };
 
-      // tablet display
-  
-      onMounted(() => {
-        window.addEventListener("resize", tabletSize);
-      });
-      const tabletSize = () => {
-        const windowWidth = window.innerWidth;
-        if (windowWidth >= 499) {
-          isOpen.value = true;
-        } else {
-          isOpen.value = false
-        }
-      };
-      
+    // tablet display
+
+    onMounted(() => {
+      window.addEventListener("resize", tabletSize);
+    });
+    const tabletSize = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth >= 499) {
+        isOpen.value = true;
+      } else {
+        isOpen.value = false;
+      }
+    };
+
     return {
       entries,
       isOpen,
@@ -161,6 +163,16 @@ export default {
 
 <style scoped lang="scss">
 @import "../assets/globalStyles.scss";
+
+.outside-title {
+  color: $h2;
+  display: none;
+  @include mobile-end {
+    display: block;
+    position: absolute;
+    top: 83px;
+  }
+}
 
 article {
   width: 100%;
@@ -236,7 +248,7 @@ article {
     .arrow {
       margin-right: -7px;
       color: $h2;
-      transition: all 0.15s ease-in-out;
+      // transition: all 0.15s ease-in-out;
     }
   }
   .rotate-arrow {
@@ -255,9 +267,12 @@ article {
     overflow: scroll;
     overflow-x: hidden;
     margin-top: 0;
-    transition: all 0.15s linear;
+    // transition: all 0.15s linear;
     &::-webkit-scrollbar {
       display: none;
+    }
+    .page:last-child {
+      margin-bottom: unset;
     }
     .page {
       position: relative;
@@ -267,7 +282,7 @@ article {
       border: 1.5px solid $input-line;
       background-color: $background-form;
       border-radius: $radius-big;
-      transition: all 0.15s linear;
+      // transition: all 0.15s linear;
       .page-header {
         display: flex;
         flex-direction: column;
@@ -275,7 +290,6 @@ article {
         justify-content: space-between;
         .date-title {
           margin-bottom: 7px;
-          flex: 1;
           cursor: pointer;
           .date-added {
             font-size: 12px;
@@ -311,20 +325,21 @@ article {
           }
         }
         .details {
+          display: flex;
+          flex-direction: column;
+          flex-wrap: wrap;
           width: 100%;
           padding: 10px;
           margin-bottom: 7px;
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
           font-size: 12px;
           border-radius: 5px;
           background-color: $background-tag-creme;
           @include details-brake-1 {
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+          }
+          > div {
+            margin-right: 15px;
           }
           .mood-container {
-            .mood {
-            }
             .mood-number {
               font-size: clamp(40px, 4vw, 57px);
               line-height: 35px;
@@ -355,7 +370,6 @@ article {
           }
           .arrow-text-mobile {
             display: block;
-            // padding-bottom: 10px;
             text-align: center;
             color: darken($input-line, 10%);
             font-size: 23px;
@@ -421,8 +435,12 @@ article {
     }
   }
   @include mobile-end {
-    margin-top: 35px;
+    margin-top: 55px;
+    height: calc(100vh - 115px);
+    overflow-x: hidden;
+    @include scrollbar;
     .expand {
+      display: none;
       cursor: auto;
       &:hover {
         p {
@@ -447,32 +465,110 @@ article {
       }
     }
     .pages {
-      height: calc(100vh - 140px);
-      margin-top: 10px;
       opacity: unset;
       transition: unset;
-      &::-webkit-scrollbar {
-        // display: unset;
-      }
+      height: unset;
+      margin-top: unset;
       .page {
         opacity: unset;
         transition: unset;
         .page-header {
           .details {
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            font-size: 11px;
+            flex-direction: row;
             > div {
               justify-self: center;
             }
-            .mood-container,
-            .entries-container {
-              justify-self: self-start;
+            .location-container {
+              flex-basis: 100%;
+            }
+            @include details-brake-2 {
+              justify-content: space-between;
+              .mood-container {
+                flex-basis: 100%;
+              }
+              .location-container {
+                flex-basis: unset;
+                position: relative;
+                &::after {
+                  position: absolute;
+                  content: "";
+                  left: -7px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  background-color: darken($graph-line-active, 15%);
+                  width: 1px;
+                  height: 100%;
+                }
+              }
+            }
+            @include details-brake-3 {
+              > div {
+                p:last-child {
+                  margin-bottom: unset;
+                }
+              }
+              .mood-container {
+                flex-basis: unset;
+                position: relative;
+                &::after {
+                  position: absolute;
+                  content: "";
+                  left: -7px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  background-color: darken($graph-line-active, 15%);
+                  width: 1px;
+                  height: 100%;
+                }
+              }
+              .location-container,
+              .mood-container {
+                &::after {
+                  left: -15px;
+                }
+              }
+            }
+            @include details-brake-4 {
+              padding-left: 20px;
             }
           }
         }
+        .page-main {
+          .page-description {
+            opacity: unset;
+            height: 100%;
+            .text {
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 3;
+              overflow: hidden;
+            }
+            .arrow-text-mobile {
+              transform: rotate(180deg);
+              transition: unset;
+              &:hover {
+                transform: rotate(180deg) translateY(-2px);
+              }
+            }
+            .expand-text-tablet {
+              display: block;
+              -webkit-box-orient: unset;
+              -webkit-line-clamp: unset;
+              overflow: unset;
+            }
+            .arrow-rotate {
+              transform: rotate(0);
+              transition: all 0.15s ease-in-out;
+              &:hover {
+                transform: rotate(0) translateY(-2px);
+              }
+            }
+          }
+          .toggle-text {
+            height: unset;
+          }
+        }
       }
-    }
-    .animate-expand {
     }
   }
 }

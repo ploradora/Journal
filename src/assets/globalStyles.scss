@@ -92,6 +92,21 @@ $scroll-thumb-creme: #d0ccbc;
     @content;
   }
 }
+@mixin details-brake-2 {
+  @media only screen and (min-width: 530px) {
+    @content;
+  }
+}
+@mixin details-brake-3 {
+  @media only screen and (min-width: 670px) {
+    @content;
+  }
+}
+@mixin details-brake-4 {
+  @media only screen and (min-width: 800px) {
+    @content;
+  }
+}
 @mixin mobile-end {
   @media only screen and (min-width: 499px) {
     @content;
@@ -103,9 +118,8 @@ $scroll-thumb-creme: #d0ccbc;
   }
 }
 
-// mixin elements
-// mixin elements
-// mixin elements
+// ============ COMPONENTS
+
 @mixin auth-container {
   .container {
     position: absolute;
@@ -196,7 +210,7 @@ $scroll-thumb-creme: #d0ccbc;
           width: fit-content;
           color: $text-buttons;
           text-decoration: none;
-          font-size: 14px; 
+          font-size: 14px;
           cursor: pointer;
           &:hover {
             color: darken($text-buttons, 10%);
@@ -213,6 +227,8 @@ $scroll-thumb-creme: #d0ccbc;
     }
   }
 }
+
+// ============ BUTTONS
 @mixin button-full {
   padding: 5px 20px;
   border: 2px solid $background-note;
@@ -242,6 +258,23 @@ $scroll-thumb-creme: #d0ccbc;
     color: $background;
     border-color: darken($background-note, 20%);
     background-color: darken($background-note, 20%);
+  }
+}
+
+// ============ SCROLLBAR
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    display: block;
+    width: 11px;
+  }
+  &::-webkit-scrollbar-track {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: lighten($main-text, 20%);
+    border-radius: 100vw;
+    border: 3px solid $background;
   }
 }
 
@@ -284,8 +317,3 @@ body {
     min-height: 100vh;
   }
 }
-
-// .login,
-// .signup {
-//   max-height: 100vh;
-// }
