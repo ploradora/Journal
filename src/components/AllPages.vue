@@ -119,6 +119,7 @@ export default {
       deleteId.value = page.id;
       return deleteId.value;
     };
+    
     const closeModal = () => {
       document.body.style.overflow = "unset";
       deleteModal.value = false;
@@ -130,6 +131,7 @@ export default {
       deleteDoc(docRef);
       setTimeout(() => {
         deleteModal.value = false;
+        document.body.style.overflow = "unset";
       }, 500);
     };
 
@@ -170,7 +172,7 @@ export default {
   @include mobile-end {
     display: block;
     position: absolute;
-    top: 83px;
+    top: 88px;
   }
   @include desktop-size {
     display: none;
@@ -409,7 +411,7 @@ article {
           }
           .tag {
             font-size: clamp(11px, 3vw, 13px);
-            
+
             padding: 3px 10px;
             border-radius: $radius-tag;
             color: $tag-text;

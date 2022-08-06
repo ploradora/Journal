@@ -156,7 +156,7 @@ main {
   grid-gap: 10px;
 
   @include mobile-end {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 60% 40%;
     .allnotes {
       background-color: red;
     }
@@ -165,8 +165,19 @@ main {
     }
 
     .allpages,
-    .thegraph {
+    .thegraph,
+    .alltags,
+    .allnotes {
       grid-column: 1 / 3;
+    }
+  }
+  @include tag-note-brake {
+    .alltags {
+      grid-column: 1 / 2;
+
+    }
+    .allnotes {
+      grid-column: 2 / 3;
     }
   }
   @include desktop-size {

@@ -107,6 +107,11 @@ $scroll-thumb-creme: #d0ccbc;
     @content;
   }
 }
+@mixin tag-note-brake {
+  @media only screen and (min-width: 670px) {
+    @content;
+  }
+}
 @mixin mobile-end {
   @media only screen and (min-width: 499px) {
     @content;
