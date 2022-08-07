@@ -151,10 +151,10 @@ article {
         z-index: -1;
         transition: all 0.15s linear;
         p {
-          padding: 3px 15px;
+          padding: 2px 13px;
           margin-right: 5px;
           border-radius: $radius-big;
-          background-color: lighten($background, 20%);
+          border: 1px solid  $tag-text;
           cursor: pointer;
           &:hover {
             color: darken($tag-text, 10%);
@@ -239,6 +239,7 @@ article {
   @include desktop-size {
     .tags-container {
       height: 145px;
+      // height: 100%;
     }
   }
 }

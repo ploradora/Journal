@@ -162,9 +162,6 @@ main {
 
   @include mobile-end {
     grid-template-columns: 55% 45%;
-    .allnotes {
-      background-color: red;
-    }
     .thegraph {
       background-color: lightsalmon;
     }
@@ -200,7 +197,6 @@ main {
       grid-column: 2 /3;
     }
     .allnotes {
-      background-color: red;
       grid-column: 2 /3;
       grid-row: 2 /3;
     }
