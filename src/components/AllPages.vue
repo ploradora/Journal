@@ -98,17 +98,23 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
 import getCollection from "../composables/getCollection";
 
 export default {
-  setup() {
+  props: ["passedTag"],
+  setup(props) {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
+
     const { documents: entries } = getCollection("entries");
+
+    watchEffect(() => {
+      console.log(props.passedTag, "all pages");
+    });
 
     const showPages = () => {
       isOpen.value = !isOpen.value;
@@ -119,7 +125,7 @@ export default {
       deleteId.value = page.id;
       return deleteId.value;
     };
-    
+
     const closeModal = () => {
       document.body.style.overflow = "unset";
       deleteModal.value = false;
@@ -288,6 +294,9 @@ article {
       background-color: $background-form;
       border-radius: $radius-big;
       // transition: all 0.15s linear;
+      &:last-child {
+        margin-bottom: 1px;
+      }
       .page-header {
         display: flex;
         flex-direction: column;

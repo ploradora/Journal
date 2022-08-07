@@ -32,10 +32,10 @@
   </div>
   <main v-if="user">
     <div class="allpages">
-      <AllPages />
+      <AllPages :passedTag="passedTag" />
     </div>
     <div class="alltags">
-      <AllTags />
+      <AllTags @sendtag="sendTag" />
     </div>
     <div class="allnotes">
       <AllNotes />
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import AllPages from "@/components/AllPages.vue";
 import AllNotes from "@/components/AllNotes.vue";
 import AllTags from "@/components/AllTags.vue";
@@ -63,8 +64,12 @@ export default {
   },
   setup() {
     const { user } = getUser();
-
-    return { user };
+    const passedTag = ref("");
+      const sendTag = (tag) => {
+        passedTag.value = tag;
+        console.log(passedTag.value, "from home");
+      };
+    return { user, sendTag, passedTag };
   },
 };
 </script>
@@ -153,10 +158,10 @@ main {
   margin: auto;
   font-size: 14px;
   display: grid;
-  grid-gap: 10px;
+  grid-gap: 7px;
 
   @include mobile-end {
-    grid-template-columns: 60% 40%;
+    grid-template-columns: 55% 45%;
     .allnotes {
       background-color: red;
     }
@@ -174,7 +179,6 @@ main {
   @include tag-note-brake {
     .alltags {
       grid-column: 1 / 2;
-
     }
     .allnotes {
       grid-column: 2 / 3;
@@ -207,7 +211,7 @@ main {
     }
   }
   @include desktop-size-big {
-    grid-template-columns: 1fr 25%;
+    grid-template-columns: 1fr 28%;
     grid-template-rows: 37% 1fr 33%;
   }
 }

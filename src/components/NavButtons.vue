@@ -13,8 +13,19 @@
       </div>
       <div class="buttons">
         <button class="compose">
-          <router-link class="compose" :to="{ name: 'compose' }"
+          <router-link
+            @click="showButton = true"
+            v-if="!showButton"
+            class="compose"
+            :to="{ name: 'compose' }"
             >Compose</router-link
+          >
+          <router-link
+            @click="showButton = false"
+            v-if="showButton"
+            class="compose"
+            :to="{ name: 'home' }"
+            >My Journal</router-link
           >
         </button>
         <div
@@ -43,14 +54,21 @@ import getUser from "@/composables/getUser";
 
 import { auth } from "../firebase/config";
 import { signOut } from "firebase/auth";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 export default {
   setup() {
     const { user } = getUser();
     const toggleMobile = ref(false);
+    const showButton = ref(false);
 
     const router = useRouter();
+
+    watchEffect(() => {
+      if (router.currentRoute.value.fullPath === "/compose") {
+        showButton.value = true;
+      }
+    });
 
     onMounted(() => {
       window.addEventListener("resize", resizeWindow);
@@ -86,7 +104,16 @@ export default {
         current.getFullYear();
       return date;
     });
-    return { handleClick, showMenu, hideMenu, onMounted, toggleMobile, currentDate, user };
+    return {
+      handleClick,
+      showMenu,
+      hideMenu,
+      onMounted,
+      toggleMobile,
+      currentDate,
+      user,
+      showButton,
+    };
   },
 };
 </script>
@@ -145,7 +172,7 @@ nav {
       .compose {
         border: none;
         background-color: transparent;
-        z-index: 100;
+        z-index: 50;
         a {
           @include button-full;
           text-decoration: none;

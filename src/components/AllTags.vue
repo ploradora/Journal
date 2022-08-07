@@ -13,46 +13,86 @@
           </span>
         </div>
         <div :class="{ 'show-filter': filterOpen }" class="sort-type">
-          <p>A-Z</p>
-          <p>Random</p>
+          <p :class="{ 'sort-active': sort1Active }" @click="sortAlphabetical">
+            A-Z
+          </p>
+          <p :class="{ 'sort-active': sort2Active }" @click="sortRandom">
+            Random
+          </p>
         </div>
       </div>
       <input type="text" placeholder="Search for a tag" v-model="search" />
     </div>
-    <div class="tags-container">
-      <p class="tag" v-for="tag in tags" :key="tag.id">{{ tag }}</p>
-    </div>
+    <TransitionGroup tag="div" name="animate-reorder" class="tags-container">
+      <p
+        @click="filterPagesbyTag(tag)"
+        class="tag"
+        v-for="tag in tags"
+        :key="tag"
+      >
+        {{ tag }}
+      </p>
+    </TransitionGroup>
   </article>
 </template>
 
 <script>
 import { ref } from "vue";
-import { db } from "../firebase/config";
-import { collection, onSnapshot } from "@firebase/firestore";
-
+import useTags from "../composables/useTags";
 export default {
-  setup() {
+  setup(_, context) {
     const filterOpen = ref(false);
-    const search = ref("");
-    const tags = ref(null);
+    const sort1Active = ref(false);
+    const sort2Active = ref(false);
+    const search = ref("")
 
-    let collRef = collection(db, "entries");
-
-    onSnapshot(collRef, (snapshot) => {
-      let arrResults = [];
-      snapshot.docs.forEach((doc) => {
-        arrResults.push(doc.data().tags);
-      });
-      let allArrs = arrResults.flat();
-      tags.value = [...new Set(allArrs)];
-      return tags.value.filter(tag => tag.includes(search.value))
-    });
+    const { tags } = useTags("entries");
 
     // const searchTag = computed(() => {
-    //   return tags.filter((tag) => tag.includes(search.value));
+    //   return tags.value.filter((tag) => tag.includes(search.value));
     // });
-    
-    return { filterOpen, search, tags };
+
+    const sortAlphabetical = () => {
+      sort1Active.value = true;
+      sort2Active.value = false;
+      return tags.value.sort();
+    };
+
+    const sortRandom = () => {
+      sort1Active.value = false;
+      sort2Active.value = true;
+      const randomArrayShuffle = (array) => {
+        let currentIndex = array.length,
+          temporaryValue,
+          randomIndex;
+        while (0 !== currentIndex) {
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+        return array;
+      };
+
+      randomArrayShuffle(tags.value);
+    };
+
+    const filterPagesbyTag = (tag) => {
+      context.emit('sendtag', tag)
+    };
+
+    return {
+      filterOpen,
+      search,
+      tags,
+      sort1Active,
+      sort2Active,
+      // searchTag,
+      sortAlphabetical,
+      sortRandom,
+      filterPagesbyTag,
+    };
   },
 };
 </script>
@@ -118,8 +158,11 @@ article {
           cursor: pointer;
           &:hover {
             color: darken($tag-text, 10%);
-            background-color: $background-tag-blue;
+            background-color: darken($background, 20%);
           }
+        }
+        .sort-active {
+          background-color: darken($background, 20%);
         }
       }
       .show-filter {
@@ -147,6 +190,19 @@ article {
         box-shadow: inset 0 -1px #7d9ca6;
       }
     }
+  }
+  .animate-reorder-enter-from,
+  .animate-reorder-leave-to {
+    opacity: 0;
+  }
+  .animate-reorder-enter-to,
+  .animate-reorder-leave-from {
+    opacity: 1;
+  }
+  .animate-reorder-move,
+  .animate-reorder-enter-active,
+  .animate-reorder-leave-active {
+    transition: all 0.2s linear;
   }
   .tags-container {
     height: 200px;
@@ -180,13 +236,9 @@ article {
       }
     }
   }
-  @include mobile-end {
-    .tags-container {
-    }
-  }
   @include desktop-size {
     .tags-container {
-      height: 136px;
+      height: 145px;
     }
   }
 }
