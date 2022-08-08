@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/HomeView.vue";
 import Login from "../views/auth/Login.vue";
 import Signup from "../views/auth/Signup.vue";
+import AddNote from "../views/AddNote.vue";
 import Compose from "../views/Compose.vue";
 
 import { auth } from "../firebase/config";
@@ -31,6 +32,12 @@ const routes = [
         path: "signup",
         name: "signup",
         component: Signup,
+      },
+      {
+        path: "addnote",
+        name: "addnote",
+        component: AddNote,
+        beforeEnter: requireAuth,
       },
     ],
   },

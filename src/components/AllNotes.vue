@@ -2,58 +2,150 @@
   <article>
     <div class="notes-nav">
       <p>Side Notes</p>
-      <button>add a note</button>
+      <router-link :to="{ name: 'addnote' }">add a note</router-link>
     </div>
-    <div class="notes-container">
-      <div class="note" v-for="text in dumText" :key="text">
-        <p class="text">{{ text.title }}</p>
+    <TransitionGroup tag="div" name="notes" class="notes-container">
+      <div
+        :class="{ 'toggle-update': note.completed }"
+        class="note"
+        v-for="note in filteredNotes"
+        :key="note.id"
+      >
+        <div
+          :class="{ 'animate-delete-modal': deleteModal }"
+          class="delete-modal"
+        >
+          <div class="delete-content">
+            <p>Delete this note?</p>
+            <div class="delete-action">
+              <button @click="handleDelete(id)" class="delete">Delete</button>
+              <button @click="closeModal" class="cancel">Cancel</button>
+            </div>
+          </div>
+          <div @click="deleteModal = false" class="delete-overflow"></div>
+        </div>
+        <p class="text">{{ note.note }}</p>
         <div class="note-bottom">
           <p class="date-created">07 / 12 / 2021</p>
           <div class="buttons">
-            <span class="material-symbols-outlined">
-              radio_button_unchecked
+            <div @click="handleUpdate(note)" class="update">
+              <span class="material-symbols-outlined">
+                radio_button_unchecked
+              </span>
+              <span class="material-symbols-outlined icon-checked">
+                radio_button_checked
+              </span>
+            </div>
+            <span
+              @click="openDelete(note)"
+              class="material-symbols-outlined delete-icon"
+            >
+              delete
             </span>
-            <!-- <span class="material-symbols-outlined" > radio_button_checked </span> -->
-            <span class="material-symbols-outlined delete-icon"> delete </span>
           </div>
         </div>
       </div>
-    </div>
+    </TransitionGroup>
     <div class="sort-buttons">
-      <button>All</button>
-      <button>Completed</button>
-      <button>Ongoing</button>
+      <button
+        :class="{ 'filter-active': currentFilter === 'all' }"
+        @click="updateFilter('all')"
+      >
+        All
+      </button>
+      <button
+        :class="{ 'filter-active': currentFilter === 'completed' }"
+        @click="updateFilter('completed')"
+      >
+        Completed
+      </button>
+      <button
+        :class="{ 'filter-active': currentFilter === 'ongoing' }"
+        @click="updateFilter('ongoing')"
+      >
+        Ongoing
+      </button>
     </div>
   </article>
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { db } from "../firebase/config";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import getCollection from "../composables/getCollection";
+
 export default {
   setup() {
-    const dumText = ref([
-      {
-        title:
-          "Write about people I’ve met in New York in Central Park during the heatwave. And the book I have found under the Pine.",
-        completed: false,
-      },
-      {
-        title:
-          "Start a collection of ideas for the next application which will be made entirely",
-        completed: false,
-      },
-      {
-        title:
-          "Remember next time to write about the dalmatian we saw in Italy",
-        completed: false,
-      },
-      {
-        title:
-          "Clean up the Iamges folder on the old mac and start writing the short film. Short film will be shot on the K3 camera",
-        completed: false,
-      },
-    ]);
-    return { dumText };
+    const isChecked = ref(false);
+    const isWriteOpen = ref(false);
+    const deleteModal = ref(false);
+    const deleteId = ref("");
+    const currentFilter = ref("all");
+
+    const { documents: notes } = getCollection("notes");
+
+    const openDelete = (note) => {
+      document.body.style.overflow = "hidden";
+      deleteModal.value = true;
+      deleteId.value = note.id;
+      return deleteId.value;
+    };
+    const closeModal = () => {
+      document.body.style.overflow = "unset";
+      deleteModal.value = false;
+    };
+    const handleUpdate = (note) => {
+      const docRef = doc(db, "notes", note.id);
+
+      updateDoc(docRef, {
+        completed: !note.completed,
+      });
+    };
+
+    const handleDelete = (id) => {
+      id = deleteId.value;
+      const docRef = doc(db, "notes", id);
+      deleteDoc(docRef);
+      setTimeout(() => {
+        deleteModal.value = false;
+        document.body.style.overflow = "unset";
+      }, 200);
+    };
+    const handleWriteNote = () => {
+      isWriteOpen.value = true;
+      document.body.style.overflow = "hidden";
+    };
+
+    const updateFilter = (filter) => {
+      currentFilter.value = filter;
+    };
+
+    const filteredNotes = computed(() => {
+      if (currentFilter.value === "completed") {
+        return notes.value.filter((note) => note.completed);
+      }
+      if (currentFilter.value === "ongoing") {
+        return notes.value.filter((note) => !note.completed);
+      }
+      return notes.value;
+    });
+
+    return {
+      notes,
+      isChecked,
+      isWriteOpen,
+      closeModal,
+      deleteModal,
+      deleteId,
+      handleWriteNote,
+      openDelete,
+      handleDelete,
+      handleUpdate,
+      currentFilter,
+      filteredNotes,
+      updateFilter,
+    };
   },
 };
 </script>
@@ -73,7 +165,9 @@ article {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    button {
+    a {
+      text-decoration: none;
+      font-size: 12px;
       color: $h2;
       padding: 3px 13px;
       background-color: unset;
@@ -87,6 +181,18 @@ article {
         background-color: darken($background-note-card, 15%);
       }
     }
+  }
+  .notes-enter-from,
+  .notes-leave-to {
+    opacity: 0;
+  }
+  .notes-enter-to,
+  .notes-leave-from {
+    opacity: 1;
+  }
+  .notes-move {
+    transition: all 0.2s linear;
+
   }
   .notes-container {
     height: 200px;
@@ -109,6 +215,68 @@ article {
       &:last-child {
         margin-bottom: 3px;
       }
+      .delete-modal {
+        position: fixed;
+        top: 0;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        z-index: 60;
+        opacity: 0;
+        .delete-content {
+          width: 300px;
+          margin: auto;
+          margin-top: -65px;
+          padding: 10px;
+          text-align: center;
+          font-weight: 500;
+          color: $h2;
+          border-radius: $radius-big;
+          border: 2px solid $placeholder-border;
+          background-color: $background-note;
+          opacity: 0;
+          cursor: auto;
+          .delete-action {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .delete {
+              @include button-full;
+              margin-right: 7px;
+              color: $background;
+              background-color: $text-buttons;
+              border-color: $text-buttons;
+              &:hover {
+                border-color: darken($text-buttons, 20%);
+                background-color: darken($text-buttons, 20%);
+              }
+            }
+            .cancel {
+              @include button-contour;
+            }
+          }
+        }
+        .delete-overflow {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          right: 0;
+          top: 0;
+          background-color: $background-note;
+          z-index: -1;
+          cursor: pointer;
+        }
+      }
+      .animate-delete-modal {
+        bottom: 0;
+        opacity: 1;
+        .delete-content {
+          opacity: 1;
+          margin-top: 300px;
+        }
+      }
       .text {
         font-size: 12.5px;
       }
@@ -127,12 +295,54 @@ article {
         .buttons {
           display: flex;
           align-items: center;
-          .delete-icon {
-            margin-left: 3px;
-          }
           span {
             font-size: clamp(16px, 2vw, 18px);
             cursor: pointer;
+            &:hover {
+              color: $background;
+            }
+          }
+          .update {
+            position: relative;
+            overflow: hidden;
+            margin-left: 3px;
+            width: 18px;
+            height: 18px;
+            span {
+              position: absolute;
+              left: 50%;
+              top: 50%;
+              transform: translate(-50%, -50%);
+            }
+            .icon-checked {
+              color: $background;
+              z-index: -1;
+            }
+          }
+        }
+      }
+    }
+    .toggle-update {
+      .text {
+        text-decoration: line-through;
+        color: $background;
+      }
+      .note-bottom {
+        border-color: $background;
+        .date-created {
+          color: $background;
+        }
+        .buttons {
+          .update {
+            .icon-checked {
+              z-index: 1;
+            }
+          }
+          .delete-icon {
+            color: $background;
+            &:hover {
+              color: $h2;
+            }
           }
         }
       }

@@ -65,6 +65,9 @@ export default {
   setup() {
     const { user } = getUser();
     const passedTag = ref("");
+
+    document.body.style.position = "unset";
+    
       const sendTag = (tag) => {
         passedTag.value = tag;
         console.log(passedTag.value, "from home");
@@ -161,7 +164,7 @@ main {
   grid-gap: 7px;
 
   @include mobile-end {
-    grid-template-columns: 55% 45%;
+    grid-template-columns: repeat(2, 1fr);
     .thegraph {
       background-color: lightsalmon;
     }

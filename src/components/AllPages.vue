@@ -7,10 +7,7 @@
     </div>
     <div :class="{ 'animate-expand': isOpen }" class="pages">
       <div class="page" v-for="page in entries" :key="page">
-        <div
-          :class="{ 'animate-delete-modal': deleteModal }"
-          class="delete-modal"
-        >
+        <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal" >
           <div class="delete-content">
             <p>Delete this page?</p>
             <div class="delete-action">
@@ -138,7 +135,7 @@ export default {
       setTimeout(() => {
         deleteModal.value = false;
         document.body.style.overflow = "unset";
-      }, 500);
+      }, 200);
     };
 
     // tablet display
