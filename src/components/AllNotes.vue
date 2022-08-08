@@ -192,7 +192,6 @@ article {
   }
   .notes-move {
     transition: all 0.2s linear;
-
   }
   .notes-container {
     height: 200px;
@@ -360,6 +359,13 @@ article {
       background-color: darken($input-line, 10%);
       width: 100%;
     }
+    .filter-active {
+      color: darken($h2, 30%);
+      background-color: darken($background, 20%);
+      &:hover {
+        background-color: darken($background, 20%);
+      }
+    }
     button {
       background-color: unset;
       border: unset;
@@ -373,7 +379,7 @@ article {
       cursor: pointer;
       &:hover {
         color: darken($h2, 30%);
-        background-color: darken($background, 20%);
+        background-color: darken($background, 12%);
       }
     }
   }

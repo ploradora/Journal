@@ -27,7 +27,7 @@
       <p
         @click="filterPagesbyTag(tag)"
         class="tag"
-        v-for="tag in tags"
+        v-for="tag in searchTag"
         :key="tag"
       >
         {{ tag }}
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import useTags from "../composables/useTags";
 export default {
   setup(_, context) {
@@ -48,9 +48,12 @@ export default {
 
     const { tags } = useTags("entries");
 
-    // const searchTag = computed(() => {
-    //   return tags.value.filter((tag) => tag.includes(search.value));
-    // });
+    const searchTag = computed(() => {
+      if(search.value !== '' ) {
+        return tags.value.filter((tag) => tag.toLowerCase().includes(search.value.toLowerCase()));
+      }
+      return tags.value
+    });
 
     const sortAlphabetical = () => {
       sort1Active.value = true;
@@ -88,7 +91,7 @@ export default {
       tags,
       sort1Active,
       sort2Active,
-      // searchTag,
+      searchTag,
       sortAlphabetical,
       sortRandom,
       filterPagesbyTag,
@@ -199,9 +202,7 @@ article {
   .animate-reorder-leave-from {
     opacity: 1;
   }
-  .animate-reorder-move,
-  .animate-reorder-enter-active,
-  .animate-reorder-leave-active {
+  .animate-reorder-move {
     transition: all 0.2s linear;
   }
   .tags-container {
