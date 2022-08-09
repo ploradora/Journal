@@ -17,6 +17,8 @@ $light-violet: #d8d8ed;
 $input-line: #b3b3b3;
 $background-input: #f9f7f2;
 $main-tag-background: #e2e0dc;
+$tooltip-background: #fedfc2;
+$background-modal: #e8ede4;
 
 //auth
 $background-form: #f3f0e4;
@@ -235,6 +237,47 @@ $scroll-thumb-creme: #d0ccbc;
         font-size: 13px;
         left: 15px;
         color: rgb(209, 89, 68);
+      }
+    }
+  }
+}
+
+// ============ TOOLTIP
+
+@mixin tooltip {
+  .tooltip-container {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 18px;
+    height: 18px;
+    .tooltip-frame {
+      position: absolute;
+      right: 0;
+      bottom: 110%;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      border-radius: unset;
+      border-radius: $radius-big;
+      font-size: 11px;
+      overflow: hidden;
+      transition: 0.15s linear;
+      .tooltip {
+        width: 207px;
+        height: 56px;
+        padding: 14px 17px;
+        text-align: justify;
+        line-height: 14px;
+        background-color: $tooltip-background;
+      }
+    }
+    &:hover {
+      .tooltip-frame {
+        width: 207px;
+        height: 56px;
+        opacity: 1;
+        transition: 0.15s linear;
       }
     }
   }

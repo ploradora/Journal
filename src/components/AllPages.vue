@@ -431,13 +431,14 @@ article {
           }
           .tag {
             font-size: clamp(11px, 3vw, 13px);
-
             padding: 3px 10px;
             border-radius: $radius-tag;
             color: $tag-text;
-            background-color: $main-tag-background;
+            background-color: $background-modal;
+            border: 1px solid $input-line;
             cursor: pointer;
             &:hover {
+              color: darken($main-text, 20%);
               background-color: darken($main-tag-background, 10%);
             }
           }

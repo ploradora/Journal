@@ -4,9 +4,11 @@
       <label class="title" for="title">
         <input type="text" name="title" v-model="title" placeholder="Title" />
         <div class="tooltip-container">
-          <p class="tooltip">
-            It is not required to have a title you can leave the space blank
-          </p>
+          <div class="tooltip-frame">
+            <p class="tooltip">
+              It is not required to have a title, you can leave the space blank.
+            </p>
+          </div>
           <span class="material-symbols-outlined help-title"> help </span>
         </div>
       </label>
@@ -24,16 +26,36 @@
             placeholder="Type in or use your location"
             v-model="location"
           />
-          <span class="material-symbols-outlined"> my_location </span>
+          <div class="tooltip-container">
+            <div class="tooltip-frame">
+              <p class="tooltip">Use my location</p>
+            </div>
+            <span class="material-symbols-outlined"> my_location </span>
+          </div>
         </label>
         <div class="mood-container">
-          <label for="mood">How are you feeling?</label>
+          <label for="mood"
+            >My mood today: <span class="mood-num">{{ mood }}</span>
+          </label>
           <div class="mood">
             <div class="range">
-              <input type="range" min="1" max="100" v-model="mood" />
-              <p class="mood-value">{{ mood }}</p>
+              <input
+                @input="slide"
+                type="range"
+                min="1"
+                max="100"
+                v-model="mood"
+              />
             </div>
-            <span class="material-symbols-outlined help-mood"> help </span>
+            <div class="tooltip-container">
+              <div class="tooltip-frame">
+                <p class="tooltip">
+                  The mood chart is another way of filtering your pages and
+                  having a bird’s-eye view on your journey throughout the year.
+                </p>
+              </div>
+              <span class="material-symbols-outlined help-title"> help </span>
+            </div>
           </div>
         </div>
         <div class="tags">
@@ -44,7 +66,15 @@
               v-model="tag"
               placeholder="Tags"
             />
-            <span class="material-symbols-outlined help-tags"> help </span>
+            <div class="tooltip-container">
+              <div class="tooltip-frame">
+                <p class="tooltip">
+                  Add tags to better help your experience, filtering your
+                  journal when searching for a specific memory or thought.
+                </p>
+              </div>
+              <span class="material-symbols-outlined help-title"> help </span>
+            </div>
           </div>
           <TransitionGroup tag="div" name="tag-list" class="tags-list">
             <div v-for="tag in tags" :key="tag" class="tag-container">
@@ -73,7 +103,7 @@ export default {
     const title = ref("");
     const description = ref("");
     const location = ref("");
-    const mood = ref("");
+    const mood = ref(80);
     const tag = ref("");
     const tags = ref([]);
 
@@ -167,39 +197,7 @@ section {
       input {
         font-size: 16px;
       }
-      .tooltip-container {
-        position: relative;
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .tooltip {
-          position: absolute;
-          right: 0;
-          bottom: 110%;
-          height: 0px;
-          width: 0px;
-          padding: 0px;
-          opacity: 0;
-          overflow: hidden;
-          font-size: 11px;
-          border-radius: $radius-big;
-          background-color: #fff;
-
-          transition: all 0.15s linear;
-        }
-        &:hover {
-          .tooltip {
-            width: 202.5px;
-            height: 60px;
-            word-wrap: normal;
-            padding: 14px 17px;
-            opacity: 1;
-            transition: all 0.15s linear;
-          }
-        }
-      }
+      @include tooltip;
     }
     textarea {
       resize: none;
@@ -238,14 +236,39 @@ section {
           padding-bottom: 1px;
           padding-left: 5px;
         }
+        @include tooltip;
+        .tooltip-container {
+          .tooltip-frame {
+            .tooltip {
+              width: 137px;
+              height: 42px;
+              text-align: center;
+            }
+          }
+          &:hover {
+            .tooltip-frame {
+              width: 137px;
+              height: 42px;
+            }
+          }
+        }
       }
       .mood-container {
         width: 100%;
-        margin-bottom: 35px;
+        margin-bottom: 20px;
         label {
+          display: flex;
+          align-items: center;
           padding-left: 5px;
           font-size: 14px;
           color: $h2;
+          .mood-num {
+            font-size: 14px;
+            margin-left: 5px;
+            font-weight: 600;
+            color: darken(#9e9d97, 10%);
+            cursor: auto;
+          }
         }
         .mood {
           margin-top: 2px;
@@ -263,7 +286,7 @@ section {
               padding-left: unset;
               padding-bottom: unset;
               border-bottom: unset;
-              background-color: $light-violet;
+              background-color: lighten($tag-thumb-creme, 5%);
               border-radius: $radius-big;
               height: 6px;
               &:focus {
@@ -275,21 +298,30 @@ section {
                 width: 15px;
                 height: 15px;
                 border-radius: 50%;
-                background-color: $graph-line-active;
-                box-shadow: inset 0 0 0 2px darken($graph-line-active, 10%);
+                background-color: lighten($background-tag-container-creme, 5%);
+                border:2px solid #9e9d97;
                 cursor: pointer;
                 &:hover {
-                  background-color: darken($graph-line-active, 10%);
-                  box-shadow: inset 0 0 0 2px darken($graph-line-active, 20%);
-
+                  background-color: #9e9d97;
                 }
               }
             }
-            .mood-value {
-              position: absolute;
-              top: 100%;
+          }
+          @include tooltip;
+          .tooltip-container {
+          .tooltip-frame {
+            .tooltip {
+              width: 263px;
+              height: 70px;
             }
           }
+          &:hover {
+            .tooltip-frame {
+              width: 263px;
+              height: 70px;
+            }
+          }
+        }
         }
       }
       .tags {
@@ -306,6 +338,21 @@ section {
           input {
             padding-left: unset;
           }
+          @include tooltip;
+          .tooltip-container {
+          .tooltip-frame {
+            .tooltip {
+              width: 257px;
+              height: 70px;
+            }
+          }
+          &:hover {
+            .tooltip-frame {
+              width: 257px;
+              height: 70px;
+            }
+          }
+        }
         }
         .tag-list-enter-from,
         .tag-list-leave-to {
@@ -332,7 +379,8 @@ section {
             padding: 3px 10px;
             border-radius: $radius-tag;
             color: $tag-text;
-            background-color: $main-tag-background;
+            background-color: $background-modal;
+            border: 1px solid $input-line;
             span {
               position: absolute;
               right: -9px;
@@ -340,10 +388,10 @@ section {
               padding: 3px;
               font-size: 13px;
               border-radius: 50%;
-              color: $background;
-              background-color: darken($background-tag-blue, 10%);
+              color: #ffff;
+              background-color: $tag-thumb-creme;
               &:hover {
-                background-color: $note-icon-completed;
+                background-color: #9e9d97;
               }
             }
           }
@@ -360,7 +408,6 @@ section {
     margin-top: 70px;
   }
   @include desktop-size {
-    // background-color: red;
     margin-top: 60px;
     width: 98%;
     height: calc(100vh - 110px);
