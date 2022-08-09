@@ -6,8 +6,11 @@
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
     <div :class="{ 'animate-expand': isOpen }" class="pages">
-      <div class="page" v-for="page in entries" :key="page">
-        <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal" >
+      <div class="page" v-for="page in selectedTag" :key="page.id">
+        <div
+          :class="{ 'animate-delete-modal': deleteModal }"
+          class="delete-modal"
+        >
           <div class="delete-content">
             <p>Delete this page?</p>
             <div class="delete-action">
@@ -85,7 +88,7 @@
           </div>
           <div class="tags">
             <p v-for="tag in page.tags" :key="tag" class="tag">
-              {{ tag }}
+              #{{ tag }}
             </p>
           </div>
         </div>
@@ -95,7 +98,7 @@
 </template>
 
 <script>
-import { onMounted, ref, watchEffect } from "vue";
+import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
 import getCollection from "../composables/getCollection";
@@ -111,6 +114,16 @@ export default {
 
     watchEffect(() => {
       console.log(props.passedTag, "all pages");
+    });
+    const selectedTag = computed(() => {
+      if (props.passedTag) {
+         entries.value = entries.value.forEach((page) => {
+          return page.tags.forEach((tag) => {
+            return tag.includes(props.passedTag);
+          });
+        });
+      }
+        return entries.value;
     });
 
     const showPages = () => {
@@ -161,6 +174,7 @@ export default {
       showPages,
       handleDelete,
       closeModal,
+      selectedTag,
     };
   },
 };

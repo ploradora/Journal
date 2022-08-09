@@ -30,7 +30,7 @@
         v-for="tag in searchTag"
         :key="tag"
       >
-        {{ tag }}
+        #{{ tag }}
       </p>
     </TransitionGroup>
   </article>
@@ -225,7 +225,6 @@ article {
       margin-right: 5px;
       margin-bottom: 5px;
       width: fit-content;
-      height: 26px;
       font-size: 13px;
       padding: 3px 10px;
       border-radius: $radius-tag;

@@ -1,10 +1,10 @@
+import { ref } from "vue";
 import { db } from "../firebase/config";
 import { collection, onSnapshot } from "@firebase/firestore";
-import { ref } from "vue";
 
 const getTags = (c) => {
   const tags = ref(null);
-  let collRef = collection(db, "entries");
+  let collRef = collection(db, c);
   onSnapshot(collRef, (snapshot) => {
     let arrResults = [];
     snapshot.docs.forEach((doc) => {

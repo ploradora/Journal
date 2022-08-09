@@ -3,7 +3,7 @@
     <textarea
       v-model="note"
       name="note"
-      placeholder="write your note..."
+      placeholder="note or reminder..."
       required
     ></textarea>
     <div class="buttons">

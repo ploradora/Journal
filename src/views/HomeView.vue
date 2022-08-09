@@ -70,7 +70,7 @@ export default {
     
       const sendTag = (tag) => {
         passedTag.value = tag;
-        console.log(passedTag.value, "from home");
+        // console.log(passedTag.value, "from home");
       };
     return { user, sendTag, passedTag };
   },

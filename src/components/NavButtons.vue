@@ -67,7 +67,11 @@ export default {
     watchEffect(() => {
       if (router.currentRoute.value.fullPath === "/compose") {
         showButton.value = true;
-      }
+      } 
+      // else {
+      //   showButton.value = false;
+      //  router.push({ name: "home" });
+      // }
     });
 
     onMounted(() => {
