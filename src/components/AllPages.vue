@@ -21,8 +21,8 @@
         </div>
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
-            <div class="date-added">{{ page.created }}</div>
-            <div class="title">{{ page.title }}</div>
+            <p class="date-added">{{ page.created }}</p>
+            <p class="title">{{ page.title }}</p>
           </div>
           <div class="options">
             <span class="material-symbols-outlined"> edit</span>
@@ -354,6 +354,7 @@ article {
             line-height: 22px;
             font-size: clamp(20px, 3vw, 25px);
             font-weight: 500;
+            color: $h2;
           }
         }
         .options {
@@ -383,8 +384,8 @@ article {
           flex-direction: column;
           flex-wrap: wrap;
           width: 100%;
+          margin-bottom: 8px;
           padding: 10px;
-          margin-bottom: 7px;
           font-size: 12px;
           border-radius: 5px;
           background-color: $background-tag-creme;
@@ -395,10 +396,11 @@ article {
           }
           .mood-container {
             .mood-number {
+              margin-bottom: unset;
+              margin-left: -2px;
               font-size: clamp(40px, 4vw, 57px);
               line-height: 35px;
               font-weight: 400;
-              margin-bottom: unset;
             }
           }
           p {
@@ -420,7 +422,7 @@ article {
           color: $text-buttons;
           .text {
             font-size: 13px;
-            margin-top: 2px;
+            margin-top: 10px;
           }
           .arrow-text-mobile {
             display: block;
@@ -529,6 +531,7 @@ article {
         transition: unset;
         .page-header {
           .details {
+            margin-bottom: -7px;
             flex-direction: row;
             > div {
               justify-self: center;
@@ -597,6 +600,9 @@ article {
               -webkit-box-orient: vertical;
               -webkit-line-clamp: 3;
               overflow: hidden;
+              @include details-brake-3 {
+                -webkit-line-clamp: 5;
+              }
             }
             .arrow-text-mobile {
               transform: rotate(180deg);

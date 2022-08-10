@@ -108,7 +108,6 @@ export default {
     const mood = ref(80);
     const tag = ref("");
     const tags = ref([]);
-    const lastSignIn = ref("");
 
     const { user } = getUser();
 
