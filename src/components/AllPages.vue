@@ -21,7 +21,7 @@
         </div>
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
-            <div class="date-added">03 / 07 / 2022</div>
+            <div class="date-added">{{ page.created }}</div>
             <div class="title">{{ page.title }}</div>
           </div>
           <div class="options">
@@ -43,21 +43,19 @@
                 <span class="detail-type">Created:</span> {{ page.created }}
               </p>
               <p class="modified">
-                <span class="detail-type">Modified:</span> {{ page.modified }}
+                <span class="detail-type">Updated:</span> {{ page.modified }}
               </p>
               <p class="entry">
-                <span class="detail-type">Last Entry:</span>
-                {{ page.lastEntry }}
+                <span class="detail-type">Location:</span>
+                {{ page.location }}
               </p>
             </div>
             <div class="location-container">
               <p class="location">
-                <span class="detail-type">Location:</span> {{ page.location }}
+                <span class="detail-type">Characters:</span> {{ page.characters }}
               </p>
               <p class="words">
                 <span class="detail-type">Words:</span> {{ page.words }}
-                <span class="detail-type">/ Characters:</span>
-                {{ page.characters }}
               </p>
               <p class="color">
                 <span class="detail-type">Title Color:</span> {{ page.color }}
@@ -87,9 +85,7 @@
             </span>
           </div>
           <div class="tags">
-            <p v-for="tag in page.tags" :key="tag" class="tag">
-              #{{ tag }}
-            </p>
+            <p v-for="tag in page.tags" :key="tag" class="tag">#{{ tag }}</p>
           </div>
         </div>
       </div>
@@ -98,6 +94,7 @@
 </template>
 
 <script>
+import getUser from "@/composables/getUser";
 import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
@@ -110,20 +107,52 @@ export default {
     const deleteModal = ref(false);
     const deleteId = ref("");
 
-    const { documents: entries } = getCollection("entries");
+    // , ['mood', '==', props.passedTag]
+    const { user } = getUser();
+
+    const { documents: entries } = getCollection("entries", [
+      "userUid",
+      "==",
+      user.value.uid,
+    ]);
+
+  
 
     watchEffect(() => {
-      console.log(props.passedTag, "all pages");
+      // console.log(props.passedTag, "all pages");
     });
     const selectedTag = computed(() => {
-      if (props.passedTag) {
-         entries.value = entries.value.forEach((page) => {
-          return page.tags.forEach((tag) => {
-            return tag.includes(props.passedTag);
-          });
-        });
-      }
-        return entries.value;
+      // if (props.passedTag) {
+      //    entries.value = entries.value.forEach((page) => {
+      //     return page.tags.forEach((tag) => {
+      //       return tag.includes(props.passedTag);
+      //     });
+      //   });
+      // }
+
+      // if (props.passedTag) {
+      //   entries.value = entries.value.forEach((page) =>
+      //     page.tags.forEach((tag) => {
+      //       if(tag === props.passedTag) {
+      //         console.log(tag);
+
+      //       }
+      //     })
+      //   );
+
+      //  entries.value = entries.value.forEach(page => {
+      //   page.tags.filter(tag => tag.includes(props.passedTag))
+      // })
+
+      return entries.value;
+
+      // entries.value = entries.value.forEach((page) => {
+      //   console.log(page, entries.value.length);
+
+      // });
+
+      // }
+      return entries.value;
     });
 
     const showPages = () => {

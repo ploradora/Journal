@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import getUser from "@/composables/getUser";
 import { ref, computed } from "vue";
 import useTags from "../composables/useTags";
 export default {
@@ -44,15 +45,18 @@ export default {
     const filterOpen = ref(false);
     const sort1Active = ref(false);
     const sort2Active = ref(false);
-    const search = ref("")
+    const search = ref("");
 
-    const { tags } = useTags("entries");
+    const { user } = getUser();
+    const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
 
     const searchTag = computed(() => {
-      if(search.value !== '' ) {
-        return tags.value.filter((tag) => tag.toLowerCase().includes(search.value.toLowerCase()));
+      if (search.value !== "") {
+        return tags.value.filter((tag) =>
+          tag.toLowerCase().includes(search.value.toLowerCase())
+        );
       }
-      return tags.value
+      return tags.value;
     });
 
     const sortAlphabetical = () => {
@@ -82,7 +86,7 @@ export default {
     };
 
     const filterPagesbyTag = (tag) => {
-      context.emit('sendtag', tag)
+      context.emit("sendtag", tag);
     };
 
     return {
@@ -157,7 +161,7 @@ article {
           padding: 2px 13px;
           margin-right: 5px;
           border-radius: $radius-big;
-          border: 1px solid  $tag-text;
+          border: 1px solid $tag-text;
           cursor: pointer;
           &:hover {
             color: darken($tag-text, 10%);

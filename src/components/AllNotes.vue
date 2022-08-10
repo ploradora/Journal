@@ -26,7 +26,7 @@
         </div>
         <p class="text">{{ note.note }}</p>
         <div class="note-bottom">
-          <p class="date-created">07 / 12 / 2021</p>
+          <p class="date-created">{{ note.created }}</p>
           <div class="buttons">
             <div @click="handleUpdate(note)" class="update">
               <span class="material-symbols-outlined">
@@ -70,10 +70,11 @@
 </template>
 
 <script>
+import getUser from "@/composables/getUser";
+import getCollection from "../composables/getCollection";
 import { ref, computed } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
-import getCollection from "../composables/getCollection";
 
 export default {
   setup() {
@@ -82,8 +83,12 @@ export default {
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentFilter = ref("all");
-
-    const { documents: notes } = getCollection("notes");
+    const { user } = getUser();
+    const { documents: notes } = getCollection("notes", [
+      "userUid",
+      "==",
+      user.value.uid,
+    ]);
 
     const openDelete = (note) => {
       document.body.style.overflow = "hidden";
@@ -97,7 +102,6 @@ export default {
     };
     const handleUpdate = (note) => {
       const docRef = doc(db, "notes", note.id);
-
       updateDoc(docRef, {
         completed: !note.completed,
       });
@@ -218,22 +222,23 @@ article {
         position: fixed;
         top: 0;
         bottom: 100%;
+        max-height: 100vh;
         left: 0;
         right: 0;
+        display: grid;
+        place-items: center;
         overflow: hidden;
         z-index: 60;
         opacity: 0;
         .delete-content {
           width: 300px;
-          margin: auto;
-          margin-top: -65px;
           padding: 10px;
           text-align: center;
           font-weight: 500;
           color: $h2;
           border-radius: $radius-big;
           border: 2px solid $placeholder-border;
-          background-color: $background-note;
+          background-color: $background;
           opacity: 0;
           cursor: auto;
           .delete-action {
@@ -263,7 +268,7 @@ article {
           bottom: 0;
           right: 0;
           top: 0;
-          background-color: $background-note;
+          background-color: #e8ede4;
           z-index: -1;
           cursor: pointer;
         }
@@ -273,7 +278,6 @@ article {
         opacity: 1;
         .delete-content {
           opacity: 1;
-          margin-top: 300px;
         }
       }
       .text {

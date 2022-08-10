@@ -79,7 +79,6 @@
           <TransitionGroup tag="div" name="tag-list" class="tags-list">
             <div v-for="tag in tags" :key="tag" class="tag-container">
               <p>#{{ tag }}</p>
-              <p class="tag">{{}}</p>
               <span
                 @click="handleDelete(tag)"
                 class="material-symbols-outlined"
@@ -97,7 +96,10 @@
 
 <script>
 import { ref } from "vue";
-// import NavButtons from '@/components/NavButtons.vue';
+import getUser from "@/composables/getUser";
+import { db } from "@/firebase/config";
+import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
+import { useRouter } from "vue-router";
 export default {
   setup() {
     const title = ref("");
@@ -106,17 +108,39 @@ export default {
     const mood = ref(80);
     const tag = ref("");
     const tags = ref([]);
+    const lastSignIn = ref("");
+
+    const { user } = getUser();
+
+    const router = useRouter();
+
+    const dateCreated = () => {
+      const current = new Date();
+      const date = current.toDateString();
+      return date;
+    };
 
     const handleSubmit = async () => {
-      // const page = {
-      //   title: title.value,
-      //   description: description.value,
-      //   location: location.value,
-      //   mood: mood.value,
-      //   tags: tags.value,
-      //   textOpen: false,
-      //   detailsOpen: false
-      // }
+      const docRef = collection(db, "entries");
+
+      let wordCount = description.value.match(/(\w+)/g).length;
+      let charCount = description.value.length;
+
+      await addDoc(docRef, {
+        title: title.value,
+        description: description.value,
+        location: location.value,
+        mood: mood.value,
+        tags: tags.value,
+        created: dateCreated(),
+        orderInList: serverTimestamp(),
+        textOpen: false,
+        detailsOpen: false,
+        words: wordCount,
+        characters: charCount,
+        userUid: user.value.uid,
+      });
+      router.push({ name: "home" });
     };
 
     const handleKeydown = () => {
@@ -145,7 +169,6 @@ export default {
       handleDelete,
     };
   },
-  // components: { NavButtons }
 };
 </script>
 
@@ -299,7 +322,7 @@ section {
                 height: 15px;
                 border-radius: 50%;
                 background-color: lighten($background-tag-container-creme, 5%);
-                border:2px solid #9e9d97;
+                border: 2px solid #9e9d97;
                 cursor: pointer;
                 &:hover {
                   background-color: #9e9d97;
@@ -309,19 +332,19 @@ section {
           }
           @include tooltip;
           .tooltip-container {
-          .tooltip-frame {
-            .tooltip {
-              width: 263px;
-              height: 70px;
-            }
-          }
-          &:hover {
             .tooltip-frame {
-              width: 263px;
-              height: 70px;
+              .tooltip {
+                width: 263px;
+                height: 70px;
+              }
+            }
+            &:hover {
+              .tooltip-frame {
+                width: 263px;
+                height: 70px;
+              }
             }
           }
-        }
         }
       }
       .tags {
@@ -340,19 +363,19 @@ section {
           }
           @include tooltip;
           .tooltip-container {
-          .tooltip-frame {
-            .tooltip {
-              width: 257px;
-              height: 70px;
-            }
-          }
-          &:hover {
             .tooltip-frame {
-              width: 257px;
-              height: 70px;
+              .tooltip {
+                width: 257px;
+                height: 70px;
+              }
+            }
+            &:hover {
+              .tooltip-frame {
+                width: 257px;
+                height: 70px;
+              }
             }
           }
-        }
         }
         .tag-list-enter-from,
         .tag-list-leave-to {

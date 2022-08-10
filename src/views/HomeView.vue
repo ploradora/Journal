@@ -67,11 +67,10 @@ export default {
     const passedTag = ref("");
 
     document.body.style.position = "unset";
-    
-      const sendTag = (tag) => {
-        passedTag.value = tag;
-        // console.log(passedTag.value, "from home");
-      };
+
+    const sendTag = (tag) => {
+      passedTag.value = tag;
+    };
     return { user, sendTag, passedTag };
   },
 };
