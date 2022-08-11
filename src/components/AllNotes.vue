@@ -126,7 +126,7 @@ export default {
     };
 
     const filteredNotes = computed(() => {
-      if (currentFilter.value === "completed") {
+      if (currentFilter.value === "completed") { 
         return notes.value.filter((note) => note.completed);
       }
       if (currentFilter.value === "ongoing") {

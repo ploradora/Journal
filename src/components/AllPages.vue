@@ -52,7 +52,8 @@
             </div>
             <div class="location-container">
               <p class="location">
-                <span class="detail-type">Characters:</span> {{ page.characters }}
+                <span class="detail-type">Characters:</span>
+                {{ page.characters }}
               </p>
               <p class="words">
                 <span class="detail-type">Words:</span> {{ page.words }}
@@ -116,43 +117,57 @@ export default {
       user.value.uid,
     ]);
 
-  
-
     watchEffect(() => {
       // console.log(props.passedTag, "all pages");
     });
+
+    // const selectedTag = computed(() => {
+    //   if (props.passedTag) {
+    //     // let newArr = entries.value.filter((page) => {
+    //     //   return page
+    //     // });
+    //     // console.log(newArr);
+    //     // return newArr;
+    //     let newArr = entries.value.filter((page) => {
+
+    //       page.tags.filter(
+    //         (tag) => {
+    //           if (tag.includes(props.passedTag)) {
+    //             console.log(page);
+    //             return page;
+    //           }
+    //         }
+    //         // if (tag === props.passedTag) {
+    //         //   console.log(tag, props.passedTag, page);
+
+    //         // }
+    //       );
+    //       // console.log(page);
+    //       // return page;
+    //     });
+    //     console.log(newArr);
+    //     return newArr;
+    //   }
+
+    //   return entries.value;
+    // });
+
     const selectedTag = computed(() => {
-      // if (props.passedTag) {
-      //    entries.value = entries.value.forEach((page) => {
-      //     return page.tags.forEach((tag) => {
-      //       return tag.includes(props.passedTag);
-      //     });
-      //   });
-      // }
+      let newArr = entries.value;
+      if (props.passedTag) {
+        newArr = entries.value.filter((page) => {
+          return page.tags.forEach((tag) => {
+            if (tag.includes(props.passedTag)) {
+              console.log(page, "page containing " + props.passedTag);
+              return page;
+            }
+          });
+          // return page.mood.includes(95)
+        });
+        return newArr;
+      }
 
-      // if (props.passedTag) {
-      //   entries.value = entries.value.forEach((page) =>
-      //     page.tags.forEach((tag) => {
-      //       if(tag === props.passedTag) {
-      //         console.log(tag);
-
-      //       }
-      //     })
-      //   );
-
-      //  entries.value = entries.value.forEach(page => {
-      //   page.tags.filter(tag => tag.includes(props.passedTag))
-      // })
-
-      return entries.value;
-
-      // entries.value = entries.value.forEach((page) => {
-      //   console.log(page, entries.value.length);
-
-      // });
-
-      // }
-      return entries.value;
+      return newArr;
     });
 
     const showPages = () => {

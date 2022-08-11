@@ -1,6 +1,7 @@
 <template>
   <section>
     <form @submit.prevent="handleSubmit">
+      <!-- <input type="color"> -->
       <label class="title" for="title">
         <input type="text" name="title" v-model="title" placeholder="Title" />
         <div class="tooltip-container">
@@ -19,44 +20,48 @@
         v-model="description"
       ></textarea>
       <div class="footer-section">
-        <label class="location" for="location">
-          <input
-            type="text"
-            name="location"
-            placeholder="Type in or use your location"
-            v-model="location"
-          />
-          <div class="tooltip-container">
-            <div class="tooltip-frame">
-              <p class="tooltip">Use my location</p>
-            </div>
-            <span class="material-symbols-outlined"> my_location </span>
-          </div>
-        </label>
-        <div class="mood-container">
-          <label for="mood"
-            >My mood today: <span class="mood-num">{{ mood }}</span>
-          </label>
-          <div class="mood">
-            <div class="range">
-              <input
-                @input="slide"
-                type="range"
-                min="1"
-                max="100"
-                v-model="mood"
-              />
-            </div>
+        <div class="left">
+          <label class="location" for="location">
+            <input
+              type="text"
+              name="location"
+              placeholder="Type in or use your location"
+              v-model="location"
+            />
             <div class="tooltip-container">
               <div class="tooltip-frame">
-                <p class="tooltip">
-                  The mood chart is another way of filtering your pages and
-                  having a bird’s-eye view on your journey throughout the year.
-                </p>
+                <p class="tooltip">Use my location</p>
               </div>
-              <span class="material-symbols-outlined help-title"> help </span>
+              <span class="material-symbols-outlined"> my_location </span>
+            </div>
+          </label>
+          <div class="mood-container">
+            <label for="mood"
+              >My mood today: <span class="mood-num">{{ mood }}</span>
+            </label>
+            <div class="mood">
+              <div class="range">
+                <input
+                  @input="slide"
+                  type="range"
+                  min="1"
+                  max="100"
+                  v-model="mood"
+                />
+              </div>
+              <div class="tooltip-container">
+                <div class="tooltip-frame">
+                  <p class="tooltip">
+                    The mood chart is another way of filtering your pages and
+                    having a bird’s-eye view on your journey throughout the
+                    year.
+                  </p>
+                </div>
+                <span class="material-symbols-outlined help-title"> help </span>
+              </div>
             </div>
           </div>
+          <button class="button-desktop">Post</button>
         </div>
         <div class="tags">
           <div class="write-tags">
@@ -89,7 +94,7 @@
           </TransitionGroup>
         </div>
       </div>
-      <button>Post</button>
+      <button class="button-mobile">Post</button>
     </form>
   </section>
 </template>
@@ -144,7 +149,6 @@ export default {
 
     const handleKeydown = () => {
       if (!tags.value.includes(tag.value)) {
-        tag.value = tag.value.replace(/\s/, "");
         tags.value.push(tag.value);
       }
       tag.value = "";
@@ -248,102 +252,110 @@ section {
       }
     }
     .footer-section {
-      .location {
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        input {
-          font-size: 14px;
-          padding-bottom: 1px;
-          padding-left: 5px;
-        }
-        @include tooltip;
-        .tooltip-container {
-          .tooltip-frame {
-            .tooltip {
-              width: 137px;
-              height: 42px;
-              text-align: center;
-            }
-          }
-          &:hover {
-            .tooltip-frame {
-              width: 137px;
-              height: 42px;
-            }
-          }
-        }
-      }
-      .mood-container {
-        width: 100%;
-        margin-bottom: 20px;
-        label {
-          display: flex;
-          align-items: center;
-          padding-left: 5px;
-          font-size: 14px;
-          color: $h2;
-          .mood-num {
-            font-size: 14px;
-            margin-left: 5px;
-            font-weight: 600;
-            color: darken(#9e9d97, 10%);
-            cursor: auto;
-          }
-        }
-        .mood {
-          margin-top: 2px;
+      .left {
+        .location {
+          margin-bottom: 20px;
           display: flex;
           align-items: center;
           justify-content: center;
-          .range {
-            position: relative;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            input {
-              -webkit-appearance: none;
-              padding-left: unset;
-              padding-bottom: unset;
-              border-bottom: unset;
-              background-color: lighten($tag-thumb-creme, 5%);
-              border-radius: $radius-big;
-              height: 6px;
-              &:focus {
-                border: unset;
-                box-shadow: unset;
-              }
-              &::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background-color: lighten($background-tag-container-creme, 5%);
-                border: 2px solid #9e9d97;
-                cursor: pointer;
-                &:hover {
-                  background-color: #9e9d97;
-                }
-              }
-            }
+          input {
+            font-size: 14px;
+            padding-bottom: 1px;
+            padding-left: 5px;
           }
           @include tooltip;
           .tooltip-container {
             .tooltip-frame {
               .tooltip {
-                width: 263px;
-                height: 70px;
+                width: 137px;
+                height: 42px;
+                text-align: center;
               }
             }
             &:hover {
               .tooltip-frame {
-                width: 263px;
-                height: 70px;
+                width: 137px;
+                height: 42px;
               }
             }
           }
+        }
+        .mood-container {
+          width: 100%;
+          margin-bottom: 20px;
+          label {
+            display: flex;
+            align-items: center;
+            padding-left: 5px;
+            font-size: 14px;
+            color: $h2;
+            .mood-num {
+              font-size: 14px;
+              margin-left: 5px;
+              font-weight: 600;
+              color: darken(#9e9d97, 10%);
+              cursor: auto;
+            }
+          }
+          .mood {
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            .range {
+              position: relative;
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              input {
+                -webkit-appearance: none;
+                padding-left: unset;
+                padding-bottom: unset;
+                border-bottom: unset;
+                background-color: lighten($tag-thumb-creme, 5%);
+                border-radius: $radius-big;
+                height: 6px;
+                &:focus {
+                  border: unset;
+                  box-shadow: unset;
+                }
+                &::-webkit-slider-thumb {
+                  -webkit-appearance: none;
+                  width: 15px;
+                  height: 15px;
+                  border-radius: 50%;
+                  background-color: lighten(
+                    $background-tag-container-creme,
+                    5%
+                  );
+                  border: 2px solid #9e9d97;
+                  cursor: pointer;
+                  &:hover {
+                    background-color: #9e9d97;
+                  }
+                }
+              }
+            }
+            @include tooltip;
+            .tooltip-container {
+              .tooltip-frame {
+                .tooltip {
+                  width: 263px;
+                  height: 70px;
+                }
+              }
+              &:hover {
+                .tooltip-frame {
+                  width: 263px;
+                  height: 70px;
+                }
+              }
+            }
+          }
+        }
+        .button-desktop {
+          display: none;
         }
       }
       .tags {
@@ -429,10 +441,113 @@ section {
   @include mobile-end {
     margin-top: 70px;
   }
+  @include tag-note-brake {
+    height: calc(100vh - 116px);
+    padding-bottom: 10px;
+    margin-top: 55px;
+    input {
+      margin-left: 5px;
+      padding-left: 5px;
+    }
+    form {
+      .title {
+        margin-bottom: 7px;
+      }
+      textarea {
+        height: calc(100vh - 320px);
+        margin-bottom: 7px;
+      }
+      .footer-section {
+        position: relative;
+        display: flex;
+        height: 150px;
+        .left {
+          flex: 2;
+          margin-right: 7px;
+          .location {
+            margin-top: 15px;
+            margin-bottom: 12px;
+            input {
+              padding-left: unset;
+            }
+          }
+          .mood-container {
+            margin-top: 1px;
+            margin-bottom: unset;
+            .mood {
+              margin-top: unset;
+            }
+          }
+          .button-desktop {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            margin: unset;
+            display: block;
+            width: fit-content;
+          }
+        }
+        .tags {
+          flex: 1.5;
+          margin-bottom: unset;
+          .tags-list {
+            margin-top: unset;
+            padding-top: 10px;
+            height: 105px;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            @include scrollbar;
+            &::-webkit-scrollbar-track {
+              margin-top: unset;
+              margin-bottom: unset;
+            }
+            &::-webkit-scrollbar-thumb {
+              background-color: $tag-thumb-blue;
+              border-radius: 100vw;
+              border: 3px solid lighten($background-input, 2%);
+            }
+          }
+          .write-tags {
+            padding-bottom: 2px;
+          }
+        }
+      }
+      .button-mobile {
+        display: none;
+      }
+    }
+  }
   @include desktop-size {
     margin-top: 60px;
     width: 98%;
     height: calc(100vh - 110px);
+    form {
+      textarea {
+        height: calc(100vh - 280px);
+      }
+      .footer-section {
+        height: 120px;
+        .left {
+          .mood-container {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            width: 100%;
+            label {
+              width: 200px;
+            }
+            .mood {
+              width: 100%;
+            }
+          }
+        }
+        .tags {
+          .tags-list {
+            height: 75px;
+          }
+        }
+      }
+    }
   }
 }
 </style>
