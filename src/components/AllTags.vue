@@ -38,7 +38,7 @@
 
 <script>
 import getUser from "@/composables/getUser";
-import { ref, computed, onMounted,  watchEffect, onUnmounted } from "vue";
+import { ref, computed, onMounted, watchEffect, onUnmounted } from "vue";
 import useTags from "../composables/useTags";
 export default {
   props: ["universalValue"],
@@ -271,17 +271,19 @@ article {
   @include desktop-size {
     height: unset;
     overflow: hidden;
+    &:hover {
+      background-color: darken($background-tag-container-blue, 5%);
+      cursor: pointer;
+      transition: all 0.15s linear;
+    }
     .header-search {
       margin-bottom: unset;
-
       .title-container {
         margin-bottom: unset;
         text-align: center;
-
         .sort {
           margin-right: unset;
           width: 100%;
-
           p {
             margin-right: unset;
             width: 100%;
@@ -307,22 +309,24 @@ article {
   }
 }
 .container-open {
+  &:hover {
+    transition: unset;
+    background-color: $background-tag-container-blue;
+    cursor: auto;
+  }
   @include desktop-size {
     position: absolute;
     height: calc(100% - 48px);
     display: block;
     .header-search {
       margin-bottom: 7px;
-
       .title-container {
         margin-bottom: 15px;
         text-align: unset;
-
         .sort {
           width: unset;
           display: flex;
           margin-right: 10px;
-
           p {
             margin-right: 5px;
           }

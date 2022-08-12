@@ -69,9 +69,7 @@ export default {
     TheGraph,
   },
   setup() {
-    // const valueTag = ref(null);
-    // const valueNote = ref(null);
-    const universalValue = ref(null);
+    const universalValue = ref(true);
     const { user } = getUser();
     const passedTag = ref("");
 
@@ -82,11 +80,9 @@ export default {
     };
 
     const tagVal = (val) => {
-      console.log(val);
       universalValue.value = val;
     };
     const noteVal = (val) => {
-      console.log(val);
       universalValue.value = val;
     };
 
@@ -97,8 +93,6 @@ export default {
       tagVal,
       noteVal,
       universalValue,
-      // valueTag,
-      // valueNote,
     };
   },
 };

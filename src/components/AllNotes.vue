@@ -104,7 +104,7 @@ export default {
     };
 
     watchEffect(() => {
-      toggleContainer.value = !props.universalValue;
+      toggleContainer.value = props.universalValue;
     });
 
     const openContainer = () => {
@@ -417,67 +417,6 @@ article {
     }
   }
   @include desktop-size {
-    // position: absolute;
-    // bottom: 0;
-    // height: calc(100% - 48px);
-    // display: block;
-    // .notes-nav {
-    //   margin-bottom: 10px;
-    //   p {
-    //     text-align: unset;
-    //     width: fit-content;
-    //     cursor: pointer;
-    //   }
-    //   a {
-    //     display: block;
-    //   }
-    // }
-    // .notes-container {
-    //   position: absolute;
-    //   right: 0;
-    //   left: 0;
-    //   margin-right: 10px;
-    //   margin-left: 10px;
-    //   height: calc(100% - 97px);
-    // }
-    // .sort-buttons {
-    //   position: absolute;
-    //   right: 0;
-    //   left: 0;
-    //   bottom: 10px;
-    //   margin-left: 10px;
-    //   margin-right: 10px;
-    //   overflow: unset;
-    //   margin-bottom: auto;
-    //   height: unset;
-    // }
-    position: absolute;
-    bottom: 0;
-    height: unset;
-    .notes-nav {
-      margin-bottom: unset;
-      p {
-        width: 100%;
-        text-align: center;
-        cursor: pointer;
-      }
-      a {
-        display: none;
-      }
-    }
-    .notes-container {
-      height: 0px;
-    }
-    .sort-buttons {
-      margin-top: unset;
-      height: 0px;
-      overflow: hidden;
-    }
-  }
-}
-.container-open {
-  // display: none;
-  @include desktop-size {
     position: absolute;
     bottom: 0;
     height: calc(100% - 48px);
@@ -487,6 +426,7 @@ article {
       p {
         text-align: unset;
         width: fit-content;
+        cursor: pointer;
       }
       a {
         display: block;
@@ -511,28 +451,38 @@ article {
       margin-bottom: auto;
       height: unset;
     }
-    // position: absolute;
-    // bottom: 0;
-    // height: unset;
-    // .notes-nav {
-    //   margin-bottom: unset;
-    //   p {
-    //     width: 100%;
-    //     text-align: center;
-    //     cursor: pointer;
-    //   }
-    //   a {
-    //     display: none;
-    //   }
-    // }
-    // .notes-container {
-    //   height: 0px;
-    // }
-    // .sort-buttons {
-    //   margin-top: unset;
-    //   height: 0px;
-    //   overflow: hidden;
-    // }
+  }
+}
+.container-open {
+  &:hover {
+    color: darken($h2, 10%);
+    background-color: darken($background-note, 10%);
+    cursor: pointer;
+    transition: all 0.15s linear;
+  }
+  @include desktop-size {
+    position: absolute;
+    bottom: 0;
+    height: unset;
+    .notes-nav {
+      margin-bottom: unset;
+      p {
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+      }
+      a {
+        display: none;
+      }
+    }
+    .notes-container {
+      height: 0px;
+    }
+    .sort-buttons {
+      margin-top: unset;
+      height: 0px;
+      overflow: hidden;
+    }
   }
 }
 </style>
