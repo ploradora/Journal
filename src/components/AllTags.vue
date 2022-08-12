@@ -1,5 +1,5 @@
 <template>
-  <article :class="{ 'container-open': containerTags }">
+  <article :class="{ 'container-open': toggleContainer }">
     <div class="header-search">
       <div class="title-container">
         <div class="sort">
@@ -45,45 +45,38 @@ export default {
     const filterOpen = ref(false);
     const sort1Active = ref(false);
     const sort2Active = ref(false);
-    const containerTags = ref(true);
+    const toggleContainer = ref(true);
     const search = ref("");
 
     const { user } = getUser();
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
 
-    // onMounted(() => {
-    //   window.addEventListener("resize", resizeWindow);
-    // });
-    // const resizeWindow = () => {
-    //   const windowWidth = window.innerWidth;
-    //   if (windowWidth < 1000) {
-    //     containerTags.value = false;
-    //   }
-    //   if (windowWidth >= 1000) {
-    //     containerTags.value = true;
-    //   }
-    // };
+    onMounted(() => {
+      window.addEventListener("resize", resizeWindow);
+    });
+    const resizeWindow = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 1000) {
+        toggleContainer.value = true;
+      }
+    };
 
-    // onUnmounted(() => {
-    //     window.removeEventListener("click", openContainer);
-    // });
-    // const searchTag = computed(() => {
-    //   if (search.value !== "") {
-    //     return tags.value.filter((tag) =>
-    //       tag.toLowerCase().includes(search.value.toLowerCase())
-    //     );
-    //   }
-    //   return tags.value;
-    // });
-    // watchEffect(() => {
-    //   containerTags.value = true
-    // });
-    // const openContainer = () => {
-    //   // if (window.innerWidth < 1000) {
-    //   //   containerTags.value = true;
-    //   // }
-    //   context.emit("toggle-tags", containerTags.value);
-    // };
+    const openContainer = () => {
+      toggleContainer.value = !toggleContainer.value;
+      if (window.innerWidth < 1000) {
+        toggleContainer.value = true;
+      }
+     
+    };
+
+    const searchTag = computed(() => {
+      if (search.value !== "") {
+        return tags.value.filter((tag) =>
+          tag.toLowerCase().includes(search.value.toLowerCase())
+        );
+      }
+      return tags.value;
+    });
 
     const sortAlphabetical = () => {
       sort1Active.value = true;
@@ -122,7 +115,7 @@ export default {
       sort1Active,
       sort2Active,
       searchTag,
-      containerTags,
+      toggleContainer,
       sortAlphabetical,
       sortRandom,
       filterPagesbyTag,
@@ -266,6 +259,9 @@ article {
         background-color: darken($main-tag-background, 10%);
       }
     }
+    @include details-brake-3 {
+      height: 204px;
+    }
   }
   @include desktop-size {
     height: unset;
@@ -306,7 +302,6 @@ article {
   }
 }
 .container-open {
-  display: none;
   @include desktop-size {
     position: absolute;
     height: calc(100% - 48px);
