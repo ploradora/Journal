@@ -1,7 +1,7 @@
 <template>
-  <article>
+  <article :class="{ 'container-open': toggleContainer }">
     <div class="notes-nav">
-      <p>Side Notes</p>
+      <p @click="openContainer">Side Notes</p>
       <router-link :to="{ name: 'addnote' }">add a note</router-link>
     </div>
     <TransitionGroup tag="div" name="notes" class="notes-container">
@@ -72,23 +72,52 @@
 <script>
 import getUser from "@/composables/getUser";
 import getCollection from "../composables/getCollection";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 export default {
-  setup() {
+  // props: ["valForNote"],
+  setup(_, context) {
     const isChecked = ref(false);
     const isWriteOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
+    const toggleContainer = ref(false);
     const currentFilter = ref("all");
+
     const { user } = getUser();
     const { documents: notes } = getCollection("notes", [
       "userUid",
       "==",
       user.value.uid,
     ]);
+
+    onMounted(() => {
+      window.addEventListener("resize", resizeWindow);
+    });
+    const resizeWindow = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth <= 1000) {
+        // props.toggleFromTag = false;
+      }
+    };
+
+    onUnmounted(() => {
+      window.removeEventListener("click", openContainer);
+    });
+    watchEffect(() => {
+      // toggleContainer.value = props.valForNote;
+    });
+
+    // const openContainer = () => {
+    //   toggleContainer.value = true;
+
+    //   if (window.innerWidth < 1000) {
+    //     toggleContainer.value = false;
+    //   }
+    //   context.emit("toggle-notes", toggleContainer.value);
+    // };
 
     const openDelete = (note) => {
       document.body.style.overflow = "hidden";
@@ -126,7 +155,7 @@ export default {
     };
 
     const filteredNotes = computed(() => {
-      if (currentFilter.value === "completed") { 
+      if (currentFilter.value === "completed") {
         return notes.value.filter((note) => note.completed);
       }
       if (currentFilter.value === "ongoing") {
@@ -142,6 +171,8 @@ export default {
       closeModal,
       deleteModal,
       deleteId,
+      toggleContainer,
+      // openContainer,
       handleWriteNote,
       openDelete,
       handleDelete,
@@ -393,8 +424,65 @@ article {
     }
   }
   @include desktop-size {
+    position: absolute;
+    bottom: 0;
+    height: unset;
+    .notes-nav {
+      margin-bottom: unset;
+      p {
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+      }
+      a {
+        display: none;
+      }
+    }
     .notes-container {
-      height: 90px;
+      height: 0px;
+    }
+    .sort-buttons {
+      margin-top: unset;
+      height: 0px;
+      overflow: hidden;
+    }
+  }
+}
+.container-open {
+  display: none;
+  @include desktop-size {
+    position: absolute;
+    bottom: 0;
+    height: calc(100% - 48px);
+    display: block;
+    .notes-nav {
+      margin-bottom: 10px;
+      p {
+        text-align: unset;
+        width: fit-content;
+      }
+      a {
+        display: block;
+      }
+    }
+    .notes-container {
+      position: absolute;
+      right: 0;
+      left: 0;
+      margin-right: 10px;
+      margin-left: 10px;
+      height: calc(100% - 97px);
+    }
+    .sort-buttons {
+      position: absolute;
+      right: 0;
+      left: 0;
+      bottom: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      overflow: unset;
+      margin-bottom: auto;
+      height: unset;
     }
   }
 }

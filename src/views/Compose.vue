@@ -434,6 +434,9 @@ section {
     }
     button {
       @include button-full;
+      background-color: darken($light-violet, 10%);
+      border-color: darken($light-violet, 10%);
+      font-weight: 500;
       margin: auto;
       width: 200px;
     }

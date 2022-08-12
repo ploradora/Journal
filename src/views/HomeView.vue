@@ -34,11 +34,15 @@
     <div class="allpages">
       <AllPages :passedTag="passedTag" />
     </div>
-    <div class="alltags">
-      <AllTags @sendtag="sendTag" />
-    </div>
-    <div class="allnotes">
-      <AllNotes />
+    <div class="tags-notes-container">
+      <div class="alltags">
+        <AllTags
+          @sendtag="sendTag"
+        />
+      </div>
+      <div class="allnotes">
+        <AllNotes  />
+      </div>
     </div>
     <div class="thegraph">
       <TheGraph />
@@ -71,7 +75,12 @@ export default {
     const sendTag = (tag) => {
       passedTag.value = tag;
     };
-    return { user, sendTag, passedTag };
+
+    return {
+      user,
+      sendTag,
+      passedTag,
+    };
   },
 };
 </script>
@@ -162,25 +171,33 @@ main {
   display: grid;
   grid-gap: 7px;
 
+  .tags-notes-container {
+    .alltags {
+      margin-bottom: 7px;
+    }
+  }
   @include mobile-end {
     grid-template-columns: repeat(2, 1fr);
     .thegraph {
       background-color: lightsalmon;
     }
-
     .allpages,
     .thegraph,
-    .alltags,
-    .allnotes {
+    .tags-notes-container {
       grid-column: 1 / 3;
     }
   }
   @include tag-note-brake {
-    .alltags {
-      grid-column: 1 / 2;
-    }
-    .allnotes {
-      grid-column: 2 / 3;
+    .tags-notes-container {
+      display: flex;
+      .alltags {
+        margin-bottom: unset;
+        margin-right: 7px;
+      }
+      .alltags,
+      .allnotes {
+        flex-basis: 50%;
+      }
     }
   }
   @include desktop-size {
@@ -188,29 +205,34 @@ main {
     width: 98%;
     height: calc(100vh - 90px);
     grid-template-columns: 1fr 35%;
-    grid-template-rows: 37% 1fr 30%;
+    grid-template-rows: 70% 30%;
     .allpages {
       overflow: hidden;
       grid-column: 1 / 2;
-      grid-row: 1 / 3;
+      grid-row: 1 / 2;
     }
-    .alltags {
+    .tags-notes-container {
+      position: relative;
+      height: 100%;
       overflow: hidden;
-      grid-column: 2 /3;
-    }
-    .allnotes {
-      grid-column: 2 /3;
-      grid-row: 2 /3;
+      grid-column: 2/3;
+      grid-row: 1 /2;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      .alltags {
+        margin-bottom: 7px;
+        margin-right: unset;
+      }
     }
     .thegraph {
       grid-column: 1 / -1;
-      grid-row: 3/4;
+      grid-row: 2/3;
       background-color: lightsalmon;
     }
   }
   @include desktop-size-big {
-    grid-template-columns: 1fr 28%;
-    grid-template-rows: 37% 1fr 33%;
+    grid-template-columns: 1fr 30%;
+    grid-template-rows: 67% 33%;
   }
 }
 </style>

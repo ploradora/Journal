@@ -153,10 +153,9 @@ export default {
     // });
 
     const selectedTag = computed(() => {
-      let newArr = entries.value;
       if (props.passedTag) {
-        newArr = entries.value.filter((page) => {
-          return page.tags.forEach((tag) => {
+        entries.value = entries.value.filter((page) => {
+         return  page.tags.forEach((tag) => {
             if (tag.includes(props.passedTag)) {
               console.log(page, "page containing " + props.passedTag);
               return page;
@@ -164,10 +163,10 @@ export default {
           });
           // return page.mood.includes(95)
         });
-        return newArr;
+        return entries.value;
       }
 
-      return newArr;
+      return entries.value;
     });
 
     const showPages = () => {
@@ -403,7 +402,7 @@ article {
           padding: 10px;
           font-size: 12px;
           border-radius: 5px;
-          background-color: $background-tag-creme;
+          background-color: darken($background-modal, 10%);
           @include details-brake-1 {
           }
           > div {
@@ -420,7 +419,7 @@ article {
           }
           p {
             margin-bottom: 5px;
-            color: darken($graph-line-active, 15%);
+            color: darken($graph-line-active, 25%);
             font-weight: 500;
           }
           .detail-type {

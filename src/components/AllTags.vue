@@ -1,9 +1,9 @@
 <template>
-  <article>
+  <article :class="{ 'container-open': containerTags }">
     <div class="header-search">
       <div class="title-container">
         <div class="sort">
-          <p>Tags</p>
+          <p @click="openContainer">Tags</p>
           <span
             @click="filterOpen = !filterOpen"
             :class="{ 'icon-active': filterOpen }"
@@ -38,26 +38,52 @@
 
 <script>
 import getUser from "@/composables/getUser";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted, watchEffect } from "vue";
 import useTags from "../composables/useTags";
 export default {
   setup(_, context) {
     const filterOpen = ref(false);
     const sort1Active = ref(false);
     const sort2Active = ref(false);
+    const containerTags = ref(true);
     const search = ref("");
 
     const { user } = getUser();
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
 
-    const searchTag = computed(() => {
-      if (search.value !== "") {
-        return tags.value.filter((tag) =>
-          tag.toLowerCase().includes(search.value.toLowerCase())
-        );
-      }
-      return tags.value;
-    });
+    // onMounted(() => {
+    //   window.addEventListener("resize", resizeWindow);
+    // });
+    // const resizeWindow = () => {
+    //   const windowWidth = window.innerWidth;
+    //   if (windowWidth < 1000) {
+    //     containerTags.value = false;
+    //   }
+    //   if (windowWidth >= 1000) {
+    //     containerTags.value = true;
+    //   }
+    // };
+
+    // onUnmounted(() => {
+    //     window.removeEventListener("click", openContainer);
+    // });
+    // const searchTag = computed(() => {
+    //   if (search.value !== "") {
+    //     return tags.value.filter((tag) =>
+    //       tag.toLowerCase().includes(search.value.toLowerCase())
+    //     );
+    //   }
+    //   return tags.value;
+    // });
+    // watchEffect(() => {
+    //   containerTags.value = true
+    // });
+    // const openContainer = () => {
+    //   // if (window.innerWidth < 1000) {
+    //   //   containerTags.value = true;
+    //   // }
+    //   context.emit("toggle-tags", containerTags.value);
+    // };
 
     const sortAlphabetical = () => {
       sort1Active.value = true;
@@ -96,9 +122,11 @@ export default {
       sort1Active,
       sort2Active,
       searchTag,
+      containerTags,
       sortAlphabetical,
       sortRandom,
       filterPagesbyTag,
+      openContainer,
     };
   },
 };
@@ -133,7 +161,6 @@ article {
           font-size: 19px;
           color: darken($h2, 10%);
           cursor: pointer;
-          transition: all 0.1s linear;
           &:hover {
             color: darken($h2, 70%);
           }
@@ -241,9 +268,86 @@ article {
     }
   }
   @include desktop-size {
+    height: unset;
+    overflow: hidden;
+    .header-search {
+      margin-bottom: unset;
+
+      .title-container {
+        margin-bottom: unset;
+        text-align: center;
+
+        .sort {
+          margin-right: unset;
+          width: 100%;
+
+          p {
+            margin-right: unset;
+            width: 100%;
+            cursor: pointer;
+          }
+          span {
+            visibility: hidden;
+            width: 0px;
+            opacity: 0;
+          }
+        }
+        .sort-type {
+          display: none;
+        }
+      }
+      input {
+        display: none;
+      }
+    }
     .tags-container {
-      height: 145px;
-      // height: 100%;
+      height: 0px;
+    }
+  }
+}
+.container-open {
+  display: none;
+  @include desktop-size {
+    position: absolute;
+    height: calc(100% - 48px);
+    display: block;
+    .header-search {
+      margin-bottom: 7px;
+
+      .title-container {
+        margin-bottom: 15px;
+        text-align: unset;
+
+        .sort {
+          width: unset;
+          display: flex;
+          margin-right: 10px;
+
+          p {
+            margin-right: 5px;
+          }
+          span {
+            width: unset;
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+        .sort-type {
+          display: flex;
+        }
+      }
+      input {
+        display: unset;
+      }
+    }
+    .tags-container {
+      width: unset;
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: calc(100% - 84px);
+      margin-left: 10px;
+      margin-right: 10px;
     }
   }
 }
