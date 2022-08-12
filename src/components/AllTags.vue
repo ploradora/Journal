@@ -38,10 +38,11 @@
 
 <script>
 import getUser from "@/composables/getUser";
-import { ref, computed, onMounted, onUnmounted, watchEffect } from "vue";
+import { ref, computed, onMounted,  watchEffect, onUnmounted } from "vue";
 import useTags from "../composables/useTags";
 export default {
-  setup(_, context) {
+  props: ["universalValue"],
+  setup(props, context) {
     const filterOpen = ref(false);
     const sort1Active = ref(false);
     const sort2Active = ref(false);
@@ -61,12 +62,16 @@ export default {
       }
     };
 
+    watchEffect(() => {
+      toggleContainer.value = props.universalValue;
+    });
+
     const openContainer = () => {
       toggleContainer.value = !toggleContainer.value;
       if (window.innerWidth < 1000) {
         toggleContainer.value = true;
       }
-     
+      context.emit("value-from-tags", toggleContainer.value);
     };
 
     const searchTag = computed(() => {

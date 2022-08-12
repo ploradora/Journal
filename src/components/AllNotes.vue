@@ -77,8 +77,8 @@ import { db } from "../firebase/config";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 export default {
-  // props: ["valForNote"],
-  setup() {
+  props: ["universalValue"],
+  setup(props, context) {
     const isChecked = ref(false);
     const isWriteOpen = ref(false);
     const deleteModal = ref(false);
@@ -103,25 +103,14 @@ export default {
       }
     };
 
-    const openContainer = () => {
-      toggleContainer.value = !toggleContainer.value;
-    };
-
-    // onUnmounted(() => {
-    //   window.removeEventListener("click", openContainer);
-    // });
     watchEffect(() => {
-      // toggleContainer.value = props.valForNote;
+      toggleContainer.value = !props.universalValue;
     });
 
-    // const openContainer = () => {
-    //   toggleContainer.value = true;
-
-    //   if (window.innerWidth < 1000) {
-    //     toggleContainer.value = false;
-    //   }
-    //   context.emit("toggle-notes", toggleContainer.value);
-    // };
+    const openContainer = () => {
+      toggleContainer.value = !toggleContainer.value;
+      context.emit("value-from-notes", toggleContainer.value);
+    };
 
     const openDelete = (note) => {
       document.body.style.overflow = "hidden";
@@ -428,67 +417,6 @@ article {
     }
   }
   @include desktop-size {
-    position: absolute;
-    bottom: 0;
-    height: calc(100% - 48px);
-    display: block;
-    .notes-nav {
-      margin-bottom: 10px;
-      p {
-        text-align: unset;
-        width: fit-content;
-        cursor: pointer;
-      }
-      a {
-        display: block;
-      }
-    }
-    .notes-container {
-      position: absolute;
-      right: 0;
-      left: 0;
-      margin-right: 10px;
-      margin-left: 10px;
-      height: calc(100% - 97px);
-    }
-    .sort-buttons {
-      position: absolute;
-      right: 0;
-      left: 0;
-      bottom: 10px;
-      margin-left: 10px;
-      margin-right: 10px;
-      overflow: unset;
-      margin-bottom: auto;
-      height: unset;
-    }
-    // position: absolute;
-    // bottom: 0;
-    // height: unset;
-    // .notes-nav {
-    //   margin-bottom: unset;
-    //   p {
-    //     width: 100%;
-    //     text-align: center;
-    //     cursor: pointer;
-    //   }
-    //   a {
-    //     display: none;
-    //   }
-    // }
-    // .notes-container {
-    //   height: 0px;
-    // }
-    // .sort-buttons {
-    //   margin-top: unset;
-    //   height: 0px;
-    //   overflow: hidden;
-    // }
-  }
-}
-.container-open {
-  // display: none;
-  @include desktop-size {
     // position: absolute;
     // bottom: 0;
     // height: calc(100% - 48px);
@@ -498,6 +426,7 @@ article {
     //   p {
     //     text-align: unset;
     //     width: fit-content;
+    //     cursor: pointer;
     //   }
     //   a {
     //     display: block;
@@ -544,6 +473,66 @@ article {
       height: 0px;
       overflow: hidden;
     }
+  }
+}
+.container-open {
+  // display: none;
+  @include desktop-size {
+    position: absolute;
+    bottom: 0;
+    height: calc(100% - 48px);
+    display: block;
+    .notes-nav {
+      margin-bottom: 10px;
+      p {
+        text-align: unset;
+        width: fit-content;
+      }
+      a {
+        display: block;
+      }
+    }
+    .notes-container {
+      position: absolute;
+      right: 0;
+      left: 0;
+      margin-right: 10px;
+      margin-left: 10px;
+      height: calc(100% - 97px);
+    }
+    .sort-buttons {
+      position: absolute;
+      right: 0;
+      left: 0;
+      bottom: 10px;
+      margin-left: 10px;
+      margin-right: 10px;
+      overflow: unset;
+      margin-bottom: auto;
+      height: unset;
+    }
+    // position: absolute;
+    // bottom: 0;
+    // height: unset;
+    // .notes-nav {
+    //   margin-bottom: unset;
+    //   p {
+    //     width: 100%;
+    //     text-align: center;
+    //     cursor: pointer;
+    //   }
+    //   a {
+    //     display: none;
+    //   }
+    // }
+    // .notes-container {
+    //   height: 0px;
+    // }
+    // .sort-buttons {
+    //   margin-top: unset;
+    //   height: 0px;
+    //   overflow: hidden;
+    // }
   }
 }
 </style>

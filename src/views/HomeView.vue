@@ -38,10 +38,12 @@
       <div class="alltags">
         <AllTags
           @sendtag="sendTag"
+          @valueFromTags="tagVal"
+          :universalValue="universalValue"
         />
       </div>
       <div class="allnotes">
-        <AllNotes  />
+        <AllNotes @valueFromNotes="noteVal" :universalValue="universalValue" />
       </div>
     </div>
     <div class="thegraph">
@@ -67,6 +69,9 @@ export default {
     TheGraph,
   },
   setup() {
+    // const valueTag = ref(null);
+    // const valueNote = ref(null);
+    const universalValue = ref(null);
     const { user } = getUser();
     const passedTag = ref("");
 
@@ -76,10 +81,24 @@ export default {
       passedTag.value = tag;
     };
 
+    const tagVal = (val) => {
+      console.log(val);
+      universalValue.value = val;
+    };
+    const noteVal = (val) => {
+      console.log(val);
+      universalValue.value = val;
+    };
+
     return {
       user,
       sendTag,
       passedTag,
+      tagVal,
+      noteVal,
+      universalValue,
+      // valueTag,
+      // valueNote,
     };
   },
 };
