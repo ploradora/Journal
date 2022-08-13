@@ -24,21 +24,23 @@
       <input type="text" placeholder="Search for a tag" v-model="search" />
     </div>
     <TransitionGroup tag="div" name="animate-reorder" class="tags-container">
-      <p
+      <div 
         @click="filterPagesbyTag(tag)"
         class="tag"
         v-for="tag in searchTag"
         :key="tag"
+        :class="{ }"
       >
-        #{{ tag }}
-      </p>
+        <p>#{{ tag }}</p>
+        <span>x</span>
+      </div>
     </TransitionGroup>
   </article>
 </template>
 
 <script>
 import getUser from "@/composables/getUser";
-import { ref, computed, onMounted, watchEffect, onUnmounted } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
 import useTags from "../composables/useTags";
 export default {
   props: ["universalValue"],
@@ -230,6 +232,9 @@ article {
   .animate-reorder-enter-to,
   .animate-reorder-leave-from {
     opacity: 1;
+  }
+  .animate-reorder-leave-active {
+    position: absolute;
   }
   .animate-reorder-move {
     transition: all 0.2s linear;

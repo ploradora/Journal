@@ -218,8 +218,13 @@ article {
   .notes-leave-from {
     opacity: 1;
   }
+  .notes-leave-active {
+    position: absolute;
+    opacity: 0;
+    transition: none;
+  }
   .notes-move {
-    transition: all 0.2s linear;
+    transition: all 0.15s linear;
   }
   .notes-container {
     height: 200px;
@@ -421,6 +426,11 @@ article {
     bottom: 0;
     height: calc(100% - 48px);
     display: block;
+    &:hover {
+      transition: unset;
+      background-color: $background-note;
+      cursor: auto;
+    }
     .notes-nav {
       margin-bottom: 10px;
       p {
@@ -454,17 +464,17 @@ article {
   }
 }
 .container-open {
-  &:hover {
-    color: darken($h2, 10%);
-    background-color: darken($background-note, 10%);
-    cursor: pointer;
-    transition: all 0.15s linear;
-  }
   @include desktop-size {
     position: absolute;
     bottom: 0;
     height: unset;
+    &:hover {
+      color: darken($h2, 10%);
+      background-color: darken($background-note, 10%);
+      cursor: pointer;
+    }
     .notes-nav {
+      height: unset;
       margin-bottom: unset;
       p {
         width: 100%;
