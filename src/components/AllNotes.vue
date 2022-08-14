@@ -4,7 +4,12 @@
       <p @click="openContainer">Side Notes</p>
       <router-link :to="{ name: 'addnote' }">add a note</router-link>
     </div>
-    <TransitionGroup tag="div" name="notes" class="notes-container">
+    <TransitionGroup
+      v-if="notes"
+      tag="div"
+      name="notes"
+      class="notes-container"
+    >
       <div
         :class="{ 'toggle-update': note.completed }"
         class="note"
@@ -46,6 +51,9 @@
         </div>
       </div>
     </TransitionGroup>
+    <div v-else class="spinner">
+      <img src="../assets/images/spinner-tags.png" alt="" />
+    </div>
     <div class="sort-buttons">
       <button
         :class="{ 'filter-active': currentFilter === 'all' }"
@@ -72,7 +80,7 @@
 <script>
 import getUser from "@/composables/getUser";
 import getCollection from "../composables/getCollection";
-import { ref, computed, onMounted, onUnmounted, watchEffect } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
@@ -182,6 +190,7 @@ export default {
 @import "../assets/globalStyles.scss";
 
 article {
+  position: relative;
   height: 100%;
   width: 100%;
   padding: 10px;
@@ -380,6 +389,11 @@ article {
       }
     }
   }
+  .spinner {
+    @include spin;
+    position: relative;
+    height: 200px;
+  }
   .sort-buttons {
     margin-top: 9px;
     position: relative;
@@ -426,6 +440,7 @@ article {
     bottom: 0;
     height: calc(100% - 48px);
     display: block;
+    padding: unset;
     &:hover {
       transition: unset;
       background-color: $background-note;
@@ -434,11 +449,14 @@ article {
     .notes-nav {
       margin-bottom: 10px;
       p {
+        padding: 10px;
+
         text-align: unset;
         width: fit-content;
         cursor: pointer;
       }
       a {
+        margin-right: 10px;
         display: block;
       }
     }
@@ -449,6 +467,9 @@ article {
       margin-right: 10px;
       margin-left: 10px;
       height: calc(100% - 97px);
+    }
+    .spinner {
+      display: none;
     }
     .sort-buttons {
       position: absolute;

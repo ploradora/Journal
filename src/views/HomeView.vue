@@ -32,11 +32,12 @@
   </div>
   <main v-if="user">
     <div class="allpages">
-      <AllPages :passedTag="passedTag" />
+      <AllPages :passedTag="passedTag" :originalArr="originalArr"/>
     </div>
     <div class="tags-notes-container">
       <div class="alltags">
         <AllTags
+          @clearAll="clearAll"
           @sendtag="sendTag"
           @valueFromTags="tagVal"
           :universalValue="universalValue"
@@ -70,8 +71,9 @@ export default {
   },
   setup() {
     const universalValue = ref(true);
-    const { user } = getUser();
     const passedTag = ref("");
+    const originalArr = ref("");
+    const { user } = getUser();
 
     document.body.style.position = "unset";
 
@@ -86,6 +88,10 @@ export default {
       universalValue.value = val;
     };
 
+    const clearAll = (val) => {
+      originalArr.value = val;
+    };
+
     return {
       user,
       sendTag,
@@ -93,6 +99,8 @@ export default {
       tagVal,
       noteVal,
       universalValue,
+      clearAll,
+      originalArr,
     };
   },
 };

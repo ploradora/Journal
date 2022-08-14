@@ -20,25 +20,34 @@
             Random
           </p>
         </div>
+        <p @click="allTags" class="all">All</p>
       </div>
       <input type="text" placeholder="Search for a tag" v-model="search" />
     </div>
-    <TransitionGroup tag="div" name="animate-reorder" class="tags-container">
-      <div 
+    <TransitionGroup
+      tag="div"
+      v-if="tags"
+      name="animate-reorder"
+      class="tags-container"
+    >
+      <div
         @click="filterPagesbyTag(tag)"
         class="tag"
         v-for="tag in searchTag"
         :key="tag"
-        :class="{ }"
+        :class="{ active: currentTag === tag }"
       >
         <p>#{{ tag }}</p>
-        <span>x</span>
       </div>
     </TransitionGroup>
+    <div class="spinner" v-else>
+      <img src="../assets/images/spinner-tags.png" alt="" />
+    </div>
   </article>
 </template>
 
 <script>
+import getCollection from "@/composables/getCollection";
 import getUser from "@/composables/getUser";
 import { ref, computed, onMounted, watchEffect } from "vue";
 import useTags from "../composables/useTags";
@@ -49,9 +58,11 @@ export default {
     const sort1Active = ref(false);
     const sort2Active = ref(false);
     const toggleContainer = ref(true);
+    const currentTag = ref(null);
     const search = ref("");
 
     const { user } = getUser();
+    const { documents: entries } = getCollection("entries");
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
 
     onMounted(() => {
@@ -65,6 +76,7 @@ export default {
     };
 
     watchEffect(() => {
+      currentTag.value = "";
       toggleContainer.value = props.universalValue;
     });
 
@@ -112,7 +124,13 @@ export default {
     };
 
     const filterPagesbyTag = (tag) => {
+      currentTag.value = tag;
       context.emit("sendtag", tag);
+    };
+
+    const allTags = () => {
+      currentTag.value = tags;
+      context.emit('clear-all')
     };
 
     return {
@@ -123,10 +141,13 @@ export default {
       sort2Active,
       searchTag,
       toggleContainer,
+      currentTag,
       sortAlphabetical,
       sortRandom,
       filterPagesbyTag,
       openContainer,
+      allTags,
+      // clearTag,
     };
   },
 };
@@ -199,6 +220,20 @@ article {
           background-color: darken($background, 20%);
         }
       }
+      .all {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        border-radius: $radius-big;
+        padding: 2px 13px;
+        margin-left: auto;
+        cursor: pointer;
+        &:hover {
+          color: darken($tag-text, 10%);
+          background-color: darken($background, 20%);
+        }
+      }
       .show-filter {
         left: 70px;
         opacity: 1;
@@ -268,14 +303,41 @@ article {
       &:hover {
         background-color: darken($main-tag-background, 10%);
       }
+      span {
+        display: none;
+      }
+    }
+    .active {
+      position: relative;
+      background-color: darken($main-tag-background, 10%);
+      span {
+        position: absolute;
+        display: block;
+        top: 3px;
+        right: 3px;
+        border-radius: 50%;
+        font-size: 16px;
+        background-color: $main-text;
+        color: $background;
+        cursor: pointer;
+        &:hover {
+          color: $graph-line-active;
+        }
+      }
     }
     @include details-brake-3 {
       height: 204px;
     }
   }
+  .spinner {
+    @include spin;
+    height: 200px;
+    position: relative;
+  }
   @include desktop-size {
     height: unset;
     overflow: hidden;
+    padding: unset;
     &:hover {
       background-color: darken($background-tag-container-blue, 5%);
       cursor: pointer;
@@ -290,6 +352,7 @@ article {
           margin-right: unset;
           width: 100%;
           p {
+            padding: 10px;
             margin-right: unset;
             width: 100%;
             cursor: pointer;
@@ -303,6 +366,9 @@ article {
         .sort-type {
           display: none;
         }
+        .all {
+          display: none;
+        }
       }
       input {
         display: none;
@@ -310,6 +376,9 @@ article {
     }
     .tags-container {
       height: 0px;
+    }
+    .spinner {
+      @include spin;
     }
   }
 }
@@ -324,6 +393,7 @@ article {
     height: calc(100% - 48px);
     display: block;
     .header-search {
+      padding: 10px 10px 0 10px;
       margin-bottom: 7px;
       .title-container {
         margin-bottom: 15px;
@@ -333,6 +403,7 @@ article {
           display: flex;
           margin-right: 10px;
           p {
+            padding: unset;
             margin-right: 5px;
           }
           span {
@@ -343,6 +414,9 @@ article {
         }
         .sort-type {
           display: flex;
+        }
+        .all {
+          display: block;
         }
       }
       input {
@@ -357,6 +431,9 @@ article {
       height: calc(100% - 84px);
       margin-left: 10px;
       margin-right: 10px;
+    }
+    .spinner {
+      @include spin;
     }
   }
 }

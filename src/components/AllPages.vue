@@ -5,110 +5,112 @@
       <p>Pages</p>
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
-    <div :class="{ 'animate-expand': isOpen }" class="pages">
-        <div class="page" v-for="page in selectedTag" :key="page.id">
-          <div
-            :class="{ 'animate-delete-modal': deleteModal }"
-            class="delete-modal"
-          >
-            <div class="delete-content">
-              <p>Delete this page?</p>
-              <div class="delete-action">
-                <button @click="handleDelete(id)" class="delete">Delete</button>
-                <button @click="closeModal" class="cancel">Cancel</button>
-              </div>
-            </div>
-          </div>
-          <div class="page-header">
-            <div @click="page.textOpen = !page.textOpen" class="date-title">
-              <p class="date-added">{{ page.created }}</p>
-              <p class="title">{{ page.title }}</p>
-            </div>
-            <div class="options">
-              <span class="material-symbols-outlined"> edit</span>
-              <span @click="openDelete(page)" class="material-symbols-outlined">
-                delete
-              </span>
-              <span
-                @click="page.detailsOpen = !page.detailsOpen"
-                :class="{ 'icon-active': page.detailsOpen }"
-                class="material-symbols-outlined"
-              >
-                info
-              </span>
-            </div>
-            <div v-if="page.detailsOpen" class="details">
-              <div class="entries-container">
-                <p class="created">
-                  <span class="detail-type">Created:</span> {{ page.created }}
-                </p>
-                <p class="modified">
-                  <span class="detail-type">Updated:</span> {{ page.modified }}
-                </p>
-                <p class="entry">
-                  <span class="detail-type">Location:</span>
-                  {{ page.location }}
-                </p>
-              </div>
-              <div class="location-container">
-                <p class="location">
-                  <span class="detail-type">Characters:</span>
-                  {{ page.characters }}
-                </p>
-                <p class="words">
-                  <span class="detail-type">Words:</span> {{ page.words }}
-                </p>
-                <p class="color">
-                  <span class="detail-type">Title Color:</span> {{ page.color }}
-                </p>
-              </div>
-              <div class="mood-container">
-                <p class="mood"><span class="detail-type">Mood:</span></p>
-                <p class="mood-number">{{ page.mood }}</p>
-              </div>
-            </div>
-          </div>
-          <div class="page-main">
-            <div
-              v-if="page.description"
-              :class="{ 'toggle-text': page.textOpen }"
-              class="page-description"
-            >
-              <p :class="{ 'expand-text-tablet': page.textOpen }" class="text">
-                {{ page.description }}
-              </p>
-              <span
-                @click="page.textOpen = !page.textOpen"
-                :class="{ 'arrow-rotate': page.textOpen }"
-                class="material-symbols-outlined arrow-text-mobile"
-              >
-                expand_less
-              </span>
-            </div>
-            <div class="tags">
-              <p v-for="tag in page.tags" :key="tag" class="tag">#{{ tag }}</p>
+    <div v-if="entries" :class="{ 'animate-expand': isOpen }" class="pages">
+      <div class="page" v-for="page in selectedTag" :key="page.id">
+        <div
+          :class="{ 'animate-delete-modal': deleteModal }"
+          class="delete-modal"
+        >
+          <div class="delete-content">
+            <p>Delete this page?</p>
+            <div class="delete-action">
+              <button @click="handleDelete(id)" class="delete">Delete</button>
+              <button @click="closeModal" class="cancel">Cancel</button>
             </div>
           </div>
         </div>
+        <div class="page-header">
+          <div @click="page.textOpen = !page.textOpen" class="date-title">
+            <p class="date-added">{{ page.created }}</p>
+            <p class="title">{{ page.title }}</p>
+          </div>
+          <div class="options">
+            <span class="material-symbols-outlined"> edit</span>
+            <span @click="openDelete(page)" class="material-symbols-outlined">
+              delete
+            </span>
+            <span
+              @click="page.detailsOpen = !page.detailsOpen"
+              :class="{ 'icon-active': page.detailsOpen }"
+              class="material-symbols-outlined"
+            >
+              info
+            </span>
+          </div>
+          <div v-if="page.detailsOpen" class="details">
+            <div class="entries-container">
+              <p class="created">
+                <span class="detail-type">Created:</span> {{ page.created }}
+              </p>
+              <p class="modified">
+                <span class="detail-type">Updated:</span> {{ page.modified }}
+              </p>
+              <p class="entry">
+                <span class="detail-type">Location:</span>
+                {{ page.location }}
+              </p>
+            </div>
+            <div class="location-container">
+              <p class="location">
+                <span class="detail-type">Characters:</span>
+                {{ page.characters }}
+              </p>
+              <p class="words">
+                <span class="detail-type">Words:</span> {{ page.words }}
+              </p>
+              <p class="color">
+                <span class="detail-type">Title Color:</span> {{ page.color }}
+              </p>
+            </div>
+            <div class="mood-container">
+              <p class="mood"><span class="detail-type">Mood:</span></p>
+              <p class="mood-number">{{ page.mood }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="page-main">
+          <div
+            v-if="page.description"
+            :class="{ 'toggle-text': page.textOpen }"
+            class="page-description"
+          >
+            <p :class="{ 'expand-text-tablet': page.textOpen }" class="text">
+              {{ page.description }}
+            </p>
+            <span
+              @click="page.textOpen = !page.textOpen"
+              :class="{ 'arrow-rotate': page.textOpen }"
+              class="material-symbols-outlined arrow-text-mobile"
+            >
+              expand_less
+            </span>
+          </div>
+          <div class="tags">
+            <p v-for="tag in page.tags" :key="tag" class="tag">#{{ tag }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spinner" v-else>
+      <img src="../assets/images/spinner-pages.png" alt="" />
     </div>
   </article>
 </template>
 
 <script>
 import getUser from "@/composables/getUser";
-import { onMounted, ref, computed, watchEffect } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
 import getCollection from "../composables/getCollection";
 
 export default {
-  props: ["passedTag"],
+  props: ["passedTag", "originalArr"],
   setup(props) {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
 
-    // , ['mood', '==', props.passedTag]
     const { user } = getUser();
 
     const { documents: entries } = getCollection("entries", [
@@ -116,10 +118,6 @@ export default {
       "==",
       user.value.uid,
     ]);
-
-    watchEffect(() => {
-      // console.log(props.passedTag, "all pages");
-    });
 
     const selectedTag = computed(() => {
       if (props.passedTag) {
@@ -129,15 +127,6 @@ export default {
       }
       return entries.value;
     });
-
-    // const selectedTag = computed(() => {
-    //   if (props.passedTag) {
-    //     entries.value = entries.value.filter((page) => {
-    //       return page.tags.includes(props.passedTag);
-    //     });
-    //   }
-    //   return entries.value;
-    // });
 
     const showPages = () => {
       isOpen.value = !isOpen.value;
@@ -210,6 +199,7 @@ export default {
 }
 
 article {
+  position: relative;
   width: 100%;
   margin-top: 20px;
   padding: 5px;
@@ -475,6 +465,9 @@ article {
       transition: all 0.15s linear;
     }
   }
+  .spinner {
+    display: none;
+  }
   @include mobile-end {
     margin-top: 55px;
     height: calc(100vh - 120px);
@@ -614,6 +607,9 @@ article {
           }
         }
       }
+    }
+    .spinner {
+      @include spin;
     }
   }
   @include desktop-size {
