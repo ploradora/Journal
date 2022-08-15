@@ -129,8 +129,8 @@ export default {
     };
 
     const allTags = () => {
-      currentTag.value = tags;
-      context.emit('clear-all')
+      currentTag.value = '';
+      context.emit("clear-all", entries.value);
     };
 
     return {
@@ -231,7 +231,7 @@ article {
         cursor: pointer;
         &:hover {
           color: darken($tag-text, 10%);
-          background-color: darken($background, 20%);
+          background-color: darken($background-tag-blue, 5%);
         }
       }
       .show-filter {

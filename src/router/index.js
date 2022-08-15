@@ -5,6 +5,7 @@ import Login from "../views/auth/Login.vue";
 import Signup from "../views/auth/Signup.vue";
 import AddNote from "../views/AddNote.vue";
 import Compose from "../views/Compose.vue";
+import Update from "../views/Update.vue";
 
 import { auth } from "../firebase/config";
 
@@ -45,6 +46,13 @@ const routes = [
     path: "/compose",
     name: "compose",
     component: Compose,
+    beforeEnter: requireAuth,
+  },
+  {
+    path: "/update/:id",
+    name: "update",
+    component: Update,
+    params: true,
     beforeEnter: requireAuth,
   },
 ];

@@ -6,7 +6,7 @@
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
     <div v-if="entries" :class="{ 'animate-expand': isOpen }" class="pages">
-      <div class="page" v-for="page in selectedTag" :key="page.id">
+      <div class="page" v-for="page in dataArr" :key="page.id">
         <div
           :class="{ 'animate-delete-modal': deleteModal }"
           class="delete-modal"
@@ -25,7 +25,9 @@
             <p class="title">{{ page.title }}</p>
           </div>
           <div class="options">
-            <span class="material-symbols-outlined"> edit</span>
+            <router-link :to="{ name: 'update', params: { id: page.id } }">
+              <span class="material-symbols-outlined"> edit</span>
+            </router-link>
             <span @click="openDelete(page)" class="material-symbols-outlined">
               delete
             </span>
@@ -98,11 +100,12 @@
 </template>
 
 <script>
+import getCollection from "../composables/getCollection";
 import getUser from "@/composables/getUser";
-import { onMounted, ref, computed } from "vue";
+
+import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
-import getCollection from "../composables/getCollection";
 
 export default {
   props: ["passedTag", "originalArr"],
@@ -110,23 +113,42 @@ export default {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
+    const dataArr = ref([]);
 
     const { user } = getUser();
-
     const { documents: entries } = getCollection("entries", [
       "userUid",
       "==",
       user.value.uid,
     ]);
 
-    const selectedTag = computed(() => {
+    watchEffect(() => {
+      dataArr.value = entries.value;
       if (props.passedTag) {
-        return entries.value.filter((page) =>
+        dataArr.value = dataArr.value.filter((page) =>
           page.tags.includes(props.passedTag)
         );
       }
-      return entries.value;
+      dataArr.value = entries.value;
+      if (props.originalArr) {
+        return dataArr.value
+      }
     });
+
+    // if (props.passedTag) {
+    //   return dataArr.value.filter((page) =>
+    //     page.tags.includes(props.passedTag)
+    //   );
+    // }
+    // const selectedTag = computed(() => {
+    //   if (props.passedTag) {
+    //     return entries.value.filter((page) =>
+    //       page.tags.includes(props.passedTag)
+    //     );
+    //   }
+
+    //   return entries.value;
+    // });
 
     const showPages = () => {
       isOpen.value = !isOpen.value;
@@ -176,7 +198,8 @@ export default {
       showPages,
       handleDelete,
       closeModal,
-      selectedTag,
+      // selectedTag,
+      dataArr,
     };
   },
 };
@@ -342,7 +365,15 @@ article {
           align-items: center;
           align-self: end;
           justify-content: space-between;
+          a {
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: $h2;
+          }
           span {
+            color: $h2;
             font-size: clamp(16px, 2vw, 18px);
             cursor: pointer;
             &:hover {
@@ -507,6 +538,11 @@ article {
         opacity: unset;
         transition: unset;
         .page-header {
+          .date-title {
+            .title {
+              margin-top: 5px;
+            }
+          }
           .details {
             margin-bottom: -7px;
             flex-direction: row;

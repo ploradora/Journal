@@ -65,12 +65,15 @@ export default {
     const router = useRouter();
 
     watchEffect(() => {
-      if(router.currentRoute.value.fullPath === '/') {
-        showButton.value = false
-      } 
-      if(router.currentRoute.value.fullPath === '/compose') {
-        showButton.value = true
-      } 
+      if (router.currentRoute.value.name === "home") {
+        showButton.value = false;
+      }
+      if (router.currentRoute.value.name === "compose") {
+        showButton.value = true;
+      }
+      if (router.currentRoute.value.name === "update") {
+        showButton.value = true;
+      }
     });
 
     onMounted(() => {
