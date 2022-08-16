@@ -1,6 +1,6 @@
 <template>
   <section>
-    <form @submit.prevent="handleSubmit">
+    <form @submit.prevent="handleUpdate">
       <label class="title">
         <input type="text" name="title" v-model="title" placeholder="Title" />
       </label>
@@ -21,7 +21,7 @@
           </label>
           <div class="mood-container">
             <label for="mood">
-              My mood today: <span class="mood-num">{{mood}}</span>
+              My mood today: <span class="mood-num">{{ mood }}</span>
             </label>
             <div class="mood">
               <div class="range">
@@ -64,7 +64,7 @@ import getCollection from "@/composables/getCollection";
 
 import { db } from "../firebase/config";
 import { onMounted, ref, watchEffect } from "vue";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc, collection } from "firebase/firestore";
 import { useRoute, useRouter } from "vue-router";
 
 export default {
@@ -76,21 +76,47 @@ export default {
     const tag = ref("");
     const tags = ref([]);
     const id = ref("");
-
     const route = useRoute();
     const router = useRouter();
+
     const { user } = getUser();
-    const { documents: entries } = getCollection("entries");
+    const { documents: entries } = getCollection("entries", [
+      "userUid",
+      "==",
+      user.value.uid,
+    ]);
 
     watchEffect(() => {
       id.value = route.params.id;
+      const editPage = async () => {
+        await entries.value.forEach((page) => {
+          if (page.id === id.value) {;
+            title.value = page.title;
+            description.value = page.description;
+            location.value = page.location;
+            mood.value = page.mood;
+            tags.value = page.tags;
+          };
+        });
+      };
+      editPage();
     });
-    console.log(id.value);
-    // const docRef = doc(db, "entries", id.value);
 
-    onMounted(() => {});
+    onMounted(() => {
+      //   entries.value.filter((page) => {
+      //     currentPage.value = entries.value.filter((page) => {
+      //       return page.id === id.value;
+      //     });
+      //   });
+    });
 
-    const handleSubmit = () => {
+    const dateUpdated = () => {
+      const current = new Date();
+      const date = current.toDateString();
+      return date;
+    };
+
+    const handleUpdate = () => {
       const docRef = doc(db, "entries", id.value);
 
       let wordCount = description.value.match(/(\w+)/g).length;
@@ -101,6 +127,7 @@ export default {
         description: description.value,
         location: location.value,
         mood: mood.value,
+        updated: dateUpdated(),
         tags: tags.value,
         textOpen: false,
         detailsOpen: false,
@@ -111,6 +138,19 @@ export default {
       router.push({ name: "home" });
     };
 
+    const handleDelete = (tag) => {
+      tags.value = tags.value.filter((t) => {
+        return t !== tag;
+      });
+    };
+
+    const handleKeydown = () => {
+      if (!tags.value.includes(tag.value)) {
+        tags.value.push(tag.value);
+      }
+      tag.value = "";
+    };
+
     return {
       entries,
       title,
@@ -119,7 +159,9 @@ export default {
       mood,
       tag,
       tags,
-      handleSubmit,
+      handleUpdate,
+      handleDelete,
+      handleKeydown,
     };
   },
 };

@@ -32,7 +32,9 @@
               <div class="tooltip-frame">
                 <p class="tooltip">Use my location</p>
               </div>
-              <span class="material-symbols-outlined"> my_location </span>
+              <span @click="handleLocation" class="material-symbols-outlined">
+                my_location
+              </span>
             </div>
           </label>
           <div class="mood-container">
@@ -146,6 +148,22 @@ export default {
       });
       router.push({ name: "home" });
     };
+    const handleLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude } = position.coords;
+          const { longitude } = position.coords;
+          fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+          )
+            .then((res) => res.json())
+            .then(
+              (data) =>
+                (location.value = `${data.locality}, ${data.countryCode}`)
+            );
+        });
+      }
+    };
 
     const handleKeydown = () => {
       if (!tags.value.includes(tag.value)) {
@@ -167,6 +185,7 @@ export default {
       mood,
       tag,
       tags,
+      handleLocation,
       handleKeydown,
       handleSubmit,
       handleDelete,

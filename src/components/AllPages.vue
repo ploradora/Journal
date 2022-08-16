@@ -6,7 +6,7 @@
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
     <div v-if="entries" :class="{ 'animate-expand': isOpen }" class="pages">
-      <div class="page" v-for="page in dataArr" :key="page.id">
+      <div class="page" v-for="page in entries" :key="page.id">
         <div
           :class="{ 'animate-delete-modal': deleteModal }"
           class="delete-modal"
@@ -45,7 +45,7 @@
                 <span class="detail-type">Created:</span> {{ page.created }}
               </p>
               <p class="modified">
-                <span class="detail-type">Updated:</span> {{ page.modified }}
+                <span class="detail-type">Updated:</span> {{ page.updated }}
               </p>
               <p class="entry">
                 <span class="detail-type">Location:</span>
@@ -105,7 +105,14 @@ import getUser from "@/composables/getUser";
 
 import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
-import { doc, deleteDoc } from "firebase/firestore";
+import {
+  doc,
+  deleteDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 
 export default {
   props: ["passedTag", "originalArr"],
@@ -123,16 +130,17 @@ export default {
     ]);
 
     watchEffect(() => {
-      dataArr.value = entries.value;
-      if (props.passedTag) {
-        dataArr.value = dataArr.value.filter((page) =>
-          page.tags.includes(props.passedTag)
-        );
-      }
-      dataArr.value = entries.value;
-      if (props.originalArr) {
-        return dataArr.value
-      }
+
+      // dataArr.value = entries.value;
+      // if (props.passedTag) {
+      //   dataArr.value = dataArr.value.filter((page) =>
+      //     page.tags.includes(props.passedTag)
+      //   );
+      // }
+      // dataArr.value = entries.value;
+      // if (props.originalArr) {
+      //   return dataArr.value
+      // }
     });
 
     // if (props.passedTag) {
