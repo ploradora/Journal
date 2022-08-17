@@ -129,7 +129,7 @@ export default {
     };
 
     const allTags = () => {
-      currentTag.value = '';
+      currentTag.value = "";
       context.emit("clear-all", entries.value);
     };
 

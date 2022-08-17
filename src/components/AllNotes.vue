@@ -139,12 +139,14 @@ export default {
 
     const handleDelete = (id) => {
       id = deleteId.value;
+      deleteModal.value = false;
+      document.body.style.overflow = "unset";
       const docRef = doc(db, "notes", id);
       deleteDoc(docRef);
-      setTimeout(() => {
-        deleteModal.value = false;
-        document.body.style.overflow = "unset";
-      }, 200);
+      // setTimeout(() => {
+      //   deleteModal.value = false;
+      //   document.body.style.overflow = "unset";
+      // }, 200);
     };
     const handleWriteNote = () => {
       isWriteOpen.value = true;

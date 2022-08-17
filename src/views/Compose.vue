@@ -1,7 +1,10 @@
 <template>
   <section>
     <form @submit.prevent="handleSubmit">
-      <!-- <input type="color"> -->
+      <div class="colors-container">
+        <div class="toggle-color"></div>
+        <div class="pick-color" :class="{ 'color-open': colorToggle }"></div>
+      </div>
       <label class="title" for="title">
         <input type="text" name="title" v-model="title" placeholder="Title" />
         <div class="tooltip-container">
@@ -109,6 +112,7 @@ import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
 import { useRouter } from "vue-router";
 export default {
   setup() {
+    const colorToggle = ref(false);
     const title = ref("");
     const description = ref("");
     const location = ref("");
@@ -179,6 +183,7 @@ export default {
     };
 
     return {
+      colorToggle,
       title,
       description,
       location,
@@ -198,6 +203,7 @@ export default {
 @import "@/assets/globalStyles.scss";
 
 section {
+  position: relative;
   width: 95%;
   margin: auto;
   margin-top: 40px;
@@ -208,6 +214,24 @@ section {
     cursor: pointer;
     &:hover {
       color: $graph-line-active;
+    }
+  }
+  .colors-container {
+    position: absolute;
+    top: -25px;
+    .toggle-color {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background: linear-gradient(rgb(255, 184, 0), rgba(118, 94, 188, 0.7));
+      border: 2px solid $main-text;
+      cursor: pointer;
+    }
+    .pick-color {
+      width: 0;
+      opacity: 0;
+      overflow: hidden;
+
     }
   }
   input {

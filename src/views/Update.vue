@@ -59,12 +59,9 @@
 </template>
 
 <script>
-import getUser from "@/composables/getUser";
-import getCollection from "@/composables/getCollection";
-
 import { db } from "../firebase/config";
-import { onMounted, ref, watchEffect } from "vue";
-import { doc, updateDoc, getDoc, collection } from "firebase/firestore";
+import { ref, watchEffect } from "vue";
+import { doc, updateDoc, collection, onSnapshot } from "firebase/firestore";
 import { useRoute, useRouter } from "vue-router";
 
 export default {
@@ -79,35 +76,25 @@ export default {
     const route = useRoute();
     const router = useRouter();
 
-    const { user } = getUser();
-    const { documents: entries } = getCollection("entries", [
-      "userUid",
-      "==",
-      user.value.uid,
-    ]);
+    const page = ref(null);
+
+    let collectionRef = collection(db, "entries");
+    onSnapshot(collectionRef, (snapshot) => {
+      let editPage = [];
+      snapshot.docs.forEach((doc) => {
+        if (doc.id === route.params.id) {
+          title.value = doc.data().title;
+          description.value = doc.data().description;
+          location.value = doc.data().location;
+          mood.value = doc.data().mood;
+          tags.value = doc.data().tags;
+        }
+      });
+      page.value = editPage;
+    });
 
     watchEffect(() => {
       id.value = route.params.id;
-      const editPage = async () => {
-        await entries.value.forEach((page) => {
-          if (page.id === id.value) {;
-            title.value = page.title;
-            description.value = page.description;
-            location.value = page.location;
-            mood.value = page.mood;
-            tags.value = page.tags;
-          };
-        });
-      };
-      editPage();
-    });
-
-    onMounted(() => {
-      //   entries.value.filter((page) => {
-      //     currentPage.value = entries.value.filter((page) => {
-      //       return page.id === id.value;
-      //     });
-      //   });
     });
 
     const dateUpdated = () => {
@@ -133,7 +120,6 @@ export default {
         detailsOpen: false,
         words: wordCount,
         characters: charCount,
-        userUid: user.value.uid,
       });
       router.push({ name: "home" });
     };
@@ -152,7 +138,6 @@ export default {
     };
 
     return {
-      entries,
       title,
       description,
       location,

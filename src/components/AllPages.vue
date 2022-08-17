@@ -130,7 +130,6 @@ export default {
     ]);
 
     watchEffect(() => {
-
       // dataArr.value = entries.value;
       // if (props.passedTag) {
       //   dataArr.value = dataArr.value.filter((page) =>
