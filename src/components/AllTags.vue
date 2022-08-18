@@ -49,8 +49,12 @@
 <script>
 import getCollection from "@/composables/getCollection";
 import getUser from "@/composables/getUser";
-import { ref, computed, onMounted, watchEffect } from "vue";
 import useTags from "../composables/useTags";
+import { ref, computed, onMounted, watchEffect } from "vue";
+
+import { db } from "@/firebase/config";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+
 export default {
   props: ["universalValue"],
   setup(props, context) {
@@ -62,7 +66,7 @@ export default {
     const search = ref("");
 
     const { user } = getUser();
-    const { documents: entries } = getCollection("entries");
+    // const { documents: entries } = getCollection("entries");
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
 
     onMounted(() => {
@@ -125,12 +129,33 @@ export default {
 
     const filterPagesbyTag = (tag) => {
       currentTag.value = tag;
-      context.emit("sendtag", tag);
+
+      const q = query(
+        collection(db, "entries"),
+        where("tags", "array-contains", tag)
+      );
+      onSnapshot(q, (qSnpa) => {
+        const filteredPages = [];
+        qSnpa.forEach((doc) => {
+          filteredPages.push(doc.data());
+        });
+        // console.log(filteredPages);
+      });
+      context.emit("send-tag", tag);
     };
 
     const allTags = () => {
       currentTag.value = "";
-      context.emit("clear-all", entries.value);
+
+      const q = query(collection(db, "entries"));
+      onSnapshot(q, (qSnpa) => {
+        const filteredPages = [];
+        qSnpa.forEach((doc) => {
+          filteredPages.push(doc.data());
+        });
+        // console.log(filteredPages);
+      });
+      context.emit("clear-all", 'all');
     };
 
     return {

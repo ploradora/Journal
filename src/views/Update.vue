@@ -79,6 +79,7 @@ export default {
     const page = ref(null);
 
     let collectionRef = collection(db, "entries");
+    
     onSnapshot(collectionRef, (snapshot) => {
       let editPage = [];
       snapshot.docs.forEach((doc) => {

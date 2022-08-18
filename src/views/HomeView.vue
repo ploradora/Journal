@@ -35,13 +35,13 @@
     </div>
     <main v-if="user">
       <div class="allpages">
-        <AllPages :passedTag="passedTag" :originalArr="originalArr" />
+        <AllPages :filter-by="filterBy" />
       </div>
       <div class="tags-notes-container">
         <div class="alltags">
           <AllTags
             @clearAll="clearAll"
-            @sendtag="sendTag"
+            @sendTag="sendTag"
             @valueFromTags="tagVal"
             :universalValue="universalValue"
           />
@@ -82,15 +82,14 @@ export default {
   },
   setup() {
     const universalValue = ref(true);
-    const passedTag = ref("");
-    const originalArr = ref("");
+    const filterBy = ref("");
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
 
     document.body.style.position = "unset";
 
     const sendTag = (tag) => {
-      passedTag.value = tag;
+      filterBy.value = tag;
     };
 
     const tagVal = (val) => {
@@ -101,19 +100,19 @@ export default {
     };
 
     const clearAll = (val) => {
-      originalArr.value = val;
+      filterBy.value = val;
+      // console.log(val);
     };
 
     return {
       entries,
       user,
       sendTag,
-      passedTag,
       tagVal,
       noteVal,
       universalValue,
       clearAll,
-      originalArr,
+      filterBy,
     };
   },
 };

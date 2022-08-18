@@ -5,8 +5,8 @@
       <p>Pages</p>
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
-    <div v-if="entries" :class="{ 'animate-expand': isOpen }" class="pages">
-      <div class="page" v-for="page in entries" :key="page.id">
+    <div v-if="dataArr" :class="{ 'animate-expand': isOpen }" class="pages">
+      <div class="page" v-for="page in selectedTag" :key="page.id">
         <div
           :class="{ 'animate-delete-modal': deleteModal }"
           class="delete-modal"
@@ -103,7 +103,14 @@
 import getCollection from "../composables/getCollection";
 import getUser from "@/composables/getUser";
 
-import { onMounted, ref, computed, watchEffect } from "vue";
+import {
+  onMounted,
+  ref,
+  computed,
+  watchEffect,
+  onUpdated,
+  onBeforeUpdate,
+} from "vue";
 import { db } from "../firebase/config";
 import {
   doc,
@@ -112,15 +119,17 @@ import {
   query,
   where,
   onSnapshot,
+  orderBy,
+  getDocs,
 } from "firebase/firestore";
 
 export default {
-  props: ["passedTag", "originalArr"],
+  props: ["filterBy"],
   setup(props) {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
-    const dataArr = ref([]);
+    const dataArr = ref(null);
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries", [
@@ -129,7 +138,43 @@ export default {
       user.value.uid,
     ]);
 
+    // let collectionRef = collection(db, "entries");
+
+    const selectedTag = computed(() => {
+      if (props.filterBy !== "all") {
+        return dataArr.value.filter((page) =>
+          page.tags.includes(props.filterBy)
+        );
+      }
+      if (props.filterBy === "all") {
+        return dataArr.value;
+      }
+      return dataArr.value;
+    });
+
     watchEffect(() => {
+      dataArr.value = entries.value;
+      // let q = query(
+      //   collectionRef,
+      //   where("userUid", "==", user.value.uid),
+      //   orderBy("orderInList", "desc")
+      // );
+      // const unsub = onSnapshot(q, (snapshot) => {
+      //   let results = [];
+      //   snapshot.docs.forEach((doc) => {
+      //     results.push({ ...doc.data(), id: doc.id });
+      //   });
+      //   dataArr.value = results;
+      // });
+      // if (props.filterBy === "all") {
+      //   q = query(q);
+      // }
+      // if (props.filterBy !== "all") {
+      //   q = query(q, where("tags", "array-contains", props.filterBy));
+      //   console.log(props.filterBy);
+      // }
+      // onInvalidate(() => unsub());
+      // return dataArr;
       // dataArr.value = entries.value;
       // if (props.passedTag) {
       //   dataArr.value = dataArr.value.filter((page) =>
@@ -141,6 +186,16 @@ export default {
       //   return dataArr.value
       // }
     });
+
+    // const q = query(collection(db, "entries"), where("tags", "array-contains"));
+    // onSnapshot(q, (qSnap) => {
+    //   const filteredArr = [];
+    //   qSnap.forEach((doc) => {
+    //     if (props.filterBy) {
+    //       filteredArr.push(doc.data());
+    //     }
+    //   });
+    // });
 
     // if (props.passedTag) {
     //   return dataArr.value.filter((page) =>
@@ -205,7 +260,7 @@ export default {
       showPages,
       handleDelete,
       closeModal,
-      // selectedTag,
+      selectedTag,
       dataArr,
     };
   },
