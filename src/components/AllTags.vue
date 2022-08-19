@@ -130,31 +130,31 @@ export default {
     const filterPagesbyTag = (tag) => {
       currentTag.value = tag;
 
-      const q = query(
-        collection(db, "entries"),
-        where("tags", "array-contains", tag)
-      );
-      onSnapshot(q, (qSnpa) => {
-        const filteredPages = [];
-        qSnpa.forEach((doc) => {
-          filteredPages.push(doc.data());
-        });
-        // console.log(filteredPages);
-      });
+      // const q = query(
+      //   collection(db, "entries"),
+      //   where("tags", "array-contains", tag)
+      // );
+      // onSnapshot(q, (qSnpa) => {
+      //   const filteredPages = [];
+      //   qSnpa.forEach((doc) => {
+      //     filteredPages.push(doc.data());
+      //   });
+      //   // console.log(filteredPages);
+      // });
       context.emit("send-tag", tag);
     };
 
     const allTags = () => {
       currentTag.value = "";
 
-      const q = query(collection(db, "entries"));
-      onSnapshot(q, (qSnpa) => {
-        const filteredPages = [];
-        qSnpa.forEach((doc) => {
-          filteredPages.push(doc.data());
-        });
-        // console.log(filteredPages);
-      });
+    //   const q = query(collection(db, "entries"));
+    //   onSnapshot(q, (qSnpa) => {
+    //     const filteredPages = [];
+    //     qSnpa.forEach((doc) => {
+    //       filteredPages.push(doc.data());
+    //     });
+    //     // console.log(filteredPages);
+    //   });
       context.emit("clear-all", 'all');
     };
 
