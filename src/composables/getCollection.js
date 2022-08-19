@@ -1,7 +1,13 @@
 import { ref, watchEffect } from "vue";
 
 import { db } from "../firebase/config";
-import { collection, onSnapshot, query, where, orderBy } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  query,
+  where,
+  orderBy,
+} from "firebase/firestore";
 
 const getCollection = (c, q) => {
   const documents = ref(null);
@@ -9,7 +15,11 @@ const getCollection = (c, q) => {
   let collectionRef = collection(db, c);
 
   if (q) {
-    collectionRef = query(collectionRef, where(...q), orderBy("orderInList", 'desc'));
+    collectionRef = query(
+      collectionRef,
+      where(...q),
+      orderBy("orderInList", "desc")
+    );
   }
 
   const unsub = onSnapshot(collectionRef, (snapshot) => {
@@ -25,7 +35,9 @@ const getCollection = (c, q) => {
   watchEffect((onInvalidate) => {
     onInvalidate(() => unsub());
   });
-  return { documents };
+  if (documents.value === null) 
+    documents.value = [];
+    return { documents };
 };
 
 export default getCollection;

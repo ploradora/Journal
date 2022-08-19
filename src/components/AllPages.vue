@@ -5,20 +5,12 @@
       <p>Pages</p>
       <span class="material-symbols-outlined arrow"> expand_more </span>
     </div>
-    <div :class="{ 'animate-expand': isOpen }" class="pages">
-      <div class="page" v-for="page in dataArr" :key="page.id">
-        <div
-          :class="{ 'animate-delete-modal': deleteModal }"
-          class="delete-modal"
-        >
-          <div class="delete-content">
-            <p>Delete this page?</p>
-            <div class="delete-action">
-              <button @click="handleDelete(id)" class="delete">Delete</button>
-              <button @click="closeModal" class="cancel">Cancel</button>
-            </div>
-          </div>
-        </div>
+    <div
+      v-if="entries.length"
+      :class="{ 'animate-expand': isOpen }"
+      class="pages"
+    >
+      <div class="page" v-for="page in selectPagesFromTags" :key="page.id">
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
             <p class="date-added">{{ page.created }}</p>
@@ -93,35 +85,31 @@
         </div>
       </div>
     </div>
+    <div v-else>
+      <p>empty</p>
+    </div>
     <!-- <div class="spinner" v-else>
       <img src="../assets/images/spinner-pages.png" alt="" />
     </div> -->
+    <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal">
+      <div class="delete-content">
+        <p>Delete this page?</p>
+        <div class="delete-action">
+          <button @click="handleDelete" class="delete">Delete</button>
+          <button @click="closeModal" class="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
   </article>
 </template>
 
 <script>
-// import getCollection from "../composables/getCollection";
+import getCollection from "../composables/getCollection";
 import getUser from "@/composables/getUser";
 
-import {
-  onMounted,
-  ref,
-  computed,
-  watchEffect,
-  onUpdated,
-  onBeforeUpdate,
-} from "vue";
+import { onMounted, ref, computed } from "vue";
 import { db } from "../firebase/config";
-import {
-  doc,
-  deleteDoc,
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  getDocs,
-} from "firebase/firestore";
+import { doc, deleteDoc } from "firebase/firestore";
 
 export default {
   props: ["filterBy"],
@@ -129,90 +117,21 @@ export default {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
-    const dataArr = ref(null);
 
     const { user } = getUser();
-    // const { documents: entries } = getCollection("entries", [
-    //   "userUid",
-    //   "==",
-    //   user.value.uid,
-    // ]);
+    const { documents: entries } = getCollection("entries", [
+      "userUid",
+      "==",
+      user.value.uid,
+    ]);
 
-    // let collectionRef = collection(db, "entries");
-
-    // const selectedTag = computed(() => {
-    //   if (props.filterBy !== "all") {
-    //     return dataArr.value.filter((page) =>
-    //       page.tags.includes(props.filterBy)
-    //     );
-    //   }
-    //   if (props.filterBy === "all") {
-    //     return dataArr.value;
-    //   }
-    //   return dataArr.value;
-    // });
-
-    //=====================================
-    // let collectionRef = collection(db, "entries");
-
-    // let q = query(
-    //   collectionRef,
-    //   where("userUid", "==", user.value.uid),
-    //   orderBy("orderInList", "desc")
-    // );
-
-    // if (props.filterBy !== "all") {
-    //   console.log(props.filterBy);
-
-    //   collectionRef = query(
-    //     collectionRef,
-    //     where("tags", "array-contains", props.filterBy)
-    //   );
-    // }
-    // if (props.filterBy === "all") {
-    //   console.log(props.filterBy);
-    //   collectionRef = query(
-    //     collection(db, "entries"),
-    //     orderBy("orderInList", "desc")
-    //   );
-    // }
-
-    // const unsub = onSnapshot(q, (snapshot) => {
-    //   let results = [];
-    //   snapshot.docs.forEach((doc) => {
-    //     results.push({ ...doc.data(), id: doc.id });
-    //   });
-    //   //update values
-    //   dataArr.value = results;
-    // });
-    // watchEffect((onInvalidate) => {
-    //   onInvalidate(() => unsub());
-    // });
-    //======================================
-
-    let collectionRef = collection(db, "entries");
-
-    let q = query(
-      collectionRef,
-      where("userUid", "==", user.value.uid),
-      orderBy("orderInList", "desc")
-    );
-
-    const unsub = onSnapshot(q, (snapshot) => {
-      let results = [];
-      snapshot.docs.forEach((doc) => {
-        results.push({ ...doc.data(), id: doc.id });
-      });
-      //update values
-      dataArr.value = results;
-    });
-    
-    if (props.filterBy !== "all") {
-      q = query(collectionRef, where("tags", "array-contains", props.filterBy));
-    }
-
-    watchEffect((onInvalidade) => {
-      onInvalidade(() => unsub());
+    const selectPagesFromTags = computed(() => {
+      if (props.filterBy) {
+        return entries.value.filter((page) =>
+          page.tags.includes(props.filterBy)
+        );
+      }
+      return entries.value;
     });
 
     const showPages = () => {
@@ -222,7 +141,6 @@ export default {
       document.body.style.overflow = "hidden";
       deleteModal.value = true;
       deleteId.value = page.id;
-      return deleteId.value;
     };
 
     const closeModal = () => {
@@ -230,9 +148,8 @@ export default {
       deleteModal.value = false;
     };
 
-    const handleDelete = (id) => {
-      id = deleteId.value;
-      const docRef = doc(db, "entries", id);
+    const handleDelete = () => {
+      const docRef = doc(db, "entries", deleteId.value);
       deleteDoc(docRef);
       setTimeout(() => {
         deleteModal.value = false;
@@ -247,15 +164,11 @@ export default {
     });
     const tabletSize = () => {
       const windowWidth = window.innerWidth;
-      if (windowWidth >= 499) {
-        isOpen.value = true;
-      } else {
-        isOpen.value = false;
-      }
+      isOpen.value = windowWidth >= 499;
     };
 
     return {
-      // entries,
+      entries,
       isOpen,
       deleteId,
       deleteModal,
@@ -263,8 +176,7 @@ export default {
       showPages,
       handleDelete,
       closeModal,
-      // selectedTag,
-      dataArr,
+      selectPagesFromTags,
     };
   },
 };
@@ -345,6 +257,7 @@ article {
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    user-select: none;
     p {
       color: $h2;
     }
@@ -365,6 +278,7 @@ article {
     }
   }
   .rotate-arrow {
+    user-select: none;
     &:hover {
       .arrow {
         transform: rotate(180deg) translateY(2px);
@@ -501,6 +415,7 @@ article {
             font-size: 23px;
             transition: all 0.15s ease-in-out;
             cursor: pointer;
+            user-select: none;
             &:hover {
               color: $graph-line-active;
               transform: translateY(-2px);

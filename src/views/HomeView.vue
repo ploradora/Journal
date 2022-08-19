@@ -88,19 +88,19 @@ export default {
 
     document.body.style.position = "unset";
 
-    const sendTag = (tag) => {
-      filterBy.value = tag;
-    };
-
     const tagVal = (val) => {
       universalValue.value = val;
     };
     const noteVal = (val) => {
       universalValue.value = val;
     };
+    
+    const sendTag = (tag) => {
+      filterBy.value = tag;
+    };
 
-    const clearAll = (val) => {
-      filterBy.value = val;
+    const clearAll = () => {
+      filterBy.value = "";
     };
 
     return {
