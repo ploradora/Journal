@@ -155,7 +155,7 @@ export default {
     //     });
     //     // console.log(filteredPages);
     //   });
-      context.emit("clear-all", 'all');
+      context.emit("clear-all");
     };
 
     return {

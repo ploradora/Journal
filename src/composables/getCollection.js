@@ -25,7 +25,9 @@ const getCollection = (c, q) => {
   watchEffect((onInvalidate) => {
     onInvalidate(() => unsub());
   });
-  return { documents };
+  if( documents.value === null)
+    documents.value = []
+    return { documents };
 };
 
 export default getCollection;

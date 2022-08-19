@@ -99,8 +99,8 @@ export default {
       universalValue.value = val;
     };
 
-    const clearAll = (val) => {
-      filterBy.value = val;
+    const clearAll = () => {
+      filterBy.value = "";
     };
 
     return {
