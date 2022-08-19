@@ -98,12 +98,6 @@ export default {
       id.value = route.params.id;
     });
 
-    const dateUpdated = () => {
-      const current = new Date();
-      const date = current.toDateString();
-      return date;
-    };
-
     const handleUpdate = () => {
       const docRef = doc(db, "entries", id.value);
 
@@ -115,7 +109,7 @@ export default {
         description: description.value,
         location: location.value,
         mood: mood.value,
-        updated: dateUpdated(),
+        updated: new Date().toDateString(),
         tags: tags.value,
         textOpen: false,
         detailsOpen: false,
