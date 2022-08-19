@@ -52,7 +52,6 @@ const routes = [
     path: "/update/:id",
     name: "update",
     component: Update,
-    params: true,
     beforeEnter: requireAuth,
   },
 ];
