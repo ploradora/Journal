@@ -43,7 +43,7 @@
             @clearAll="clearAll"
             @sendTag="sendTag"
             @valueFromTags="tagVal"
-            :universalValue="universalValue"
+            :universal-value="universalValue"
           />
         </div>
         <div class="allnotes">
@@ -101,7 +101,6 @@ export default {
 
     const clearAll = (val) => {
       filterBy.value = val;
-      // console.log(val);
     };
 
     return {

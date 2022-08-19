@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import getCollection from "@/composables/getCollection";
+// import getCollection from "@/composables/getCollection";
 import getUser from "@/composables/getUser";
 import useTags from "../composables/useTags";
 import { ref, computed, onMounted, watchEffect } from "vue";
