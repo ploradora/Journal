@@ -7,18 +7,6 @@
     </div>
     <div :class="{ 'animate-expand': isOpen }" class="pages">
       <div class="page" v-for="page in dataArr" :key="page.id">
-        <div
-          :class="{ 'animate-delete-modal': deleteModal }"
-          class="delete-modal"
-        >
-          <div class="delete-content">
-            <p>Delete this page?</p>
-            <div class="delete-action">
-              <button @click="handleDelete(id)" class="delete">Delete</button>
-              <button @click="closeModal" class="cancel">Cancel</button>
-            </div>
-          </div>
-        </div>
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
             <p class="date-added">{{ page.created }}</p>
@@ -96,6 +84,18 @@
     <!-- <div class="spinner" v-else>
       <img src="../assets/images/spinner-pages.png" alt="" />
     </div> -->
+    <div
+        :class="{ 'animate-delete-modal': deleteModal }"
+        class="delete-modal"
+    >
+      <div class="delete-content">
+        <p>Delete this page?</p>
+        <div class="delete-action">
+          <button @click="handleDelete" class="delete">Delete</button>
+          <button @click="closeModal" class="cancel">Cancel</button>
+        </div>
+      </div>
+    </div>
   </article>
 </template>
 
@@ -222,7 +222,6 @@ export default {
       document.body.style.overflow = "hidden";
       deleteModal.value = true;
       deleteId.value = page.id;
-      return deleteId.value;
     };
 
     const closeModal = () => {
@@ -230,9 +229,8 @@ export default {
       deleteModal.value = false;
     };
 
-    const handleDelete = (id) => {
-      id = deleteId.value;
-      const docRef = doc(db, "entries", id);
+    const handleDelete = () => {
+      const docRef = doc(db, "entries", deleteId.value);
       deleteDoc(docRef);
       setTimeout(() => {
         deleteModal.value = false;
@@ -247,11 +245,7 @@ export default {
     });
     const tabletSize = () => {
       const windowWidth = window.innerWidth;
-      if (windowWidth >= 499) {
-        isOpen.value = true;
-      } else {
-        isOpen.value = false;
-      }
+      isOpen.value = windowWidth >= 499;
     };
 
     return {
