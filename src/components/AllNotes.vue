@@ -5,7 +5,7 @@
       <router-link :to="{ name: 'addnote' }">add a note</router-link>
     </div>
     <TransitionGroup
-      v-if="notes"
+      v-if="notes.length"
       tag="div"
       name="notes"
       class="notes-container"
@@ -51,8 +51,8 @@
         </div>
       </div>
     </TransitionGroup>
-    <div v-else class="spinner">
-      <img src="../assets/images/spinner-tags.png" alt="" />
+    <div v-else class="empty">
+      <p>Empty</p>
     </div>
     <div class="sort-buttons">
       <button
@@ -113,6 +113,7 @@ export default {
 
     watchEffect(() => {
       toggleContainer.value = props.universalValue;
+      if (notes.value === null) notes.value = [];
     });
 
     const openContainer = () => {
@@ -391,9 +392,10 @@ article {
       }
     }
   }
-  .spinner {
-    @include spin;
-    position: relative;
+  .empty {
+    background-color: darken($background-note, 5%);
+    margin-bottom: 15px;
+    @include empty;
     height: 200px;
   }
   .sort-buttons {
@@ -473,6 +475,12 @@ article {
     .spinner {
       display: none;
     }
+    .empty {
+      margin: auto;
+      height: calc(100% - 102px);
+      width: calc(100% - 15px);
+      overflow: unset;
+    }
     .sort-buttons {
       position: absolute;
       right: 0;
@@ -510,6 +518,11 @@ article {
     }
     .notes-container {
       height: 0px;
+    }
+    .empty {
+      height: 0;
+      overflow: hidden;
+      margin-bottom: unset;
     }
     .sort-buttons {
       margin-top: unset;

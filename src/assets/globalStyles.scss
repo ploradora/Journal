@@ -242,6 +242,35 @@ $scroll-thumb-creme: #d0ccbc;
   }
 }
 
+@mixin empty {
+  display: grid;
+  place-items: center;
+  border-radius: $radius-big;
+  color: $h2;
+  user-select: none;
+  p {
+    position: relative;
+    &::after {
+      position: absolute;
+      top: 50%;
+      left: -25px;
+      content: "";
+      width: 20px;
+      height: 1px;
+      background-color: lighten($h2, 10%);
+    }
+    &::before {
+      position: absolute;
+      top: 50%;
+      right: -25px;
+      content: "";
+      width: 20px;
+      height: 1px;
+      background-color: lighten($h2, 10%);
+    }
+  }
+}
+
 @mixin spin {
   position: absolute;
   display: block;

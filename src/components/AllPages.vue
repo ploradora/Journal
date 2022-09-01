@@ -3,7 +3,9 @@
   <article>
     <div @click="showPages" :class="{ 'rotate-arrow': isOpen }" class="expand">
       <p>Pages</p>
-      <span class="material-symbols-outlined arrow"> expand_more </span>
+      <span class="material-symbols-outlined arrow" v-if="entries.length">
+        expand_more
+      </span>
     </div>
     <div
       v-if="entries.length"
@@ -85,8 +87,8 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <p>empty</p>
+    <div v-else class="empty">
+      <p>Empty</p>
     </div>
     <!-- <div class="spinner" v-else>
       <img src="../assets/images/spinner-pages.png" alt="" />
@@ -107,7 +109,7 @@
 import getCollection from "../composables/getCollection";
 import getUser from "@/composables/getUser";
 
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
 
@@ -124,6 +126,10 @@ export default {
       "==",
       user.value.uid,
     ]);
+
+    watchEffect(() => {
+      if (entries.value === null) entries.value = [];
+    });
 
     const selectPagesFromTags = computed(() => {
       if (props.filterBy) {
@@ -184,7 +190,6 @@ export default {
 
 <style scoped lang="scss">
 @import "../assets/globalStyles.scss";
-
 .outside-title {
   color: $h2;
   display: none;
@@ -197,7 +202,6 @@ export default {
     display: none;
   }
 }
-
 article {
   position: relative;
   width: 100%;
@@ -476,6 +480,12 @@ article {
       transition: all 0.15s linear;
     }
   }
+  .empty {
+    height: 200px;
+    margin-top: 10px;
+    background-color: darken($background, 5%);
+    @include empty;
+  }
   .spinner {
     display: none;
   }
@@ -623,6 +633,10 @@ article {
           }
         }
       }
+    }
+    .empty {
+      margin-top: unset;
+      height: 100%;
     }
     .spinner {
       @include spin;

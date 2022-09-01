@@ -161,10 +161,9 @@ export default {
             `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
           )
             .then((res) => res.json())
-            .then(
-              (data) =>
-                (location.value = `${data.locality}, ${data.countryCode}`)
-            );
+            .then((data) => {
+              location.value = `${data.locality}, ${data.countryCode}`;
+            });
         });
       }
     };
@@ -231,7 +230,6 @@ section {
       width: 0;
       opacity: 0;
       overflow: hidden;
-
     }
   }
   input {

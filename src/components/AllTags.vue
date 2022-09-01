@@ -26,7 +26,7 @@
     </div>
     <TransitionGroup
       tag="div"
-      v-if="tags"
+      v-if="tags.length"
       name="animate-reorder"
       class="tags-container"
     >
@@ -40,8 +40,8 @@
         <p>#{{ tag }}</p>
       </div>
     </TransitionGroup>
-    <div class="spinner" v-else>
-      <img src="../assets/images/spinner-tags.png" alt="" />
+    <div v-else class="empty">
+      <p>Empty</p>
     </div>
   </article>
 </template>
@@ -63,6 +63,9 @@ export default {
 
     const { user } = getUser();
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
+    watchEffect(() => {
+      if (tags.value === null) tags.value = [];
+    });
 
     onMounted(() => {
       window.addEventListener("resize", resizeWindow);
@@ -130,7 +133,7 @@ export default {
     const allTags = () => {
       currentTag.value = "";
       context.emit("clear-all");
-      context.emit("clear-all", 'all');
+      context.emit("clear-all", "all");
     };
 
     return {
@@ -147,7 +150,6 @@ export default {
       filterPagesbyTag,
       openContainer,
       allTags,
-      // clearTag,
     };
   },
 };
@@ -157,7 +159,7 @@ export default {
 @import "../assets/globalStyles.scss";
 
 article {
-  height: 100%;
+  height: 300px;
   width: 100%;
   padding: 10px;
   border-radius: $radius-big;
@@ -329,19 +331,28 @@ article {
       height: 204px;
     }
   }
+  .empty {
+    height: calc(100% - 70px);
+    background-color: darken($background-tag-container-blue, 5%);
+    @include empty;
+  }
   .spinner {
     @include spin;
     height: 200px;
     position: relative;
   }
+  @include tag-note-brake {
+    height: 100%;
+  }
   @include desktop-size {
     height: unset;
     overflow: hidden;
     padding: unset;
+    
     &:hover {
       background-color: darken($background-tag-container-blue, 5%);
       cursor: pointer;
-      transition: all 0.15s linear;
+      
     }
     .header-search {
       margin-bottom: unset;
@@ -356,6 +367,7 @@ article {
             margin-right: unset;
             width: 100%;
             cursor: pointer;
+            
           }
           span {
             visibility: hidden;
@@ -376,9 +388,12 @@ article {
     }
     .tags-container {
       height: 0px;
+      overflow: hidden;
+      
     }
-    .spinner {
-      @include spin;
+    .empty {
+      height: 0;
+      overflow: hidden;
     }
   }
 }
@@ -392,6 +407,7 @@ article {
     position: absolute;
     height: calc(100% - 48px);
     display: block;
+    
     .header-search {
       padding: 10px 10px 0 10px;
       margin-bottom: 7px;
@@ -432,8 +448,11 @@ article {
       margin-left: 10px;
       margin-right: 10px;
     }
-    .spinner {
-      @include spin;
+    .empty {
+      height: calc(100% - 83px);
+      width: calc(100% - 15px);
+      margin: auto;
+      overflow: unset;
     }
   }
 }

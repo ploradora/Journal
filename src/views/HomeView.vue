@@ -94,7 +94,6 @@ export default {
     const noteVal = (val) => {
       universalValue.value = val;
     };
-    
     const sendTag = (tag) => {
       filterBy.value = tag;
     };
@@ -126,6 +125,8 @@ section {
     height: 100vh;
     display: grid;
     place-items: center;
+    position: absolute;
+    top: 0;
     .welcome {
       .logo {
         width: fit-content;

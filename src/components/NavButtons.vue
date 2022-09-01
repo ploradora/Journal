@@ -91,6 +91,7 @@ export default {
       signOut(auth);
       toggleMobile.value = false;
       router.push("/");
+      document.body.style.overflow = "unset";
     };
     const showMenu = () => {
       document.body.style.overflow = "hidden";
