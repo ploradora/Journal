@@ -133,7 +133,6 @@ export default {
     const allTags = () => {
       currentTag.value = "";
       context.emit("clear-all");
-      context.emit("clear-all", "all");
     };
 
     return {

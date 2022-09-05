@@ -16,7 +16,9 @@
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
             <p class="date-added">{{ page.created }}</p>
-            <p class="title">{{ page.title }}</p>
+            <p class="title" :class="{ 'title-color': currentColor }">
+              {{ page.title }}
+            </p>
           </div>
           <div class="options">
             <router-link :to="{ name: 'update', params: { id: page.id } }">
@@ -55,7 +57,8 @@
                 <span class="detail-type">Words:</span> {{ page.words }}
               </p>
               <p class="color">
-                <span class="detail-type">Title Color:</span> {{ page.color }}
+                <span class="detail-type">Title Color:</span>
+                {{ page.titleColor }}
               </p>
             </div>
             <div class="mood-container">
@@ -119,6 +122,7 @@ export default {
     const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
+    const currentColor = ref("default");
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries", [
@@ -168,6 +172,39 @@ export default {
     onMounted(() => {
       window.addEventListener("resize", tabletSize);
     });
+    // onUpdated(() => {
+    //   const titles = document.querySelectorAll(".title");
+    //   entries.value.forEach((page) => {
+    //     if (page.titleColor === "Green") {
+    //       console.log("this is green", page.titleColor);
+    //     }
+    //     if (page.titleColor === "Violet") {
+    //       // document.querySelector(".title").style.color =
+    //       //   "rgba(125, 128, 204, 1)";
+    //       console.log("this is violet");
+    //     }
+    //     if (page.titleColor === "Burgundy") {
+    //       // document.querySelector(".title").style.color = "rgb(129, 43, 43)";
+    //       console.log("this is burgundy");
+    //     }
+    //     if (page.titleColor === "Brown") {
+    //       // document.querySelector(".title").style.color = "rgb(88, 55, 11)";
+    //       console.log("this is brown");
+    //     }
+    //     if (page.titleColor === "Orange") {
+    //       // document.querySelector(".title").style.color = "rgb(228, 138, 20)";
+    //       console.log("this is orange");
+    //     }
+    //     if (page.titleColor === "Yellow") {
+    //       // document.querySelector(".title").style.color = "rgb(255, 196, 0)";
+    //       console.log("this is yellow");
+    //     }
+    //     if (page.titleColor === "default") {
+    //       // document.querySelector(".title").style.color = "rgb(255, 196, 0)";
+    //       console.log("this is default");
+    //     }
+    //   });
+    // });
     const tabletSize = () => {
       const windowWidth = window.innerWidth;
       isOpen.value = windowWidth >= 499;
@@ -176,6 +213,7 @@ export default {
     return {
       entries,
       isOpen,
+      currentColor,
       deleteId,
       deleteModal,
       openDelete,
@@ -278,7 +316,6 @@ article {
     .arrow {
       margin-right: -7px;
       color: $h2;
-      // transition: all 0.15s ease-in-out;
     }
   }
   .rotate-arrow {
@@ -298,7 +335,6 @@ article {
     overflow: scroll;
     overflow-x: hidden;
     margin-top: 0;
-    // transition: all 0.15s linear;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -313,7 +349,6 @@ article {
       border: 1.5px solid $input-line;
       background-color: $background-form;
       border-radius: $radius-big;
-      // transition: all 0.15s linear;
       &:last-child {
         margin-bottom: 1px;
       }
@@ -645,6 +680,13 @@ article {
   @include desktop-size {
     margin-top: unset;
     height: 100%;
+  }
+  @include desktop-size-big {
+    .pages {
+      .page {
+        padding-left: 150px;
+      }
+    }
   }
 }
 </style>

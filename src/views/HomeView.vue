@@ -1,5 +1,5 @@
 <template>
-  <section v-if="entries">
+  <section v-if="entries && notes">
     <div v-if="!user" class="auth-buttons">
       <div class="welcome">
         <div class="logo">
@@ -85,6 +85,7 @@ export default {
     const filterBy = ref("");
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
+    const { documents: notes } = getCollection("notes");
 
     document.body.style.position = "unset";
 
@@ -104,6 +105,7 @@ export default {
 
     return {
       entries,
+      notes,
       user,
       sendTag,
       tagVal,
@@ -205,6 +207,13 @@ section {
     display: grid;
     grid-gap: 7px;
 
+    .thegraph {
+      height: 314px;
+      padding: 10px;
+      margin-bottom: 25px;
+      border-radius: $radius-big;
+      background-color: $graph-background;
+    }
     .tags-notes-container {
       .alltags {
         margin-bottom: 7px;
@@ -213,7 +222,7 @@ section {
     @include mobile-end {
       grid-template-columns: repeat(2, 1fr);
       .thegraph {
-        background-color: lightsalmon;
+        margin-bottom: 20px;
       }
       .allpages,
       .thegraph,
@@ -259,9 +268,11 @@ section {
         }
       }
       .thegraph {
+        margin-bottom: unset;
+        height: unset;
+        padding: 5px;
         grid-column: 1 / -1;
         grid-row: 2/3;
-        background-color: lightsalmon;
       }
     }
     @include desktop-size-big {

@@ -1,12 +1,49 @@
 <template>
   <section>
     <form @submit.prevent="handleSubmit">
-      <div class="colors-container">
-        <div class="toggle-color"></div>
-        <div class="pick-color" :class="{ 'color-open': colorToggle }"></div>
-      </div>
+      <!-- <div class="colors-container">
+        <div @click="colorToggle = !colorToggle" class="toggle-color"></div>
+        <div class="pick-color" :class="{ 'color-open': colorToggle }">
+          <div
+            @click="handleColor('Green')"
+            :class="{ 'active-color': currentColor === 'Green' }"
+            class="color green"
+          ></div>
+          <div
+            @click="handleColor('Yellow')"
+            :class="{ 'active-color': currentColor === 'Yellow' }"
+            class="color yellow"
+          ></div>
+          <div
+            @click="handleColor('Orange')"
+            :class="{ 'active-color': currentColor === 'Orange' }"
+            class="color orange"
+          ></div>
+          <div
+            @click="handleColor('Burgundy')"
+            :class="{ 'active-color': currentColor === 'Burgundy' }"
+            class="color burgundy"
+          ></div>
+          <div
+            @click="handleColor('Brown')"
+            :class="{ 'active-color': currentColor === 'Brown' }"
+            class="color brown"
+          ></div>
+          <div
+            @click="handleColor('Violet')"
+            :class="{ 'active-color': currentColor === 'Violet' }"
+            class="color violet"
+          ></div>
+        </div>
+      </div> -->
       <label class="title" for="title">
-        <input type="text" name="title" v-model="title" placeholder="Title" />
+        <input
+          class="titleColor"
+          type="text"
+          name="title"
+          v-model="title"
+          placeholder="Title"
+        />
         <div class="tooltip-container">
           <div class="tooltip-frame">
             <p class="tooltip">
@@ -113,6 +150,7 @@ import { useRouter } from "vue-router";
 export default {
   setup() {
     const colorToggle = ref(false);
+    const currentColor = ref("default");
     const title = ref("");
     const description = ref("");
     const location = ref("");
@@ -138,6 +176,7 @@ export default {
 
       await addDoc(docRef, {
         title: title.value,
+        titleColor: currentColor.value,
         description: description.value,
         location: location.value,
         mood: mood.value,
@@ -149,6 +188,10 @@ export default {
         words: wordCount,
         characters: charCount,
         userUid: user.value.uid,
+        dateAndMood: {
+          date: dateCreated(),
+          mood: mood.value,
+        },
       });
       router.push({ name: "home" });
     };
@@ -181,6 +224,35 @@ export default {
       });
     };
 
+    const handleColor = (c) => {
+      if (c === "Green") {
+        currentColor.value = "Green";
+        document.querySelector(".titleColor").style.color =
+          "rgba(154, 185, 195, 1)";
+      }
+      if (c === "Violet") {
+        currentColor.value = "Violet";
+        document.querySelector(".titleColor").style.color =
+          "rgba(125, 128, 204, 1)";
+      }
+      if (c === "Burgundy") {
+        currentColor.value = "Burgundy";
+        document.querySelector(".titleColor").style.color = "rgb(129, 43, 43)";
+      }
+      if (c === "Brown") {
+        currentColor.value = "Brown";
+        document.querySelector(".titleColor").style.color = "rgb(88, 55, 11)";
+      }
+      if (c === "Orange") {
+        currentColor.value = "Orange";
+        document.querySelector(".titleColor").style.color = "rgb(228, 138, 20)";
+      }
+      if (c === "Yellow") {
+        currentColor.value = "Yellow";
+        document.querySelector(".titleColor").style.color = "rgb(255, 196, 0)";
+      }
+    };
+
     return {
       colorToggle,
       title,
@@ -189,10 +261,12 @@ export default {
       mood,
       tag,
       tags,
+      currentColor,
       handleLocation,
       handleKeydown,
       handleSubmit,
       handleDelete,
+      handleColor,
     };
   },
 };
@@ -215,23 +289,94 @@ section {
       color: $graph-line-active;
     }
   }
-  .colors-container {
-    position: absolute;
-    top: -25px;
-    .toggle-color {
-      height: 16px;
-      width: 16px;
-      border-radius: 50%;
-      background: linear-gradient(rgb(255, 184, 0), rgba(118, 94, 188, 0.7));
-      border: 2px solid $main-text;
-      cursor: pointer;
-    }
-    .pick-color {
-      width: 0;
-      opacity: 0;
-      overflow: hidden;
-    }
-  }
+  // .colors-container {
+  //   position: absolute;
+  //   top: -25px;
+  //   display: flex;
+  //   align-items: center;
+  //   width: 100%;
+  //   // overflow: hidden;
+  //   .toggle-color {
+  //     height: 16px;
+  //     width: 16px;
+  //     margin-right: 15px;
+  //     border-radius: 50%;
+  //     background: linear-gradient(rgb(255, 184, 0), rgba(118, 94, 188, 0.7));
+  //     border: 2px solid $main-text;
+  //     cursor: pointer;
+  //   }
+  //   .pick-color {
+  //     display: flex;
+  //     align-items: center;
+  //     opacity: 0;
+  //     transform: translateX(-10px);
+  //     z-index: -1;
+  //     transition: all 0.15s linear;
+  //     .color {
+  //       height: 16px;
+  //       width: 16px;
+  //       border-radius: 50%;
+  //       margin-right: unset;
+  //       cursor: pointer;
+  //       transition: all 0.15s linear;
+  //     }
+  //     .violet {
+  //       background-color: $note-icon-completed;
+  //     }
+  //     .green {
+  //       background-color: $graph-line-active;
+  //     }
+  //     .burgundy {
+  //       background-color: rgb(129, 43, 43);
+  //     }
+  //     .brown {
+  //       background-color: rgb(88, 55, 11);
+  //     }
+  //     .orange {
+  //       background-color: rgb(228, 138, 20);
+  //     }
+  //     .yellow {
+  //       background-color: rgb(255, 196, 0);
+  //     }
+  //   }
+  //   .color-open {
+  //     width: 200px;
+  //     opacity: 1;
+  //     transform: translateX(0);
+  //     z-index: unset;
+  //     transition: all 0.15s linear;
+  //     .color {
+  //       position: relative;
+  //       margin-right: 6px;
+  //       transition: all 0.15s linear;
+  //       &::after {
+  //         position: absolute;
+  //         content: "";
+  //         width: 5px;
+  //         height: 5px;
+  //         left: 50%;
+  //         top: 0;
+  //         opacity: 0;
+  //         visibility: hidden;
+  //         transform: translateX(-50%);
+  //         border-radius: 50%;
+  //         background-color: lighten($main-text, 10%);
+  //         transition: all 0.15s linear;
+  //       }
+  //     }
+  //     .active-color {
+  //       // border: 2px solid $main-text;
+  //       position: relative;
+  //       transition: none;
+  //       &::after {
+  //         top: -10px;
+  //         opacity: 1;
+  //         visibility: visible;
+  //         transition: all 0.15s linear;
+  //       }
+  //     }
+  //   }
+  // }
   input {
     width: 100%;
     margin-right: 5px;
