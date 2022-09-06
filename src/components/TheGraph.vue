@@ -20,13 +20,13 @@
             class="filter-list month-list"
           >
             <div
-              @click="selectMonth(month.month)"
               v-for="month in months"
+              @click="selectMonth(month.month)"
               :key="month.index"
               class="month"
               :class="month.class"
             >
-              <span>{{ month.index }}-</span> {{ month.month }}
+              {{ month.month }}
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@
             class="filter-list mood-list"
           >
             <div
-              @click="closeAllFilterLists"
+              @click="selectMoodFilter(mood)"
               v-for="mood in moods"
               :key="mood.range"
               class="mood-range"
@@ -82,9 +82,9 @@
       <div class="graph-lines-list">
         <div
           class="lines"
-          v-for="(mood, date) in testLoop"
+          v-for="(mood, date) in currentMonthFilter"
           :key="mood"
-          :style="{ height: mood + '%', 'background-color': '#9ab9c3' }"
+          :style="{ height: mood + '%' }"
         ></div>
       </div>
     </div>
@@ -104,6 +104,8 @@ export default {
     const filterListMood = ref(false);
     const moodList = ref([]);
     const dateList = ref([]);
+    const moodListDateList = ref([]);
+    const selectedMonth = ref("");
 
     const months = ref([
       { class: "jan", index: "01", month: "Jan" },
@@ -134,6 +136,11 @@ export default {
       user.value.uid,
     ]);
 
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
+
+    // console.log(currentMonth, currentYear);
+
     const resizeWindow = () => {
       const windowWidth = window.innerWidth;
       if (windowWidth >= 1000) {
@@ -150,30 +157,27 @@ export default {
       resizeWindow();
       if (entries.value === null) entries.value = [];
       entries.value.forEach((mood) => {
-        moodList.value.push(mood.moodAndDate);
-        dateList.value.push(mood.created);
+        const entriesMoodDate = Object.entries(mood.dateAndMood);
+        const entriesMood = Object.values(mood.dateAndMood.mood);
+        const entriesDate = Object.values(mood.dateAndMood.date);
 
-        console.log(mood.dateAndMood, moodList.value);
+        moodList.value.push(entriesMood.join(""));
+        dateList.value.push(entriesDate.join(""));
+        moodListDateList.value.push(entriesMoodDate);
+
+        // moodListDateList.value.push(mood.dateAndMood);
       });
+      console.log(moodListDateList.value);
+
+      moodList.value.reverse();
     });
+
     const disableDesktopButton = () => {
       if (window.innerWidth >= 1000) {
         filterListMonth.value = true;
         filterListMood.value = true;
       }
     };
-
-    const testLoop = computed(() => {
-      moodList.value.filter((mood) => {
-        // console.log(mood);
-      });
-      // moodList.value.forEach(
-      //   (mood, i) => (moodAndDate[mood] = dateList.value[i])
-      // );
-      // console.log(moodAndDate.value);
-
-      return moodList.value.mood;
-    });
 
     const showListMonth = () => {
       filterListMonth.value = !filterListMonth.value;
@@ -188,34 +192,133 @@ export default {
       disableDesktopButton();
     };
 
-    const selectMonth = (m) => {
-      if (m === "Jan") {
-        console.log(moodList.value);
+    const selectMoodFilter = (mood) => {
+      const lines = document.querySelectorAll(".lines");
+
+      let transformRange = mood.range.substring(1) + "%";
+
+      const filterLineHeight = (h) => {
+        lines.forEach((line) => {
+          if (line.style.height >= h || line.style.height === "100%") {
+            line.style.backgroundColor = "#9ab9c3";
+          } else {
+            line.style.backgroundColor = "#fff";
+          }
+        });
+      };
+
+      if (mood.range === ">80") {
+        filterLineHeight(transformRange);
       }
-      if (m === "Feb") {
+      if (mood.range === ">60") {
+        filterLineHeight(transformRange);
       }
-      if (m === "Mar") {
+      if (mood.range === ">40") {
+        filterLineHeight(transformRange);
       }
-      if (m === "Apr") {
+      if (mood.range === ">20") {
+        filterLineHeight(transformRange);
       }
-      if (m === "May") {
-      }
-      if (m === "Jun") {
-      }
-      if (m === "Jul") {
-      }
-      if (m === "Aug") {
-      }
-      if (m === "Sep") {
-      }
-      if (m === "Oct") {
-      }
-      if (m === "Nov") {
-      }
-      if (m === "Dec") {
+      if (mood.range === "all") {
+        lines.forEach((line) => {
+          line.style.backgroundColor = "#9ab9c3";
+        });
       }
       closeAllFilterLists();
     };
+
+    const selectMonth = (month) => {
+      if (month === "Jan") {
+        selectedMonth.value = "Jan";
+      }
+      if (month === "Feb") {
+        selectedMonth.value = "Feb";
+      }
+      if (month === "Mar") {
+        selectedMonth.value = "Mar";
+      }
+      if (month === "Apr") {
+        selectedMonth.value = "Apr";
+      }
+      if (month === "May") {
+        selectedMonth.value = "May";
+      }
+      if (month === "Jun") {
+        selectedMonth.value = "Jun";
+      }
+      if (month === "Jul") {
+        selectedMonth.value = "Jul";
+      }
+      if (month === "Aug") {
+        selectedMonth.value = "Aug";
+      }
+      if (month === "Sep") {
+        selectedMonth.value = "Sep";
+      }
+      if (month === "Oct") {
+        selectedMonth.value = "Oct";
+      }
+      if (month === "Nov") {
+        selectedMonth.value = "Nov";
+      }
+      if (month === "Dec") {
+        selectedMonth.value = "Dec";
+      }
+    };
+    const currentMonthFilter = computed(() => {
+      const daysInMonthArray = (days) => {
+        const month = new Array(days).fill(null);
+      };
+      if (selectedMonth.value === "Jan") {
+        const month = new Array(31).fill(null);
+        moodList.value = month;
+        // moodList.value = moodListDateList.value.filter((mood) =>
+        //   mood.mood.includes(88)
+        // );
+      }
+      if (selectedMonth.value === "Feb") {
+        console.log(moodList.value);
+        daysInMonthArray(28);
+      }
+      if (selectedMonth.value === "Mar") {
+        console.log("fodasjfn");
+        daysInMonthArray(31);
+      }
+      if (selectedMonth.value === "Apr") {
+        console.log(selectedMonth.value);
+        daysInMonthArray(30);
+      }
+      if (selectedMonth.value === "May") {
+        console.log(selectedMonth.value);
+        daysInMonthArray(31);
+      }
+      if (selectedMonth.value === "Jun") {
+        console.log(selectedMonth.value);
+        daysInMonthArray(30);
+      }
+      if (selectedMonth.value === "Jul") {
+        console.log(selectedMonth.value);
+        daysInMonthArray(31);
+      }
+      if (selectedMonth.value === "Aug") {
+        daysInMonthArray(31);
+      }
+      if (selectedMonth.value === "Sep") {
+        moodListDateList.value.forEach((date) => console.log(date));
+        daysInMonthArray(30);
+      }
+      if (selectedMonth.value === "Oct") {
+        daysInMonthArray(31);
+      }
+      if (selectedMonth.value === "Nov") {
+        daysInMonthArray(30);
+      }
+      if (selectedMonth.value === "Dec") {
+        daysInMonthArray(31);
+      }
+      closeAllFilterLists();
+      return moodList.value;
+    });
 
     const closeAllFilterLists = () => {
       filterListMonth.value = false;
@@ -239,9 +342,11 @@ export default {
       showListMonth,
       showListYear,
       showListMood,
+      selectMoodFilter,
       selectMonth,
+      currentMonthFilter,
+      selectedMonth,
       closeAllFilterLists,
-      testLoop,
     };
   },
 };
@@ -281,11 +386,6 @@ section {
             &:hover {
               background-color: darken($background, 10%);
               color: darken($h2, 10%);
-            }
-          }
-          .month {
-            span {
-              font-size: 11px;
             }
           }
         }
@@ -351,6 +451,7 @@ section {
       .lines {
         width: 5px;
         margin-right: 2px;
+        background-color: #9ab9c3;
       }
     }
     @include desktop-size {
@@ -398,11 +499,6 @@ section {
             margin-right: 17px;
             display: flex;
             align-items: center;
-          }
-          .month-list {
-            span {
-              display: none;
-            }
           }
         }
       }
