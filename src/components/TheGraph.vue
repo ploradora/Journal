@@ -112,7 +112,7 @@ export default {
     const moodList = ref([]);
     const dateList = ref([]);
     const moodListDateList = ref([]);
-    const selectedMonth = ref("");
+    const selectedFilter = ref("");
     const selectedYear = ref("");
 
     const months = ref([
@@ -164,17 +164,6 @@ export default {
       window.addEventListener("resize", resizeWindow);
       resizeWindow();
       if (entries.value === null) entries.value = [];
-
-      entries.value.forEach((mood) => {
-        const entriesMoodDate = mood.dateAndMood;
-        //   const entriesMood = Object.values(mood.dateAndMood.mood);
-        // const entriesDate = Object.values(mood.dateAndMood.date);
-
-        //   moodList.value.push(entriesMood.join(""));
-        //   dateList.value.push(entriesDate.join(""));
-        moodListDateList.value.push(entriesMoodDate);
-      });
-      moodListDateList.value.reverse();
     });
 
     const closeAllFilterLists = () => {
@@ -209,7 +198,7 @@ export default {
 
     const selectYear = () => {
       closeAllFilterLists();
-      selectedYear.value = 2022;
+      selectedFilter.value = 2022;
     };
 
     const selectMoodFilter = (mood) => {
@@ -249,96 +238,96 @@ export default {
 
     const selectMonth = (month) => {
       if (month === "Jan") {
-        selectedMonth.value = "Jan";
+        selectedFilter.value = "Jan";
       }
       if (month === "Feb") {
-        selectedMonth.value = "Feb";
+        selectedFilter.value = "Feb";
       }
       if (month === "Mar") {
-        selectedMonth.value = "Mar";
+        selectedFilter.value = "Mar";
       }
       if (month === "Apr") {
-        selectedMonth.value = "Apr";
+        selectedFilter.value = "Apr";
       }
       if (month === "May") {
-        selectedMonth.value = "May";
+        selectedFilter.value = "May";
       }
       if (month === "Jun") {
-        selectedMonth.value = "Jun";
+        selectedFilter.value = "Jun";
       }
       if (month === "Jul") {
-        selectedMonth.value = "Jul";
+        selectedFilter.value = "Jul";
       }
       if (month === "Aug") {
-        selectedMonth.value = "Aug";
+        selectedFilter.value = "Aug";
       }
       if (month === "Sep") {
-        selectedMonth.value = "Sep";
+        selectedFilter.value = "Sep";
       }
       if (month === "Oct") {
-        selectedMonth.value = "Oct";
+        selectedFilter.value = "Oct";
       }
       if (month === "Nov") {
-        selectedMonth.value = "Nov";
+        selectedFilter.value = "Nov";
       }
       if (month === "Dec") {
-        selectedMonth.value = "Dec";
+        selectedFilter.value = "Dec";
       }
     };
 
     const monthYearFilter = computed(() => {
-      if (selectedMonth.value === "Jan") {
+      if (selectedFilter.value === "Jan") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Jan"));
       }
-      if (selectedMonth.value === "Feb") {
+      if (selectedFilter.value === "Feb") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Feb"));
       }
-      if (selectedMonth.value === "Mar") {
+      if (selectedFilter.value === "Mar") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Mar"));
       }
-      if (selectedMonth.value === "Apr") {
+      if (selectedFilter.value === "Apr") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Apr"));
       }
-      if (selectedMonth.value === "May") {
+      if (selectedFilter.value === "May") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("May"));
       }
-      if (selectedMonth.value === "Jun") {
+      if (selectedFilter.value === "Jun") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Jun"));
       }
-      if (selectedMonth.value === "Jul") {
+      if (selectedFilter.value === "Jul") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Jul"));
       }
-      if (selectedMonth.value === "Aug") {
+      if (selectedFilter.value === "Aug") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Aug"));
       }
-      if (selectedMonth.value === "Sep") {
+      if (selectedFilter.value === "Sep") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Sep"));
       }
-      if (selectedMonth.value === "Oct") {
+      if (selectedFilter.value === "Oct") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Oct"));
       }
-      if (selectedMonth.value === "Nov") {
+      if (selectedFilter.value === "Nov") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Nov"));
       }
-      if (selectedMonth.value === "Dec") {
+      if (selectedFilter.value === "Dec") {
         closeAllFilterLists();
         return entries.value.filter((page) => page.created.includes("Dec"));
       }
-      // if (selectedYear.value === 2022) {
-      //   // return entries.value.filter((page) => page.created.includes(2022));
-      //   return entries.value.forEach((page) => page.created.includes('2022'));
-      // }
+      if (selectedFilter.value === 2022) {
+        closeAllFilterLists();
+        return entries.value;
+      }
       closeAllFilterLists();
       return entries.value;
     });
