@@ -93,9 +93,6 @@
     <div v-else class="empty">
       <p>Empty</p>
     </div>
-    <!-- <div class="spinner" v-else>
-      <img src="../assets/images/spinner-pages.png" alt="" />
-    </div> -->
     <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal">
       <div class="delete-content">
         <p>Delete this page?</p>
@@ -172,39 +169,6 @@ export default {
     onMounted(() => {
       window.addEventListener("resize", tabletSize);
     });
-    // onUpdated(() => {
-    //   const titles = document.querySelectorAll(".title");
-    //   entries.value.forEach((page) => {
-    //     if (page.titleColor === "Green") {
-    //       console.log("this is green", page.titleColor);
-    //     }
-    //     if (page.titleColor === "Violet") {
-    //       // document.querySelector(".title").style.color =
-    //       //   "rgba(125, 128, 204, 1)";
-    //       console.log("this is violet");
-    //     }
-    //     if (page.titleColor === "Burgundy") {
-    //       // document.querySelector(".title").style.color = "rgb(129, 43, 43)";
-    //       console.log("this is burgundy");
-    //     }
-    //     if (page.titleColor === "Brown") {
-    //       // document.querySelector(".title").style.color = "rgb(88, 55, 11)";
-    //       console.log("this is brown");
-    //     }
-    //     if (page.titleColor === "Orange") {
-    //       // document.querySelector(".title").style.color = "rgb(228, 138, 20)";
-    //       console.log("this is orange");
-    //     }
-    //     if (page.titleColor === "Yellow") {
-    //       // document.querySelector(".title").style.color = "rgb(255, 196, 0)";
-    //       console.log("this is yellow");
-    //     }
-    //     if (page.titleColor === "default") {
-    //       // document.querySelector(".title").style.color = "rgb(255, 196, 0)";
-    //       console.log("this is default");
-    //     }
-    //   });
-    // });
     const tabletSize = () => {
       const windowWidth = window.innerWidth;
       isOpen.value = windowWidth >= 499;

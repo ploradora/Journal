@@ -1,7 +1,6 @@
 <template>
   <section>
     <div class="nav-graph">
-      <!-- <button>Sort by</button> -->
       <div class="filters">
         <div class="month">
           <button
@@ -46,7 +45,7 @@
             }"
             class="filter-list year-list"
           >
-            <div @click="closeAllFilterLists" class="year">2022</div>
+            <p @click="selectYear" class="year">2022</p>
           </div>
         </div>
         <div class="mood">
@@ -82,10 +81,18 @@
       <div class="graph-lines-list">
         <div
           class="lines"
-          v-for="(mood, date) in currentMonthFilter"
-          :key="mood"
-          :style="{ height: mood + '%' }"
+          v-for="page in monthYearFilter"
+          :style="{ height: page.dateAndMood.mood + '%' }"
+          :key="page"
         ></div>
+        <!-- <div
+          class="lines"
+          v-for="mood in currentMonthFilter"
+          :style="{ height: m.mood + '%' }"
+          :key="mood.mood"
+        >
+          {{ mood }}
+        </div> -->
       </div>
     </div>
   </section>
@@ -106,6 +113,7 @@ export default {
     const dateList = ref([]);
     const moodListDateList = ref([]);
     const selectedMonth = ref("");
+    const selectedYear = ref("");
 
     const months = ref([
       { class: "jan", index: "01", month: "Jan" },
@@ -156,21 +164,28 @@ export default {
       window.addEventListener("resize", resizeWindow);
       resizeWindow();
       if (entries.value === null) entries.value = [];
+
       entries.value.forEach((mood) => {
-        const entriesMoodDate = Object.entries(mood.dateAndMood);
-        const entriesMood = Object.values(mood.dateAndMood.mood);
-        const entriesDate = Object.values(mood.dateAndMood.date);
+        const entriesMoodDate = mood.dateAndMood;
+        //   const entriesMood = Object.values(mood.dateAndMood.mood);
+        // const entriesDate = Object.values(mood.dateAndMood.date);
 
-        moodList.value.push(entriesMood.join(""));
-        dateList.value.push(entriesDate.join(""));
+        //   moodList.value.push(entriesMood.join(""));
+        //   dateList.value.push(entriesDate.join(""));
         moodListDateList.value.push(entriesMoodDate);
-
-        // moodListDateList.value.push(mood.dateAndMood);
       });
-      console.log(moodListDateList.value);
-
-      moodList.value.reverse();
+      moodListDateList.value.reverse();
     });
+
+    const closeAllFilterLists = () => {
+      filterListMonth.value = false;
+      filterListYear.value = false;
+      filterListMood.value = false;
+      if (window.innerWidth >= 1000) {
+        filterListMonth.value = true;
+        filterListMood.value = true;
+      }
+    };
 
     const disableDesktopButton = () => {
       if (window.innerWidth >= 1000) {
@@ -190,6 +205,11 @@ export default {
     const showListMood = () => {
       filterListMood.value = !filterListMood.value;
       disableDesktopButton();
+    };
+
+    const selectYear = () => {
+      closeAllFilterLists();
+      selectedYear.value = 2022;
     };
 
     const selectMoodFilter = (mood) => {
@@ -265,70 +285,63 @@ export default {
         selectedMonth.value = "Dec";
       }
     };
-    const currentMonthFilter = computed(() => {
-      const daysInMonthArray = (days) => {
-        const month = new Array(days).fill(null);
-      };
+
+    const monthYearFilter = computed(() => {
       if (selectedMonth.value === "Jan") {
-        const month = new Array(31).fill(null);
-        moodList.value = month;
-        // moodList.value = moodListDateList.value.filter((mood) =>
-        //   mood.mood.includes(88)
-        // );
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Jan"));
       }
       if (selectedMonth.value === "Feb") {
-        console.log(moodList.value);
-        daysInMonthArray(28);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Feb"));
       }
       if (selectedMonth.value === "Mar") {
-        console.log("fodasjfn");
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Mar"));
       }
       if (selectedMonth.value === "Apr") {
-        console.log(selectedMonth.value);
-        daysInMonthArray(30);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Apr"));
       }
       if (selectedMonth.value === "May") {
-        console.log(selectedMonth.value);
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("May"));
       }
       if (selectedMonth.value === "Jun") {
-        console.log(selectedMonth.value);
-        daysInMonthArray(30);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Jun"));
       }
       if (selectedMonth.value === "Jul") {
-        console.log(selectedMonth.value);
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Jul"));
       }
       if (selectedMonth.value === "Aug") {
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Aug"));
       }
       if (selectedMonth.value === "Sep") {
-        moodListDateList.value.forEach((date) => console.log(date));
-        daysInMonthArray(30);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Sep"));
       }
       if (selectedMonth.value === "Oct") {
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Oct"));
       }
       if (selectedMonth.value === "Nov") {
-        daysInMonthArray(30);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Nov"));
       }
       if (selectedMonth.value === "Dec") {
-        daysInMonthArray(31);
+        closeAllFilterLists();
+        return entries.value.filter((page) => page.created.includes("Dec"));
       }
+      // if (selectedYear.value === 2022) {
+      //   // return entries.value.filter((page) => page.created.includes(2022));
+      //   return entries.value.forEach((page) => page.created.includes('2022'));
+      // }
       closeAllFilterLists();
-      return moodList.value;
+      return entries.value;
     });
-
-    const closeAllFilterLists = () => {
-      filterListMonth.value = false;
-      filterListYear.value = false;
-      filterListMood.value = false;
-      if (window.innerWidth >= 1000) {
-        filterListMonth.value = true;
-        filterListMood.value = true;
-      }
-    };
 
     return {
       entries,
@@ -344,8 +357,8 @@ export default {
       showListMood,
       selectMoodFilter,
       selectMonth,
-      currentMonthFilter,
-      selectedMonth,
+      selectYear,
+      monthYearFilter,
       closeAllFilterLists,
     };
   },
@@ -450,8 +463,14 @@ section {
       height: 100%;
       .lines {
         width: 5px;
+        height: 100%;
         margin-right: 2px;
         background-color: #9ab9c3;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        max-height: 260px;
       }
     }
     @include desktop-size {
