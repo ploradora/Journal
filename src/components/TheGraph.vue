@@ -198,57 +198,44 @@ export default {
           dayAsIndex.value.forEach(
             (d, i) => (pagesInMonth.value[d] = moodsPerMonth.value[i])
           );
+          console.log(pagesInMonth.value);
 
           closeAllFilterLists();
         }
         if (selectedFilter.value === "Feb") {
           pagesInMonth.value = Array.apply(null, Array(28)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Mar") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Apr") {
           pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "May") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Jun") {
           pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Jul") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Aug") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Sep") {
           pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
@@ -266,24 +253,18 @@ export default {
         }
         if (selectedFilter.value === "Oct") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Nov") {
           pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         if (selectedFilter.value === "Dec") {
           pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-          // console.log(pagesInMonth.value);
 
           closeAllFilterLists();
-          // return entries.value.filter((page) => page.created.includes("Jan"));
         }
         window.addEventListener("resize", resizeWindow);
         resizeWindow();
@@ -294,7 +275,6 @@ export default {
     });
     onMounted(() => {
       selectedFilter.value = currentMonthShort;
-      // dayAsIndex.value =
     });
 
     const disableDesktopButton = () => {
@@ -396,71 +376,6 @@ export default {
       }
     };
 
-    // const monthYearFilter = computed(() => {
-    //   if (selectedFilter.value === "Jan") {
-    //     pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-    //     // console.log(pagesInMonth.value);
-
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Jan"));
-    //   }
-    //   if (selectedFilter.value === "Feb") {
-    //     pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-    //     // console.log(pagesInMonth.value);
-
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Feb"));
-    //   }
-    //   if (selectedFilter.value === "Mar") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Mar"));
-    //   }
-    //   if (selectedFilter.value === "Apr") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Apr"));
-    //   }
-    //   if (selectedFilter.value === "May") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("May"));
-    //   }
-    //   if (selectedFilter.value === "Jun") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Jun"));
-    //   }
-    //   if (selectedFilter.value === "Jul") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Jul"));
-    //   }
-    //   if (selectedFilter.value === "Aug") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Aug"));
-    //   }
-    //   if (selectedFilter.value === "Sep") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Sep"));
-    //   }
-    //   if (selectedFilter.value === "Oct") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Oct"));
-    //   }
-    //   if (selectedFilter.value === "Nov") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Nov"));
-    //   }
-    //   if (selectedFilter.value === "Dec") {
-    //     closeAllFilterLists();
-    //     return entries.value.filter((page) => page.created.includes("Dec"));
-    //   }
-    //   if (selectedFilter.value === 2022) {
-    //     closeAllFilterLists();
-    //     return entries.value;
-    //   }
-    //   closeAllFilterLists();
-    //   return entries.value.filter((page) =>
-    //     page.created.includes(currentMonthShort)
-    //   );
-    // });
-
     return {
       entries,
       months,
@@ -477,7 +392,6 @@ export default {
       selectMoodFilter,
       selectMonth,
       selectYear,
-      // monthYearFilter,
       closeAllFilterLists,
     };
   },
@@ -576,14 +490,18 @@ section {
     align-items: flex-end;
     .graph-lines-list {
       display: flex;
+      justify-content: space-between;
       align-items: end;
       width: 100%;
       height: 100%;
       .lines {
-        width: 5px;
+        width: 100%;
         // height: 100%;
         margin-right: 2px;
         background-color: #9ab9c3;
+      }
+      .lines:last-child {
+        margin-right: unset;
       }
       canvas {
         width: 100%;
