@@ -131,6 +131,13 @@ export default {
       const date = current.toDateString();
       return date;
     };
+    const dayCreated = () => {
+      const current = new Date();
+      const day = current.getDate() - 1;
+      return day;
+    };
+
+    dayCreated();
 
     const handleSubmit = async () => {
       const docRef = collection(db, "entries");
@@ -146,6 +153,7 @@ export default {
         mood: mood.value,
         tags: tags.value,
         created: dateCreated(),
+        day: dayCreated(),
         orderInList: serverTimestamp(),
         textOpen: false,
         detailsOpen: false,
