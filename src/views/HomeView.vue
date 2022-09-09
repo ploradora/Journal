@@ -208,8 +208,8 @@ section {
     grid-gap: 7px;
 
     .thegraph {
-      height: 314px;
-      padding: 10px;
+      height: 300px;
+      padding: 10px 10px 20px 10px;
       margin-bottom: 25px;
       border-radius: $radius-big;
       background-color: $graph-background;

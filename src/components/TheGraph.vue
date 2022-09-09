@@ -78,10 +78,38 @@
       </div>
     </div>
     <div class="graph-display">
-      <div class="graph-lines-list">
+      <div class="graph-grid-lines">
+        <div class="graph-numbers">
+          <p>100</p>
+          <p>90</p>
+          <p>80</p>
+          <p>70</p>
+          <p>60</p>
+          <p>50</p>
+          <p>40</p>
+          <p>30</p>
+          <p>20</p>
+          <p>10</p>
+          <p>0</p>
+        </div>
+        <div class="graph-vertical-lines">
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+          <div class="vertical"></div>
+        </div>
+      </div>
+      <div class="graph-column-list">
         <div
-          class="lines"
-          v-for="page in pagesInMonth"
+          class="columns"
+          v-for="page in selectedMonth"
           :style="{ height: page + '%' }"
           :key="page"
         ></div>
@@ -111,7 +139,8 @@ export default {
     const filterListMood = ref(false);
     const moodList = ref([]);
     const dateList = ref([]);
-    const pagesInMonth = ref([]);
+    const selectedMonth = ref([]);
+    const loopType = ref();
     const moodsPerMonth = ref([]);
     const dayAsIndex = ref([]);
     const selectedFilter = ref("");
@@ -184,95 +213,82 @@ export default {
       }
     };
     watchEffect(() => {
+      if (entries.value === null) entries.value = [];
+      window.addEventListener("resize", resizeWindow);
+      resizeWindow();
+
+      if (window.innerWidth > 1000) {
+      }
+
+      const monthArray = (length, month) => {
+        selectedMonth.value = Array.apply(null, Array(length)).map(
+          function () {}
+        );
+        let currenMoodsArray = [];
+        let currenDaysArray = [];
+
+        entries.value.filter((page) => {
+          if (page.created.includes(month)) {
+            currenMoodsArray.push(page.mood);
+            currenDaysArray.push(page.day);
+          }
+        });
+        let moodsLength = currenMoodsArray.length;
+        let daysLength = currenDaysArray.length;
+
+        moodsPerMonth.value.splice(0, moodsLength);
+        dayAsIndex.value.splice(0, daysLength);
+
+        moodsPerMonth.value = currenMoodsArray;
+        dayAsIndex.value = currenDaysArray;
+
+        dayAsIndex.value.forEach(
+          (d, i) => (selectedMonth.value[d] = moodsPerMonth.value[i])
+        );
+        closeAllFilterLists();
+      };
+
       const handleFilteredArray = () => {
         if (selectedFilter.value === "Jan") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          entries.value.filter((page) => {
-            if (page.created.includes("Jan")) {
-              moodsPerMonth.value.push(page.mood);
-              dayAsIndex.value.push(page.day);
-            }
-          });
-
-          dayAsIndex.value.forEach(
-            (d, i) => (pagesInMonth.value[d] = moodsPerMonth.value[i])
-          );
-          console.log(pagesInMonth.value);
-
-          closeAllFilterLists();
+          monthArray(31, "Jan");
         }
         if (selectedFilter.value === "Feb") {
-          pagesInMonth.value = Array.apply(null, Array(28)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(28, "Feb");
         }
         if (selectedFilter.value === "Mar") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "Mar");
         }
         if (selectedFilter.value === "Apr") {
-          pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(30, "Apr");
         }
         if (selectedFilter.value === "May") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "May");
         }
         if (selectedFilter.value === "Jun") {
-          pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(30, "Jun");
         }
         if (selectedFilter.value === "Jul") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "Jul");
         }
         if (selectedFilter.value === "Aug") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "Aug");
         }
         if (selectedFilter.value === "Sep") {
-          pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-
-          entries.value.filter((page) => {
-            if (page.created.includes("Sep")) {
-              moodsPerMonth.value.push(page.mood);
-              dayAsIndex.value.push(page.day);
-            }
-          });
-          closeAllFilterLists();
-          dayAsIndex.value.forEach(
-            (d, i) => (pagesInMonth.value[d] = moodsPerMonth.value[i])
-          );
+          monthArray(30, "Sep");
         }
         if (selectedFilter.value === "Oct") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "Oct");
         }
         if (selectedFilter.value === "Nov") {
-          pagesInMonth.value = Array.apply(null, Array(30)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(30, "Nov");
         }
         if (selectedFilter.value === "Dec") {
-          pagesInMonth.value = Array.apply(null, Array(31)).map(function () {});
-
-          closeAllFilterLists();
+          monthArray(31, "Dec");
         }
-        window.addEventListener("resize", resizeWindow);
-        resizeWindow();
-
-        if (entries.value === null) entries.value = [];
       };
       handleFilteredArray();
     });
+
     onMounted(() => {
       selectedFilter.value = currentMonthShort;
     });
@@ -303,12 +319,12 @@ export default {
     };
 
     const selectMoodFilter = (mood) => {
-      const lines = document.querySelectorAll(".lines");
+      const columns = document.querySelectorAll(".columns");
 
       let transformRange = mood.range.substring(1) + "%";
 
       const filterLineHeight = (h) => {
-        lines.forEach((line) => {
+        columns.forEach((line) => {
           if (line.style.height >= h || line.style.height === "100%") {
             line.style.backgroundColor = "#9ab9c3";
           } else {
@@ -330,7 +346,7 @@ export default {
         filterLineHeight(transformRange);
       }
       if (mood.range === "all") {
-        lines.forEach((line) => {
+        columns.forEach((line) => {
           line.style.backgroundColor = "#9ab9c3";
         });
       }
@@ -385,7 +401,7 @@ export default {
       filterListMonth,
       filterListYear,
       filterListMood,
-      pagesInMonth,
+      selectedMonth,
       showListMonth,
       showListYear,
       showListMood,
@@ -404,7 +420,7 @@ export default {
 section {
   height: 100%;
   .nav-graph {
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     .filters {
       display: flex;
       align-items: center;
@@ -435,7 +451,7 @@ section {
           }
         }
         .filter-list-active {
-          z-index: unset;
+          z-index: 20;
           top: 30px;
           opacity: 1;
           transition: all 0.15s linear;
@@ -484,38 +500,72 @@ section {
     }
   }
   .graph-display {
+    position: relative;
     width: 100%;
-    height: calc(100% - 34px);
+    height: calc(100% - 39px);
     display: flex;
     align-items: flex-end;
-    .graph-lines-list {
+    .graph-grid-lines {
+      height: 100%;
+      .graph-numbers {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        margin-right: 5px;
+        line-height: 0;
+        font-size: 12px;
+        color: $graph-sort-text;
+      }
+      .graph-vertical-lines {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: calc(100% - 25px);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-left: 1px solid darken($graph-table-lines, 5%);
+        border-right: 1px solid darken($graph-table-lines, 5%);
+        z-index: 1;
+        .vertical {
+          width: 100%;
+          height: 1px;
+          background-color: darken($graph-table-lines, 5%);
+          z-index: 1;
+        }
+      }
+    }
+    .graph-column-list {
+      position: absolute;
+      top: 0;
+      right: 0;
       display: flex;
       justify-content: space-between;
       align-items: end;
-      width: 100%;
+      width: calc(100% - 25px);
       height: 100%;
-      .lines {
+      z-index: 5;
+      .columns {
         width: 100%;
-        // height: 100%;
         margin-right: 2px;
         background-color: #9ab9c3;
+        &:last-child {
+          margin-right: unset;
+        }
       }
-      .lines:last-child {
+      .columns:last-child {
         margin-right: unset;
-      }
-      canvas {
-        width: 100%;
-        height: 100%;
-        max-height: 260px;
       }
     }
     @include desktop-size {
-      height: calc(100% - 29px);
     }
   }
   @include desktop-size {
     .nav-graph {
-      padding-bottom: 5px;
+      padding-bottom: 14px;
       .filters {
         display: flex;
         align-items: center;
@@ -556,6 +606,25 @@ section {
             align-items: center;
           }
         }
+      }
+    }
+    .graph-display {
+      height: calc(100% - 45px);
+      .graph-grid-lines {
+        .graph-numbers {
+          font-size: 11px;
+          p {
+            &:nth-child(2n) {
+              color: darken($graph-table-lines, 5%);
+            }
+          }
+        }
+        .graph-vertical-lines {
+          width: calc(100% - 23px);
+        }
+      }
+      .graph-column-list {
+        width: calc(100% - 24px);
       }
     }
   }
