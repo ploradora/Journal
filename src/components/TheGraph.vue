@@ -106,18 +106,18 @@
           <p>10</p>
           <p>0</p>
         </div>
-        <div class="graph-vertical-lines">
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
-          <div class="vertical"></div>
+        <div class="graph-horizontal-lines">
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
+          <div class="horizontal"></div>
         </div>
       </div>
       <div class="graph-column-list">
@@ -135,10 +135,11 @@
         >
           <div
             class="bar"
-            v-for="bar in page"
+            v-for="(bar, index) in page"
             :key="bar"
             :style="{ height: bar + '%' }"
-          ></div>
+          >
+          </div>
         </div>
       </div>
     </div>
@@ -183,10 +184,7 @@ export default {
       "Dec",
     ]);
 
-    const years = ref([
-      { index: "01", year: 2022 },
-      { index: "02", year: 2021 },
-    ]);
+    const years = ref([{ index: "01", year: 2022 }]);
     const months = ref([
       { class: "jan", index: "01", month: "Jan" },
       { class: "feb", index: "02", month: "Feb" },
@@ -319,7 +317,7 @@ export default {
         closeAllFilterLists();
       };
 
-      if (currentYear.value === 2022) {
+      const handleFilteredYearArray = () => {
         let jan = Array.apply(null, Array(31)).map(function () {});
         let feb = Array.apply(null, Array(28)).map(function () {});
         let mar = Array.apply(null, Array(31)).map(function () {});
@@ -347,8 +345,7 @@ export default {
           nov,
           dec,
         ];
-      }
-      const handleFilteredYearArray = () => {
+
         let moodsInYear = [[], [], [], [], [], [], [], [], [], [], [], []];
         let daysInYear = [[], [], [], [], [], [], [], [], [], [], [], []];
 
@@ -727,7 +724,7 @@ section {
         font-size: 12px;
         color: $graph-sort-text;
       }
-      .graph-vertical-lines {
+      .graph-horizontal-lines {
         position: absolute;
         top: 0;
         right: 0;
@@ -739,8 +736,8 @@ section {
         border-left: 1px solid darken($graph-table-lines, 5%);
         border-right: 1px solid darken($graph-table-lines, 5%);
         z-index: 1;
-        background-color: $background;
-        .vertical {
+        background-color: darken($graph-background, 5%);
+        .horizontal {
           width: 100%;
           height: 1px;
           background-color: darken($graph-table-lines, 5%);
@@ -758,22 +755,15 @@ section {
       width: calc(100% - 25px);
       height: 100%;
       z-index: 5;
+      margin-right: -1px;
       .columns-mobile {
         width: 100%;
         margin-right: 2px;
         background-color: $graph-line-active;
-        &:last-child {
-          margin-right: unset;
-        }
-      }
-      .columns-mobile:last-child {
-        margin-right: unset;
       }
       .columns-desktop {
         display: none;
       }
-    }
-    @include desktop-size {
     }
   }
   @include desktop-size {
@@ -850,9 +840,9 @@ section {
             }
           }
         }
-        .graph-vertical-lines {
+        .graph-horizontal-lines {
           width: calc(100% - 23px);
-          .vertical {
+          .horizontal {
             &:nth-child(2n) {
               background-color: lighten($graph-table-lines, 1%);
             }
@@ -860,27 +850,30 @@ section {
         }
       }
       .graph-column-list {
+        margin-right: unset;
         width: calc(100% - 24px);
+
         .columns-mobile {
           display: none;
         }
-
         .columns-desktop {
+          border-right: 1px dashed $background-note-card;
           display: flex;
           align-items: flex-end;
           width: 100%;
           height: 100%;
-          margin-right: 1px;
           &:last-child {
-            margin-right: unset;
+            border-right: unset;
+            .bar {
+              &:last-child {
+                margin-right: unset;
+              }
+            }
           }
           .bar {
             width: 100%;
             margin-right: 1px;
             background-color: $graph-line-active;
-            &:last-child {
-              margin-right: unset;
-            }
           }
         }
         .visible-month-desktop {

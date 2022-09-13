@@ -56,9 +56,9 @@
               <p class="words">
                 <span class="detail-type">Words:</span> {{ page.words }}
               </p>
-              <p class="color">
-                <span class="detail-type">Title Color:</span>
-                {{ page.titleColor }}
+              <p class="page-number">
+                <span class="detail-type">Page:</span>
+                {{ page.pageNumber }}
               </p>
             </div>
             <div class="mood-container">
@@ -88,6 +88,14 @@
             <p v-for="tag in page.tags" :key="tag" class="tag">#{{ tag }}</p>
           </div>
         </div>
+        <div
+          @click="toggleFavouritePage(page)"
+          class="favourite-page"
+          :class="{ 'toggle-favourite-page': page.favouritePage }"
+        >
+          <p class="number-of-page">pg {{ page.pageNumber }}</p>
+          <button class="toggle-favourite"></button>
+        </div>
       </div>
     </div>
     <div v-else class="empty">
@@ -111,7 +119,7 @@ import getUser from "@/composables/getUser";
 
 import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 export default {
   props: ["filterBy"],
@@ -163,6 +171,12 @@ export default {
         document.body.style.overflow = "unset";
       }, 200);
     };
+    const toggleFavouritePage = (page) => {
+      const docRef = doc(db, "entries", page.id);
+      updateDoc(docRef, {
+        favouritePage: !page.favouritePage,
+      });
+    };
 
     // tablet display
 
@@ -184,6 +198,7 @@ export default {
       showPages,
       handleDelete,
       closeModal,
+      toggleFavouritePage,
       selectPagesFromTags,
     };
   },
@@ -310,9 +325,11 @@ article {
       margin-bottom: 7px;
       opacity: 0;
       padding: 5px;
+      padding-bottom: 34px;
       border: 1.5px solid $input-line;
       background-color: $background-form;
       border-radius: $radius-big;
+      overflow: hidden;
       &:last-child {
         margin-bottom: 1px;
       }
@@ -402,6 +419,7 @@ article {
         }
       }
       .page-main {
+        margin-bottom: 7px;
         .page-description {
           height: 0px;
           opacity: 0;
@@ -409,7 +427,7 @@ article {
           color: $text-buttons;
           .text {
             font-size: 13px;
-            margin-top: 10px;
+            margin-top: 3px;
           }
           .arrow-text-mobile {
             display: block;
@@ -436,10 +454,11 @@ article {
           align-items: center;
           flex-wrap: wrap;
           margin-top: 10px;
+          margin-bottom: 9px;
           gap: 5px;
           &::after {
             width: 97%;
-            height: 2px;
+            height: 1px;
             position: absolute;
             content: "";
             top: -10px;
@@ -463,6 +482,43 @@ article {
           }
         }
       }
+      .favourite-page {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid darken($background, 10%);
+        border-radius: 0 0 6px 6px;
+        // transition: all 0.15s ease-in-out;
+        cursor: pointer;
+        .number-of-page {
+          font-size: 12px;
+          color: lighten($tag-text, 10%);
+          padding-left: 7px;
+        }
+        .toggle-favourite {
+          width: 15px;
+          height: 15px;
+          margin-right: 7px;
+          border-radius: 50%;
+          border: 1.5px solid darken($background-note-card, 10%);
+          background-color: unset;
+          cursor: pointer;
+        }
+      }
+      .toggle-favourite-page {
+        background-color: darken($background-note-card, 10%);
+        // transition: all 0.15s ease-in-out;
+        .number-of-page {
+          color: #fff;
+        }
+        .toggle-favourite {
+          border-color: #fff;
+        }
+      }
     }
     .animate-page {
       opacity: 1;
@@ -484,9 +540,6 @@ article {
     margin-top: 10px;
     background-color: darken($background, 5%);
     @include empty;
-  }
-  .spinner {
-    display: none;
   }
   @include mobile-end {
     margin-top: 55px;
@@ -594,6 +647,7 @@ article {
           }
         }
         .page-main {
+          margin-bottom: unset;
           .page-description {
             opacity: unset;
             height: 100%;
@@ -603,7 +657,7 @@ article {
               -webkit-line-clamp: 3;
               overflow: hidden;
               @include details-brake-3 {
-                -webkit-line-clamp: 5;
+                -webkit-line-clamp: 4;
               }
             }
             .arrow-text-mobile {
@@ -641,14 +695,85 @@ article {
       @include spin;
     }
   }
+  @include details-brake-4 {
+    .pages {
+      .page {
+        padding-left: 11vw;
+        padding-bottom: 5px;
+        .page-main {
+          .tags {
+            margin-bottom: unset;
+          }
+        }
+        .favourite-page {
+          right: unset;
+          width: 10vw;
+          height: 100%;
+          top: 0;
+          left: -1px;
+          bottom: -1px;
+          align-items: start;
+          flex-direction: column-reverse;
+          border-radius: 6px 0 0 6px;
+          border-top: unset;
+          border-right: 1px solid #fff;
+          overflow: hidden;
+          &::after {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            left: 100%;
+            background-color: darken($background-note-card, 10%);
+            // transition: all 0.1s ease-in-out;
+          }
+          .number-of-page {
+            z-index: 1;
+            margin-bottom: 5px;
+          }
+          .toggle-favourite {
+            margin-top: 5px;
+            margin-left: 5px;
+          }
+        }
+        .toggle-favourite-page {
+          background-color: unset;
+          border-right: darken($background-note-card, 10%);
+          &::after {
+            left: 0;
+            // transition: all 0.1s ease-in-out;
+          }
+          .toggle-favourite {
+            border-color: darken($background-note-card, 10%);
+          }
+        }
+      }
+    }
+  }
   @include desktop-size {
     margin-top: unset;
     height: 100%;
+    .pages {
+      .page {
+        padding-left: 9vw;
+        .favourite-page {
+        }
+      }
+    }
   }
   @include desktop-size-big {
     .pages {
       .page {
-        padding-left: 150px;
+        padding-left: 120px;
+        .number-of-page {
+          display: block;
+          position: absolute;
+          left: 10px;
+          top: 10px;
+          color: $main-text;
+          font-size: 12px;
+          user-select: none;
+        }
       }
     }
   }

@@ -107,11 +107,12 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import getUser from "@/composables/getUser";
 import { db } from "@/firebase/config";
 import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
 import { useRouter } from "vue-router";
+import getCollection from "@/composables/getCollection";
 export default {
   setup() {
     const currentColor = ref("default");
@@ -123,6 +124,15 @@ export default {
     const tags = ref([]);
 
     const { user } = getUser();
+    const { documents: entries } = getCollection("entries", [
+      "userUid",
+      "==",
+      user.value.uid,
+    ]);
+
+    watchEffect(() => {
+      if (entries.value === null) entries.value = [];
+    });
 
     const router = useRouter();
 
@@ -144,10 +154,11 @@ export default {
 
       let wordCount = description.value.match(/(\w+)/g).length;
       let charCount = description.value.length;
+      let page = entries.value.length + 1;
 
       await addDoc(docRef, {
         title: title.value,
-        titleColor: currentColor.value,
+        pageNumber: page,
         description: description.value,
         location: location.value,
         mood: mood.value,
@@ -157,6 +168,7 @@ export default {
         orderInList: serverTimestamp(),
         textOpen: false,
         detailsOpen: false,
+        favouritePage: false,
         words: wordCount,
         characters: charCount,
         userUid: user.value.uid,
@@ -196,6 +208,7 @@ export default {
       });
     };
     return {
+      entries,
       title,
       description,
       location,
