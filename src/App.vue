@@ -16,5 +16,4 @@ export default {
 
 <style scoped lang="scss">
 @import "./assets/globalStyles.scss";
-
 </style>

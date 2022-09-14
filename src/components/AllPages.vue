@@ -1,6 +1,6 @@
 <template>
   <p class="outside-title">Pages</p>
-  <article>
+  <article :class="{ 'stop-transition': stopTransition }">
     <div @click="showPages" :class="{ 'rotate-arrow': isOpen }" class="expand">
       <p>Pages</p>
       <span class="material-symbols-outlined arrow" v-if="entries.length">
@@ -128,7 +128,7 @@ export default {
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentColor = ref("default");
-
+    const stopTransition = ref(false);
     const { user } = getUser();
     const { documents: entries } = getCollection("entries", [
       "userUid",
@@ -138,6 +138,14 @@ export default {
 
     watchEffect(() => {
       if (entries.value === null) entries.value = [];
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        stopTransition.value = true;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          stopTransition.value = false;
+        }, 100);
+      });
     });
 
     const selectPagesFromTags = computed(() => {
@@ -194,6 +202,7 @@ export default {
       currentColor,
       deleteId,
       deleteModal,
+      stopTransition,
       openDelete,
       showPages,
       handleDelete,
@@ -217,6 +226,24 @@ export default {
   }
   @include desktop-size {
     display: none;
+  }
+}
+.stop-transition {
+  .pages {
+    .page {
+      .favourite-page {
+        transition: none !important;
+        &:after {
+          transition: none !important;
+        }
+      }
+      .toggle-favourite-page {
+        transition: none !important;
+        &:after {
+          transition: none !important;
+        }
+      }
+    }
   }
 }
 article {
@@ -324,12 +351,9 @@ article {
       position: relative;
       margin-bottom: 7px;
       opacity: 0;
-      padding: 5px;
-      padding-bottom: 34px;
       border: 1.5px solid $input-line;
       background-color: $background-form;
       border-radius: $radius-big;
-      overflow: hidden;
       &:last-child {
         margin-bottom: 1px;
       }
@@ -338,6 +362,7 @@ article {
         flex-direction: column;
         align-items: flex-start;
         justify-content: space-between;
+        padding: 5px 5px 0 5px;
         .date-title {
           margin-bottom: 7px;
           cursor: pointer;
@@ -420,6 +445,8 @@ article {
       }
       .page-main {
         margin-bottom: 7px;
+        padding-left: 5px;
+        padding-right: 5px;
         .page-description {
           height: 0px;
           opacity: 0;
@@ -483,16 +510,28 @@ article {
         }
       }
       .favourite-page {
-        position: absolute;
-        left: 0;
-        right: 0;
-        height: 35px;
+        position: relative;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        margin-bottom: -1px;
+        margin-left: -1px;
+        margin-right: -1px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-top: 1px solid darken($background, 10%);
         border-radius: 0 0 6px 6px;
-        // transition: all 0.15s ease-in-out;
+        user-select: none;
+        transition: all 0.15s ease-in-out;
+        &:after {
+          position: absolute;
+          content: "";
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 2px);
+          height: 1px;
+          background-color: darken($background, 10%);
+        }
         cursor: pointer;
         .number-of-page {
           font-size: 12px;
@@ -510,13 +549,14 @@ article {
         }
       }
       .toggle-favourite-page {
+        border-top: unset;
         background-color: darken($background-note-card, 10%);
-        // transition: all 0.15s ease-in-out;
+        transition: all 0.15s ease-in-out;
+        &:after {
+          height: 0;
+        }
         .number-of-page {
           color: #fff;
-        }
-        .toggle-favourite {
-          border-color: #fff;
         }
       }
     }
@@ -586,7 +626,6 @@ article {
             }
           }
           .details {
-            margin-bottom: -7px;
             flex-direction: row;
             > div {
               justify-self: center;
@@ -706,42 +745,52 @@ article {
           }
         }
         .favourite-page {
-          right: unset;
-          width: 10vw;
+          border-top: unset;
+          position: absolute;
+          width: 10.5vw;
           height: 100%;
           top: 0;
-          left: -1px;
-          bottom: -1px;
+          left: 0;
+          bottom: 0;
+          right: 0;
           align-items: start;
           flex-direction: column-reverse;
-          border-radius: 6px 0 0 6px;
-          border-top: unset;
+          border-radius: 7px 0 0 7px;
           border-right: 1px solid #fff;
-          overflow: hidden;
           &::after {
+            transform: unset;
+            left: unset;
             position: absolute;
             content: "";
-            width: 100%;
             height: 100%;
-            left: 100%;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 0;
+            border-radius: 6px 0 0 6px;
             background-color: darken($background-note-card, 10%);
-            // transition: all 0.1s ease-in-out;
+            transition: all 0.1s ease-in-out;
           }
           .number-of-page {
             z-index: 1;
             margin-bottom: 5px;
           }
           .toggle-favourite {
+            visibility: unset;
             margin-top: 5px;
             margin-left: 5px;
           }
         }
         .toggle-favourite-page {
           background-color: unset;
-          border-right: darken($background-note-card, 10%);
           &::after {
-            left: 0;
-            // transition: all 0.1s ease-in-out;
+            transform: unset;
+            left: unset;
+            width: 100%;
+            height: calc(100% + 1px);
+            right: 0;
+            border-right: darken($background-note-card, 10%);
+            transition: all 0.1s ease-in-out;
           }
           .toggle-favourite {
             border-color: darken($background-note-card, 10%);
@@ -757,6 +806,7 @@ article {
       .page {
         padding-left: 9vw;
         .favourite-page {
+          width: 9vw;
         }
       }
     }
@@ -765,14 +815,8 @@ article {
     .pages {
       .page {
         padding-left: 120px;
-        .number-of-page {
-          display: block;
-          position: absolute;
-          left: 10px;
-          top: 10px;
-          color: $main-text;
-          font-size: 12px;
-          user-select: none;
+        .favourite-page {
+          width: 120px;
         }
       }
     }
