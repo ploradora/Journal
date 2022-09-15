@@ -241,6 +241,30 @@ $scroll-thumb-creme: #d0ccbc;
   }
 }
 
+@mixin existing-user-link {
+  .journal-user-log {
+    position: absolute;
+    width: 70%;
+    max-width: 250px;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 15px;
+    border-radius: $radius-big;
+    font-size: 13px;
+    text-align: center;
+    color: $main-text;
+    background-color: $background-note;
+    transition: all 0.1s linear;
+    cursor: pointer;
+    &:hover {
+      color: $background;
+      background-color: $note-icon-completed;
+      transition: all 0.1s linear;
+    }
+  }
+}
+
 @mixin empty {
   display: grid;
   place-items: center;
