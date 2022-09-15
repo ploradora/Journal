@@ -347,11 +347,10 @@ article {
     height: unset;
     overflow: hidden;
     padding: unset;
-    
+
     &:hover {
       background-color: darken($background-tag-container-blue, 5%);
       cursor: pointer;
-      
     }
     .header-search {
       margin-bottom: unset;
@@ -366,7 +365,6 @@ article {
             margin-right: unset;
             width: 100%;
             cursor: pointer;
-            
           }
           span {
             visibility: hidden;
@@ -388,7 +386,6 @@ article {
     .tags-container {
       height: 0px;
       overflow: hidden;
-      
     }
     .empty {
       height: 0;
@@ -406,7 +403,7 @@ article {
     position: absolute;
     height: calc(100% - 48px);
     display: block;
-    
+
     .header-search {
       padding: 10px 10px 0 10px;
       margin-bottom: 7px;
@@ -444,6 +441,8 @@ article {
       left: 0;
       right: 0;
       height: calc(100% - 84px);
+      overflow: scroll;
+      overflow-x: hidden;
       margin-left: 10px;
       margin-right: 10px;
     }

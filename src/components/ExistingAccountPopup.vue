@@ -4,8 +4,7 @@
     <div class="message">
       <h1>Wait, before you log in!</h1>
       <p>
-        The content of this user is all dummy text, articles from wikipedia or
-        blog posts which includes a variety of topics unrelated to one another.
+        The content of this user is all dummy text, articles from wikipedia, reddit's writing prompts or blog posts which includes a variety of topics unrelated to the goal of this app.
         Its sole purpose is to have a bird's eye perspective on a product that’s
         been used throught the year.
       </p>
@@ -14,7 +13,7 @@
         pages on this account, or if you create one please delete it after you
         have finished exploring Journal.
       </p>
-      <p class="para3">Thank you.</p>
+      <p class="para3">Thank you!</p>
       <button @click="handleLogin">Log in</button>
     </div>
   </div>

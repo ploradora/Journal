@@ -138,8 +138,7 @@
             v-for="(bar, index) in page"
             :key="bar"
             :style="{ height: bar + '%' }"
-          >
-          </div>
+          ></div>
         </div>
       </div>
     </div>

@@ -501,7 +501,7 @@ article {
             color: $tag-text;
             background-color: $background-modal;
             border: 1px solid $input-line;
-            cursor: pointer;
+            cursor: default;
             &:hover {
               color: darken($main-text, 20%);
               background-color: darken($main-tag-background, 10%);
@@ -739,6 +739,13 @@ article {
       .page {
         padding-left: 11vw;
         padding-bottom: 5px;
+        .page-header {
+          .date-title {
+            .title {
+              line-height: 28px;
+            }
+          }
+        }
         .page-main {
           .tags {
             margin-bottom: unset;
@@ -748,8 +755,8 @@ article {
           border-top: unset;
           position: absolute;
           width: 10.5vw;
-          height: 100%;
-          top: 0;
+          height: calc(100% + 1px);
+          top: -1px;
           left: 0;
           bottom: 0;
           right: 0;
@@ -777,19 +784,18 @@ article {
           }
           .toggle-favourite {
             visibility: unset;
-            margin-top: 5px;
             margin-left: 5px;
           }
         }
         .toggle-favourite-page {
           background-color: unset;
+          border-right: 1px solid $background-form;
           &::after {
             transform: unset;
             left: unset;
             width: 100%;
             height: calc(100% + 1px);
             right: 0;
-            border-right: darken($background-note-card, 10%);
             transition: all 0.1s ease-in-out;
           }
           .toggle-favourite {
