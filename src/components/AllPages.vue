@@ -181,7 +181,6 @@ export default {
         }, 100);
       });
       numberOfTotalLists.value = Math.ceil(entries.value.length / 10);
-      console.log(currentList.value);
     });
 
     const buttonNavLeft = () => {
@@ -208,10 +207,21 @@ export default {
         );
       }
       if (filterAllPages.value === true) {
+        const fullArr = entries.value.length;
+        numberOfTotalLists.value = Math.ceil(fullArr / 10);
+
         return entries.value.slice(start.value, end.value);
       }
+
       if (filterFavouritePages.value === true) {
-        return entries.value.filter((page) => page.favouritePage === true);
+        const filteredArr = entries.value.filter(
+          (page) => page.favouritePage === true
+        ).length;
+        numberOfTotalLists.value = Math.ceil(filteredArr / 10);
+
+        return entries.value
+          .filter((page) => page.favouritePage === true)
+          .slice(start.value, end.value);
       }
       return entries.value.slice(start.value, end.value);
     });
@@ -223,10 +233,16 @@ export default {
     const sortFavourites = () => {
       filterFavouritePages.value = !filterFavouritePages.value;
       filterAllPages.value = false;
+      currentList.value = 1;
+      start.value = 0;
+      end.value = 10;
     };
     const showAllPages = () => {
       filterAllPages.value = !filterAllPages.value;
       filterFavouritePages.value = false;
+      currentList.value = 1;
+      start.value = 0;
+      end.value = 10;
     };
 
     const openDelete = (page) => {
@@ -438,11 +454,26 @@ article {
         .currentList {
           user-select: none;
           position: absolute;
+          width: 32px;
+          text-align: center;
           left: 50%;
-          transform: translateX(-50%);
           font-size: 13px;
+          transform: translateX(-50%);
           color: $h2;
           transition: all 0.15s linear;
+          &:after {
+            position: absolute;
+            content: "";
+            width: 32px;
+            left: 50%;
+            top: 0;
+            bottom: 1px;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid $input-line;
+            border-radius: 7px;
+            z-index: -1;
+          }
         }
         span {
           user-select: none;
@@ -454,7 +485,7 @@ article {
             transition: all 0.15s ease-in-out;
           }
           &:nth-child(2) {
-            margin-right: 18px;
+            margin-right: 30px;
             &:hover {
               transform: translateX(-2px);
             }
