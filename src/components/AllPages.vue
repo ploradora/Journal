@@ -12,6 +12,31 @@
       :class="{ 'animate-expand': isOpen }"
       class="pages"
     >
+      <div class="pages-nav">
+        <div class="navigate">
+          <p class="currentList">{{ currentList }}</p>
+          <span @click="buttonNavLeft" class="material-symbols-outlined">
+            chevron_left
+          </span>
+          <span @click="buttonNavRight" class="material-symbols-outlined">
+            chevron_right
+          </span>
+        </div>
+        <div class="pages-filter">
+          <button
+            :class="{ 'button-active': filterFavouritePages }"
+            @click="sortFavourites"
+          >
+            Favourites
+          </button>
+          <button
+            :class="{ 'button-active': filterAllPages }"
+            @click="showAllPages"
+          >
+            All
+          </button>
+        </div>
+      </div>
       <div class="page" v-for="page in selectPagesFromTags" :key="page.id">
         <div class="page-header">
           <div @click="page.textOpen = !page.textOpen" class="date-title">
@@ -94,7 +119,9 @@
           :class="{ 'toggle-favourite-page': page.favouritePage }"
         >
           <p class="number-of-page">pg {{ page.pageNumber }}</p>
-          <button class="toggle-favourite"></button>
+          <!-- <button class="toggle-favourite"></button>
+           -->
+          <span class="material-symbols-outlined favourite"> favorite </span>
         </div>
       </div>
     </div>
@@ -124,11 +151,18 @@ import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 export default {
   props: ["filterBy"],
   setup(props) {
-    const isOpen = ref(false);
+    const isOpen = ref(true);
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentColor = ref("default");
     const stopTransition = ref(false);
+    const start = ref(0);
+    const end = ref(10);
+    const numberOfTotalLists = ref(0);
+    const currentList = ref(1);
+    const filterFavouritePages = ref(false);
+    const filterAllPages = ref(false);
+
     const { user } = getUser();
     const { documents: entries } = getCollection("entries", [
       "userUid",
@@ -146,7 +180,26 @@ export default {
           stopTransition.value = false;
         }, 100);
       });
+      numberOfTotalLists.value = Math.ceil(entries.value.length / 10);
+      console.log(currentList.value);
     });
+
+    const buttonNavLeft = () => {
+      if (currentList.value <= 1) {
+        currentList.value = numberOfTotalLists.value + 1;
+      }
+      currentList.value--;
+      start.value = (currentList.value - 1) * 10;
+      end.value = currentList.value * 10;
+    };
+    const buttonNavRight = () => {
+      if (currentList.value >= numberOfTotalLists.value) {
+        currentList.value = 0;
+      }
+      currentList.value++;
+      start.value = (currentList.value - 1) * 10;
+      end.value = currentList.value * 10;
+    };
 
     const selectPagesFromTags = computed(() => {
       if (props.filterBy) {
@@ -154,12 +207,28 @@ export default {
           page.tags.includes(props.filterBy)
         );
       }
-      return entries.value;
+      if (filterAllPages.value === true) {
+        return entries.value.slice(start.value, end.value);
+      }
+      if (filterFavouritePages.value === true) {
+        return entries.value.filter((page) => page.favouritePage === true);
+      }
+      return entries.value.slice(start.value, end.value);
     });
 
     const showPages = () => {
       isOpen.value = !isOpen.value;
     };
+
+    const sortFavourites = () => {
+      filterFavouritePages.value = !filterFavouritePages.value;
+      filterAllPages.value = false;
+    };
+    const showAllPages = () => {
+      filterAllPages.value = !filterAllPages.value;
+      filterFavouritePages.value = false;
+    };
+
     const openDelete = (page) => {
       document.body.style.overflow = "hidden";
       deleteModal.value = true;
@@ -203,11 +272,18 @@ export default {
       deleteId,
       deleteModal,
       stopTransition,
+      currentList,
+      filterFavouritePages,
+      filterAllPages,
+      sortFavourites,
+      showAllPages,
       openDelete,
       showPages,
       handleDelete,
       closeModal,
       toggleFavouritePage,
+      buttonNavLeft,
+      buttonNavRight,
       selectPagesFromTags,
     };
   },
@@ -326,6 +402,7 @@ article {
   }
   .rotate-arrow {
     user-select: none;
+    margin-bottom: 35px;
     &:hover {
       .arrow {
         transform: rotate(180deg) translateY(2px);
@@ -343,6 +420,83 @@ article {
     margin-top: 0;
     &::-webkit-scrollbar {
       display: none;
+    }
+    .pages-nav {
+      position: absolute;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 10px);
+      background-color: $background;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .navigate {
+        position: relative;
+        display: flex;
+        align-items: center;
+        .currentList {
+          user-select: none;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 13px;
+          color: $h2;
+          transition: all 0.15s linear;
+        }
+        span {
+          user-select: none;
+          color: $h2;
+          cursor: pointer;
+          transition: all 0.15s ease-in-out;
+          &:hover {
+            color: $graph-line-active;
+            transition: all 0.15s ease-in-out;
+          }
+          &:nth-child(2) {
+            margin-right: 18px;
+            &:hover {
+              transform: translateX(-2px);
+            }
+          }
+          &:last-child {
+            &:hover {
+              transform: translateX(2px);
+            }
+          }
+        }
+      }
+      .pages-filter {
+        button {
+          background-color: unset;
+          padding: 3px 15px;
+          font-size: clamp(11px, 3vw, 13px);
+          font-family: $ff;
+          border-radius: $radius-big;
+          color: #7c7c7c;
+          border: 1px solid #b3b3b3;
+          cursor: pointer;
+          transition: 0.15s all linear;
+          &:first-child {
+            margin-right: 5px;
+          }
+          &:hover {
+            border-color: $background-note;
+            background-color: $background-note;
+            transition: 0.15s all linear;
+          }
+        }
+        .button-active {
+          border-color: darken($background-note-card, 10%);
+          background-color: darken($background-note-card, 10%);
+          color: $background;
+          &:hover {
+            border-color: darken($background-note-card, 10%);
+            background-color: darken($background-note-card, 10%);
+            color: $background;
+          }
+        }
+      }
     }
     .page:last-child {
       margin-bottom: unset;
@@ -538,14 +692,16 @@ article {
           color: lighten($tag-text, 10%);
           padding-left: 7px;
         }
-        .toggle-favourite {
-          width: 15px;
-          height: 15px;
+        .favourite {
           margin-right: 7px;
-          border-radius: 50%;
-          border: 1.5px solid darken($background-note-card, 10%);
-          background-color: unset;
+          font-size: 17px;
+          color: darken($background-note-card, 10%);
           cursor: pointer;
+          transition: 0.15s all linear;
+          &:hover {
+            color: darken($background-note-card, 30%);
+            transition: 0.15s all linear;
+          }
         }
       }
       .toggle-favourite-page {
@@ -558,6 +714,9 @@ article {
         .number-of-page {
           color: #fff;
         }
+        .favourite {
+          z-index: -1;
+        }
       }
     }
     .animate-page {
@@ -568,7 +727,7 @@ article {
   .animate-expand {
     height: calc(100vh - 180px);
     opacity: unset;
-    margin-top: 10px;
+    margin-top: 5px;
     transition: all 0.15s linear;
     .page {
       opacity: 1;
@@ -782,8 +941,7 @@ article {
             z-index: 1;
             margin-bottom: 5px;
           }
-          .toggle-favourite {
-            visibility: unset;
+          .favourite {
             margin-left: 5px;
           }
         }
@@ -797,9 +955,6 @@ article {
             height: calc(100% + 1px);
             right: 0;
             transition: all 0.1s ease-in-out;
-          }
-          .toggle-favourite {
-            border-color: darken($background-note-card, 10%);
           }
         }
       }
