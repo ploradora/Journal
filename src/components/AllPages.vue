@@ -22,6 +22,19 @@
             chevron_right
           </span>
         </div>
+        <div class="pages-months-filter">
+          <div
+            @click="filterByMonth(month.fullMonth)"
+            v-for="month in monthInitial"
+            :key="month.initial"
+            class="initial"
+            :class="{
+              'month-initial-active': currentInitialMonth === month.fullMonth,
+            }"
+          >
+            {{ month.initial }}
+          </div>
+        </div>
         <div class="pages-filter">
           <button
             :class="{ 'button-active': filterFavouritePages }"
@@ -119,8 +132,6 @@
           :class="{ 'toggle-favourite-page': page.favouritePage }"
         >
           <p class="number-of-page">pg {{ page.pageNumber }}</p>
-          <!-- <button class="toggle-favourite"></button>
-           -->
           <span class="material-symbols-outlined favourite"> favorite </span>
         </div>
       </div>
@@ -151,7 +162,7 @@ import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 export default {
   props: ["filterBy"],
   setup(props) {
-    const isOpen = ref(true);
+    const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentColor = ref("default");
@@ -162,6 +173,22 @@ export default {
     const currentList = ref(1);
     const filterFavouritePages = ref(false);
     const filterAllPages = ref(false);
+    const monthInitial = ref([
+      { initial: "J", fullMonth: "Jan" },
+      { initial: "F", fullMonth: "Feb" },
+      { initial: "M", fullMonth: "Mar" },
+      { initial: "A", fullMonth: "Apr" },
+      { initial: "M", fullMonth: "May" },
+      { initial: "J", fullMonth: "Jun" },
+      { initial: "J", fullMonth: "Jul" },
+      { initial: "A", fullMonth: "Aug" },
+      { initial: "S", fullMonth: "Sep" },
+      { initial: "O", fullMonth: "Oct" },
+      { initial: "N", fullMonth: "Nov" },
+      { initial: "D", fullMonth: "Dec" },
+    ]);
+    const currentInitialMonth = ref("");
+    const emptyMonth = ref(false);
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries", [
@@ -200,7 +227,27 @@ export default {
       end.value = currentList.value * 10;
     };
 
+    const postsFromMonth = (m) => {
+      const filteredArr = entries.value.filter((page) =>
+        page.created.includes(m)
+      ).length;
+
+      numberOfTotalLists.value = Math.ceil(filteredArr / 10);
+
+      if (numberOfTotalLists.value === 0) {
+        emptyMonth.value = true;
+      } else {
+        emptyMonth.value = false;
+      }
+    };
+
     const selectPagesFromTags = computed(() => {
+      // if (window.innerWidth < 800) {
+      //   const fullArr = entries.value.length;
+      //   numberOfTotalLists.value = Math.ceil(fullArr / 10);
+
+      //   return entries.value.slice(start.value, end.value);
+      // }
       if (props.filterBy) {
         return entries.value.filter((page) =>
           page.tags.includes(props.filterBy)
@@ -223,6 +270,78 @@ export default {
           .filter((page) => page.favouritePage === true)
           .slice(start.value, end.value);
       }
+      if (currentInitialMonth.value === "Jan") {
+        postsFromMonth("Jan");
+        return entries.value
+          .filter((page) => page.created.includes("Jan"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Feb") {
+        postsFromMonth("Feb");
+        return entries.value
+          .filter((page) => page.created.includes("Feb"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Mar") {
+        postsFromMonth("Mar");
+        return entries.value
+          .filter((page) => page.created.includes("Mar"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Apr") {
+        postsFromMonth("Apr");
+        return entries.value
+          .filter((page) => page.created.includes("Apr"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "May") {
+        postsFromMonth("May");
+        return entries.value
+          .filter((page) => page.created.includes("May"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Jun") {
+        postsFromMonth("Jun");
+        return entries.value
+          .filter((page) => page.created.includes("Jun"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Jul") {
+        postsFromMonth("Jul");
+        return entries.value
+          .filter((page) => page.created.includes("Jul"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Aug") {
+        postsFromMonth("Aug");
+        return entries.value
+          .filter((page) => page.created.includes("Aug"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Sep") {
+        postsFromMonth("Sep");
+        return entries.value
+          .filter((page) => page.created.includes("Sep"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Oct") {
+        postsFromMonth("Oct");
+        return entries.value
+          .filter((page) => page.created.includes("Oct"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Nov") {
+        postsFromMonth("Nov");
+        return entries.value
+          .filter((page) => page.created.includes("Nov"))
+          .slice(start.value, end.value);
+      }
+      if (currentInitialMonth.value === "Dec") {
+        postsFromMonth("Dec");
+        return entries.value
+          .filter((page) => page.created.includes("Dec"))
+          .slice(start.value, end.value);
+      }
       return entries.value.slice(start.value, end.value);
     });
 
@@ -233,6 +352,8 @@ export default {
     const sortFavourites = () => {
       filterFavouritePages.value = !filterFavouritePages.value;
       filterAllPages.value = false;
+      currentInitialMonth.value = "";
+      emptyMonth.value = false;
       currentList.value = 1;
       start.value = 0;
       end.value = 10;
@@ -240,6 +361,52 @@ export default {
     const showAllPages = () => {
       filterAllPages.value = !filterAllPages.value;
       filterFavouritePages.value = false;
+      currentInitialMonth.value = "";
+      emptyMonth.value = false;
+      currentList.value = 1;
+      start.value = 0;
+      end.value = 10;
+    };
+
+    const filterByMonth = (month) => {
+      if (month === "Jan") {
+        currentInitialMonth.value = "Jan";
+      }
+      if (month === "Feb") {
+        currentInitialMonth.value = "Feb";
+      }
+      if (month === "Mar") {
+        currentInitialMonth.value = "Mar";
+      }
+      if (month === "Apr") {
+        currentInitialMonth.value = "Apr";
+      }
+      if (month === "May") {
+        currentInitialMonth.value = "May";
+      }
+      if (month === "Jun") {
+        currentInitialMonth.value = "Jun";
+      }
+      if (month === "Jul") {
+        currentInitialMonth.value = "Jul";
+      }
+      if (month === "Aug") {
+        currentInitialMonth.value = "Aug";
+      }
+      if (month === "Sep") {
+        currentInitialMonth.value = "Sep";
+      }
+      if (month === "Oct") {
+        currentInitialMonth.value = "Oct";
+      }
+      if (month === "Nov") {
+        currentInitialMonth.value = "Nov";
+      }
+      if (month === "Dec") {
+        currentInitialMonth.value = "Dec";
+      }
+      filterFavouritePages.value = false;
+      filterAllPages.value = false;
       currentList.value = 1;
       start.value = 0;
       end.value = 10;
@@ -275,7 +442,12 @@ export default {
 
     onMounted(() => {
       window.addEventListener("resize", tabletSize);
+      if (window.innerWidth < 800) {
+        currentInitialMonth.value = "";
+        emptyMonth.value = false;
+      }
     });
+
     const tabletSize = () => {
       const windowWidth = window.innerWidth;
       isOpen.value = windowWidth >= 499;
@@ -291,6 +463,9 @@ export default {
       currentList,
       filterFavouritePages,
       filterAllPages,
+      monthInitial,
+      currentInitialMonth,
+      emptyMonth,
       sortFavourites,
       showAllPages,
       openDelete,
@@ -300,6 +475,7 @@ export default {
       toggleFavouritePage,
       buttonNavLeft,
       buttonNavRight,
+      filterByMonth,
       selectPagesFromTags,
     };
   },
@@ -343,6 +519,7 @@ article {
   width: 100%;
   margin-top: 20px;
   padding: 5px;
+  padding-bottom: unset;
   border: 1.5px solid $input-line;
   border-radius: $radius-big;
   .delete-modal {
@@ -392,7 +569,7 @@ article {
     opacity: 1;
   }
   .expand {
-    padding: 0 5px;
+    padding: 0 5px 5px 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -418,7 +595,7 @@ article {
   }
   .rotate-arrow {
     user-select: none;
-    margin-bottom: 35px;
+    margin-bottom: 45px;
     &:hover {
       .arrow {
         transform: rotate(180deg) translateY(2px);
@@ -437,9 +614,12 @@ article {
     &::-webkit-scrollbar {
       display: none;
     }
+    // .empty-month {
+    //   display: none;
+    // }
     .pages-nav {
       position: absolute;
-      top: 32px;
+      top: 36px;
       left: 50%;
       transform: translateX(-50%);
       width: calc(100% - 10px);
@@ -447,6 +627,9 @@ article {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      .pages-months-filter {
+        display: none;
+      }
       .navigate {
         position: relative;
         display: flex;
@@ -540,7 +723,7 @@ article {
       background-color: $background-form;
       border-radius: $radius-big;
       &:last-child {
-        margin-bottom: 1px;
+        margin-bottom: 7px;
       }
       .page-header {
         display: flex;
@@ -773,9 +956,9 @@ article {
   }
   @include mobile-end {
     margin-top: 55px;
-    height: calc(100vh - 120px);
-    overflow-x: hidden;
-    @include scrollbar;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .expand {
       display: none;
       cursor: auto;
@@ -806,6 +989,27 @@ article {
       transition: unset;
       height: unset;
       margin-top: unset;
+      padding-top: 37px;
+      height: calc(100vh - 135px);
+      overflow-x: hidden;
+      @include scrollbar;
+      &::-webkit-scrollbar-track {
+        margin-bottom: 5px;
+        margin-top: 35px;
+      }
+      .pages-nav {
+        transform: unset;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 6px 0 6px 5px;
+        flex-direction: row-reverse;
+        border-radius: 7px 7px 0 0;
+        .navigate {
+          transform: translateX(8px);
+        }
+      }
       .page {
         opacity: unset;
         transition: unset;
@@ -926,6 +1130,51 @@ article {
   }
   @include details-brake-4 {
     .pages {
+      // .is-empty {
+      //   position: absolute;
+      //   margin: 5px;
+      //   left: 0;
+      //   right: 0;
+      //   bottom: 0;
+      //   width: calc(100% - 10px);
+      //   height: calc(100% - 50px);
+      //   background-color: darken($background, 5%);
+      //   @include empty;
+      // }
+      .pages-nav {
+        .pages-months-filter {
+          position: absolute;
+          top: 50%;
+          left: 170px;
+          transform: translateY(-50%);
+          display: flex;
+          align-items: center;
+          .initial {
+            position: relative;
+            font-size: 13px;
+            width: 22px;
+            text-align: center;
+            border: 1px solid $input-line;
+            // background-color: #fff;
+            color: $tag-text;
+            border-radius: $radius-big;
+            margin-right: 5px;
+            cursor: pointer;
+            transition: all 0.15s linear;
+            &:hover {
+              background-color: rgba(216, 134, 40, 0.247);
+            }
+          }
+          .month-initial-active {
+            color: #fff;
+            background-color: rgba(207, 121, 50, 0.623);
+            &:hover {
+              color: #fff;
+              background-color: rgba(207, 121, 50, 0.623);
+            }
+          }
+        }
+      }
       .page {
         padding-left: 11vw;
         padding-bottom: 5px;
@@ -995,6 +1244,10 @@ article {
     margin-top: unset;
     height: 100%;
     .pages {
+      height: 100%;
+      // .pages-months-filter {
+      //   display: none;
+      // }
       .page {
         padding-left: 9vw;
         .favourite-page {
