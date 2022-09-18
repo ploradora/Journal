@@ -89,8 +89,23 @@ $scroll-thumb-creme: #d0ccbc;
 // mixin media queries
 // mixin media queries
 // mixin media queries
+@mixin mobile-detail-months {
+  @media only screen and (min-width: 420px) {
+    @content;
+  }
+}
+@mixin mobile-detail-months-2 {
+  @media only screen and (min-width: 620px) {
+    @content;
+  }
+}
 @mixin details-brake-1 {
   @media only screen and (min-width: 470px) {
+    @content;
+  }
+}
+@mixin mobile-end {
+  @media only screen and (min-width: 499px) {
     @content;
   }
 }
@@ -111,11 +126,6 @@ $scroll-thumb-creme: #d0ccbc;
 }
 @mixin tag-note-brake {
   @media only screen and (min-width: 670px) {
-    @content;
-  }
-}
-@mixin mobile-end {
-  @media only screen and (min-width: 499px) {
     @content;
   }
 }

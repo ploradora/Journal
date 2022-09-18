@@ -1,7 +1,11 @@
 <template>
   <p class="outside-title">Pages</p>
   <article :class="{ 'stop-transition': stopTransition }">
-    <div @click="showPages" :class="{ 'rotate-arrow': isOpen }" class="expand">
+    <div
+      @click="showPages"
+      :class="{ 'rotate-arrow': isOpen && entries.length }"
+      class="expand"
+    >
       <p>Pages</p>
       <span class="material-symbols-outlined arrow" v-if="entries.length">
         expand_more
@@ -13,41 +17,58 @@
       class="pages"
     >
       <div class="pages-nav">
-        <div class="navigate">
-          <p class="currentList">{{ currentList }}</p>
-          <span @click="buttonNavLeft" class="material-symbols-outlined">
-            chevron_left
-          </span>
-          <span @click="buttonNavRight" class="material-symbols-outlined">
-            chevron_right
-          </span>
-        </div>
-        <div class="pages-months-filter">
-          <div
-            @click="filterByMonth(month.fullMonth)"
-            v-for="month in monthInitial"
-            :key="month.initial"
-            class="initial"
-            :class="{
-              'month-initial-active': currentInitialMonth === month.fullMonth,
-            }"
-          >
-            {{ month.initial }}
+        <div class="top-nav">
+          <div class="navigate">
+            <p class="currentList">{{ currentList }}</p>
+            <span @click="buttonNavLeft" class="material-symbols-outlined">
+              chevron_left
+            </span>
+            <span @click="buttonNavRight" class="material-symbols-outlined">
+              chevron_right
+            </span>
+          </div>
+          <div class="pages-filter">
+            <button
+              :class="{ 'button-active': filterFavouritePages }"
+              @click="sortFavourites"
+            >
+              Favourites
+            </button>
+            <button
+              :class="{ 'button-active': filterAllPages }"
+              @click="showAllPages"
+            >
+              All
+            </button>
           </div>
         </div>
-        <div class="pages-filter">
-          <button
-            :class="{ 'button-active': filterFavouritePages }"
-            @click="sortFavourites"
-          >
-            Favourites
-          </button>
-          <button
-            :class="{ 'button-active': filterAllPages }"
-            @click="showAllPages"
-          >
-            All
-          </button>
+        <div class="pages-months-filter">
+          <div class="first-six">
+            <div
+              @click="filterByMonth(month.fullMonth)"
+              v-for="month in first6MonthsInitials"
+              :key="month.initial"
+              class="initial"
+              :class="{
+                'month-initial-active': currentInitialMonth === month.fullMonth,
+              }"
+            >
+              {{ month.initial }}
+            </div>
+          </div>
+          <div class="last-six">
+            <div
+              @click="filterByMonth(month.fullMonth)"
+              v-for="month in last6MonthsInitials"
+              :key="month.initial"
+              class="initial"
+              :class="{
+                'month-initial-active': currentInitialMonth === month.fullMonth,
+              }"
+            >
+              {{ month.initial }}
+            </div>
+          </div>
         </div>
       </div>
       <div class="page" v-for="page in selectPagesFromTags" :key="page.id">
@@ -135,6 +156,9 @@
           <span class="material-symbols-outlined favourite"> favorite </span>
         </div>
       </div>
+      <div v-if="emptyMonth" class="is-empty">
+        <p>No pages this month</p>
+      </div>
     </div>
     <div v-else class="empty">
       <p>Empty</p>
@@ -162,7 +186,7 @@ import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 export default {
   props: ["filterBy"],
   setup(props) {
-    const isOpen = ref(false);
+    const isOpen = ref(true);
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentColor = ref("default");
@@ -173,13 +197,15 @@ export default {
     const currentList = ref(1);
     const filterFavouritePages = ref(false);
     const filterAllPages = ref(false);
-    const monthInitial = ref([
+    const first6MonthsInitials = ref([
       { initial: "J", fullMonth: "Jan" },
       { initial: "F", fullMonth: "Feb" },
       { initial: "M", fullMonth: "Mar" },
       { initial: "A", fullMonth: "Apr" },
       { initial: "M", fullMonth: "May" },
       { initial: "J", fullMonth: "Jun" },
+    ]);
+    const last6MonthsInitials = ref([
       { initial: "J", fullMonth: "Jul" },
       { initial: "A", fullMonth: "Aug" },
       { initial: "S", fullMonth: "Sep" },
@@ -242,12 +268,6 @@ export default {
     };
 
     const selectPagesFromTags = computed(() => {
-      // if (window.innerWidth < 800) {
-      //   const fullArr = entries.value.length;
-      //   numberOfTotalLists.value = Math.ceil(fullArr / 10);
-
-      //   return entries.value.slice(start.value, end.value);
-      // }
       if (props.filterBy) {
         return entries.value.filter((page) =>
           page.tags.includes(props.filterBy)
@@ -350,7 +370,7 @@ export default {
     };
 
     const sortFavourites = () => {
-      filterFavouritePages.value = !filterFavouritePages.value;
+      filterFavouritePages.value = true;
       filterAllPages.value = false;
       currentInitialMonth.value = "";
       emptyMonth.value = false;
@@ -359,7 +379,7 @@ export default {
       end.value = 10;
     };
     const showAllPages = () => {
-      filterAllPages.value = !filterAllPages.value;
+      filterAllPages.value = true;
       filterFavouritePages.value = false;
       currentInitialMonth.value = "";
       emptyMonth.value = false;
@@ -442,10 +462,6 @@ export default {
 
     onMounted(() => {
       window.addEventListener("resize", tabletSize);
-      if (window.innerWidth < 800) {
-        currentInitialMonth.value = "";
-        emptyMonth.value = false;
-      }
     });
 
     const tabletSize = () => {
@@ -463,7 +479,8 @@ export default {
       currentList,
       filterFavouritePages,
       filterAllPages,
-      monthInitial,
+      first6MonthsInitials,
+      last6MonthsInitials,
       currentInitialMonth,
       emptyMonth,
       sortFavourites,
@@ -595,7 +612,7 @@ article {
   }
   .rotate-arrow {
     user-select: none;
-    margin-bottom: 45px;
+    margin-bottom: 112px;
     &:hover {
       .arrow {
         transform: rotate(180deg) translateY(2px);
@@ -603,6 +620,9 @@ article {
     }
     .arrow {
       transform: rotate(180deg);
+    }
+    @include mobile-detail-months {
+      margin-bottom: 88px;
     }
   }
   .pages {
@@ -614,100 +634,168 @@ article {
     &::-webkit-scrollbar {
       display: none;
     }
-    // .empty-month {
-    //   display: none;
-    // }
+    .is-empty {
+      position: absolute;
+      margin: 5px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: calc(100% - 10px);
+      height: calc(100% - 150px);
+      background-color: darken($background, 5%);
+      @include empty;
+    }
     .pages-nav {
       position: absolute;
       top: 36px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 10px);
-      background-color: $background;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      .pages-months-filter {
-        display: none;
-      }
-      .navigate {
-        position: relative;
+      left: 0;
+      right: 0;
+      width: 100%;
+      padding: 10px 5px;
+      background-color: darken($background, 3%);
+      color: $main-text;
+      border-top: 1px solid $input-line;
+      border-bottom: 1px solid $input-line;
+      .top-nav {
         display: flex;
         align-items: center;
-        .currentList {
-          user-select: none;
-          position: absolute;
-          width: 32px;
-          text-align: center;
-          left: 50%;
-          font-size: 13px;
-          transform: translateX(-50%);
-          color: $h2;
-          transition: all 0.15s linear;
-          &:after {
+        justify-content: space-between;
+        margin-bottom: 8px;
+        .navigate {
+          position: relative;
+          display: flex;
+          align-items: center;
+          transform: translateX(-5px);
+          .currentList {
+            user-select: none;
             position: absolute;
-            content: "";
             width: 32px;
+            text-align: center;
             left: 50%;
-            top: 0;
-            bottom: 1px;
+            font-size: 13px;
             transform: translateX(-50%);
-            background-color: #fff;
-            border: 1px solid $input-line;
-            border-radius: 7px;
-            z-index: -1;
+            color: $note-text-active;
+            transition: all 0.15s linear;
+            &:after {
+              position: absolute;
+              content: "";
+              width: 32px;
+              left: 50%;
+              top: 0;
+              bottom: 1px;
+              transform: translateX(-50%);
+              background-color: #fff;
+              border: 1px solid $input-line;
+              border-radius: 7px;
+              z-index: -1;
+            }
           }
-        }
-        span {
-          user-select: none;
-          color: $h2;
-          cursor: pointer;
-          transition: all 0.15s ease-in-out;
-          &:hover {
-            color: $graph-line-active;
+          span {
+            user-select: none;
+            color: $h2;
+            cursor: pointer;
             transition: all 0.15s ease-in-out;
-          }
-          &:nth-child(2) {
-            margin-right: 30px;
             &:hover {
-              transform: translateX(-2px);
+              color: $graph-line-active;
+              transition: all 0.15s ease-in-out;
             }
-          }
-          &:last-child {
-            &:hover {
-              transform: translateX(2px);
+            &:nth-child(2) {
+              margin-right: 30px;
+              &:hover {
+                transform: translateX(-2px);
+              }
+            }
+            &:last-child {
+              &:hover {
+                transform: translateX(2px);
+              }
             }
           }
         }
-      }
-      .pages-filter {
-        button {
-          background-color: unset;
-          padding: 3px 15px;
-          font-size: clamp(11px, 3vw, 13px);
-          font-family: $ff;
-          border-radius: $radius-big;
-          color: #7c7c7c;
-          border: 1px solid #b3b3b3;
-          cursor: pointer;
-          transition: 0.15s all linear;
-          &:first-child {
-            margin-right: 5px;
-          }
-          &:hover {
-            border-color: $background-note;
-            background-color: $background-note;
+        .pages-filter {
+          button {
+            background-color: unset;
+            padding: 3px 15px;
+            font-size: clamp(11px, 3vw, 13px);
+            font-family: $ff;
+            border-radius: $radius-big;
+            color: $note-text-active;
+            border: 1px solid $input-line;
+            cursor: pointer;
             transition: 0.15s all linear;
+            &:first-child {
+              margin-right: 5px;
+            }
+            &:hover {
+              border-color: $background-note;
+              background-color: $background-note;
+              transition: 0.15s all linear;
+            }
           }
-        }
-        .button-active {
-          border-color: darken($background-note-card, 10%);
-          background-color: darken($background-note-card, 10%);
-          color: $background;
-          &:hover {
+          .button-active {
             border-color: darken($background-note-card, 10%);
             background-color: darken($background-note-card, 10%);
             color: $background;
+            &:hover {
+              border-color: darken($background-note-card, 10%);
+              background-color: darken($background-note-card, 10%);
+              color: $background;
+            }
+          }
+        }
+      }
+      .pages-months-filter {
+        width: 100%;
+        .first-six,
+        .last-six {
+          .initial {
+            position: relative;
+            font-size: 13px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid $input-line;
+            color: $tag-text;
+            border-radius: $radius-big;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.15s linear;
+            &:last-child {
+              margin-right: unset;
+            }
+            &:hover {
+              background-color: rgba(216, 134, 40, 0.247);
+            }
+          }
+          .month-initial-active {
+            color: #fff;
+            background-color: rgba(207, 121, 50, 0.623);
+            &:hover {
+              color: #fff;
+              background-color: rgba(207, 121, 50, 0.623);
+            }
+          }
+        }
+        .first-six {
+          display: flex;
+          align-items: center;
+          // justify-content: space-between;
+          margin-bottom: 5px;
+        }
+        .last-six {
+          display: flex;
+          align-items: center;
+          // justify-content: space-between;
+        }
+        @include mobile-detail-months {
+          display: flex;
+          align-items: center;
+          .first-six {
+            margin-bottom: unset;
+            width: 100%;
+            margin-right: 5px;
+          }
+          .last-six {
+            width: 100%;
           }
         }
       }
@@ -890,6 +978,7 @@ article {
         border-radius: 0 0 6px 6px;
         user-select: none;
         transition: all 0.15s ease-in-out;
+        cursor: pointer;
         &:after {
           position: absolute;
           content: "";
@@ -900,7 +989,6 @@ article {
           height: 1px;
           background-color: darken($background, 10%);
         }
-        cursor: pointer;
         .number-of-page {
           font-size: 12px;
           color: lighten($tag-text, 10%);
@@ -939,7 +1027,7 @@ article {
     }
   }
   .animate-expand {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 100px);
     opacity: unset;
     margin-top: 5px;
     transition: all 0.15s linear;
@@ -951,6 +1039,7 @@ article {
   .empty {
     height: 200px;
     margin-top: 10px;
+    margin-bottom: 5px;
     background-color: darken($background, 5%);
     @include empty;
   }
@@ -989,25 +1078,44 @@ article {
       transition: unset;
       height: unset;
       margin-top: unset;
-      padding-top: 37px;
-      height: calc(100vh - 135px);
+      padding-top: 75px;
+      height: calc(100vh - 130px);
       overflow-x: hidden;
       @include scrollbar;
       &::-webkit-scrollbar-track {
         margin-bottom: 5px;
-        margin-top: 35px;
+        margin-top: 73px;
+      }
+      .is-empty {
+        height: calc(100% - 85px);
       }
       .pages-nav {
         transform: unset;
         z-index: 10;
-        top: 0;
+        top: -1px;
         left: 0;
         right: 0;
-        padding: 6px 0 6px 5px;
+        padding: 6px;
         flex-direction: row-reverse;
-        border-radius: 7px 7px 0 0;
+        border-radius: 6px 6px 0 0;
+        border-top: unset;
+        &::after {
+          position: absolute;
+          content: "";
+          left: 0;
+          right: 0;
+          bottom: -7px;
+          width: 100%;
+          height: 6px;
+          background-color: $background;
+        }
         .navigate {
           transform: translateX(8px);
+        }
+        .pages-months-filter {
+          .initial {
+            width: 22px;
+          }
         }
       }
       .page {
@@ -1122,25 +1230,50 @@ article {
     }
     .empty {
       margin-top: unset;
-      height: 100%;
+      height: 400px;
+      margin-bottom: 5px;
     }
     .spinner {
       @include spin;
     }
   }
+  @include mobile-detail-months-2 {
+    .pages {
+      padding-top: 45px;
+      &::-webkit-scrollbar-track {
+        margin-bottom: 5px;
+        margin-top: 43px;
+      }
+      .is-empty {
+        height: calc(100% - 51px);
+      }
+      .pages-nav {
+        background-color: $background;
+        .top-nav {
+          flex-direction: row-reverse;
+          margin-bottom: unset;
+          .navigate {
+            transform: unset;
+          }
+        }
+        .pages-months-filter {
+          position: absolute;
+          top: 50%;
+          left: 166px;
+          transform: translateY(-50%);
+          width: 320px;
+          .first-six,
+          .last-six {
+            .initial {
+              width: 22px;
+            }
+          }
+        }
+      }
+    }
+  }
   @include details-brake-4 {
     .pages {
-      // .is-empty {
-      //   position: absolute;
-      //   margin: 5px;
-      //   left: 0;
-      //   right: 0;
-      //   bottom: 0;
-      //   width: calc(100% - 10px);
-      //   height: calc(100% - 50px);
-      //   background-color: darken($background, 5%);
-      //   @include empty;
-      // }
       .pages-nav {
         .pages-months-filter {
           position: absolute;
@@ -1155,7 +1288,6 @@ article {
             width: 22px;
             text-align: center;
             border: 1px solid $input-line;
-            // background-color: #fff;
             color: $tag-text;
             border-radius: $radius-big;
             margin-right: 5px;
@@ -1202,7 +1334,7 @@ article {
           align-items: start;
           flex-direction: column-reverse;
           border-radius: 7px 0 0 7px;
-          border-right: 1px solid #fff;
+          // border-right: 1px solid #fff;
           &::after {
             transform: unset;
             left: unset;
@@ -1217,6 +1349,18 @@ article {
             background-color: darken($background-note-card, 10%);
             transition: all 0.1s ease-in-out;
           }
+          ::before {
+            position: absolute;
+            content: "";
+            top: 50%;
+            transform: translateY(-50%);
+            bottom: 0;
+            right: 0;
+            width: 1px;
+            height: calc(100% - 1px);
+            background-color: #fff;
+            transition: all 0.1s ease-in-out;
+          }
           .number-of-page {
             z-index: 1;
             margin-bottom: 5px;
@@ -1227,13 +1371,17 @@ article {
         }
         .toggle-favourite-page {
           background-color: unset;
-          border-right: 1px solid $background-form;
+          // border-right: 1px solid $background-form;
           &::after {
             transform: unset;
             left: unset;
             width: 100%;
             height: calc(100% + 1px);
             right: 0;
+            transition: all 0.1s ease-in-out;
+          }
+          ::before {
+            background-color: darken($background-note-card, 10%);
             transition: all 0.1s ease-in-out;
           }
         }
@@ -1245,8 +1393,12 @@ article {
     height: 100%;
     .pages {
       height: 100%;
+      padding-top: 41px;
+      &::-webkit-scrollbar-track {
+        margin-bottom: 5px;
+        margin-top: 38px;
+      }
       // .pages-months-filter {
-      //   display: none;
       // }
       .page {
         padding-left: 9vw;
@@ -1254,6 +1406,9 @@ article {
           width: 9vw;
         }
       }
+    }
+    .empty {
+      height: calc(100% - 5px);
     }
   }
   @include desktop-size-big {
