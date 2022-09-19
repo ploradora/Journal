@@ -34,28 +34,40 @@
       </div>
     </div>
     <main v-if="user">
-      <div class="allpages">
-        <AllPages :filter-by="filterBy" />
-      </div>
+      <transition appear @before-enter="enterPage" @enter="enterActivePage">
+        <div class="allpages">
+          <AllPages :filter-by="filterBy" @clearFromPages="clearFromPages" />
+        </div>
+      </transition>
       <div class="tags-notes-container">
         <div class="alltags">
-          <AllTags
-            @clearAll="clearAll"
-            @sendTag="sendTag"
-            @valueFromTags="tagVal"
-            :universal-value="universalValue"
-          />
+          <transition appear @before-enter="enterTags" @enter="enterActiveTags">
+            <AllTags
+              @clearAll="clearAll"
+              @sendTag="sendTag"
+              @valueFromTags="tagVal"
+              :universal-value="universalValue"
+            />
+          </transition>
         </div>
         <div class="allnotes">
-          <AllNotes
-            @valueFromNotes="noteVal"
-            :universalValue="universalValue"
-          />
+          <transition
+            appear
+            @before-enter="enterNotes"
+            @enter="enterActiveNotes"
+          >
+            <AllNotes
+              @valueFromNotes="noteVal"
+              :universalValue="universalValue"
+            />
+          </transition>
         </div>
       </div>
-      <div class="thegraph">
-        <TheGraph />
-      </div>
+      <transition appear @before-enter="enterGraph" @enter="enterActiveGraph">
+        <div class="thegraph">
+          <TheGraph />
+        </div>
+      </transition>
     </main>
     <router-view />
   </section>
@@ -72,6 +84,7 @@ import AllTags from "@/components/AllTags.vue";
 import TheGraph from "@/components/TheGraph.vue";
 import getUser from "@/composables/getUser";
 import getCollection from "@/composables/getCollection";
+import gsap from "gsap";
 
 export default {
   components: {
@@ -83,6 +96,7 @@ export default {
   setup() {
     const universalValue = ref(true);
     const filterBy = ref("");
+
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
     const { documents: notes } = getCollection("notes");
@@ -103,6 +117,62 @@ export default {
       filterBy.value = "";
     };
 
+    const clearFromPages = () => {
+      filterBy.value = "";
+    };
+
+    const enterPage = (el) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(-20px)";
+    };
+    const enterTags = (el) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(-20px)";
+    };
+    const enterNotes = (el) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(-20px)";
+    };
+    const enterGraph = (el) => {
+      el.style.opacity = 0;
+      el.style.transform = "translateY(-20px)";
+    };
+    const enterActivePage = (el, done) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: .3,
+        onComplete: done,
+        delay: 0.45,
+      });
+    };
+    const enterActiveTags = (el, done) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: .3,
+        onComplete: done,
+        delay: 0.3,
+      });
+    };
+    const enterActiveNotes = (el, done) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: .3,
+        onComplete: done,
+        delay: 0.15,
+      });
+    };
+    const enterActiveGraph = (el, done) => {
+      gsap.to(el, {
+        opacity: 1,
+        y: 0,
+        duration: .3,
+        onComplete: done,
+      });
+    };
+
     return {
       entries,
       notes,
@@ -112,7 +182,16 @@ export default {
       noteVal,
       universalValue,
       clearAll,
+      clearFromPages,
       filterBy,
+      enterPage,
+      enterTags,
+      enterNotes,
+      enterGraph,
+      enterActivePage,
+      enterActiveTags,
+      enterActiveNotes,
+      enterActiveGraph,
     };
   },
 };

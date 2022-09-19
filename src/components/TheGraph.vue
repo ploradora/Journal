@@ -247,24 +247,24 @@ export default {
         selectedMonth.value = Array.apply(null, Array(length)).map(
           function () {}
         );
-        let currenMoodsArray = [];
-        let currenDaysArray = [];
+        let currentMoodsArray = [];
+        let currentDaysArray = [];
 
         entries.value.filter((page) => {
           if (page.created.includes(month)) {
-            currenMoodsArray.push(page.mood);
-            currenDaysArray.push(page.day);
+            currentMoodsArray.push(page.mood);
+            currentDaysArray.push(page.day);
           }
         });
 
-        let moodsLength = currenMoodsArray.length;
-        let daysLength = currenDaysArray.length;
+        let moodsLength = currentMoodsArray.length;
+        let daysLength = currentDaysArray.length;
 
         moodsPerMonth.value.splice(0, moodsLength);
         dayAsIndex.value.splice(0, daysLength);
 
-        moodsPerMonth.value = currenMoodsArray;
-        dayAsIndex.value = currenDaysArray;
+        moodsPerMonth.value = currentMoodsArray;
+        dayAsIndex.value = currentDaysArray;
 
         dayAsIndex.value.forEach(
           (d, i) => (selectedMonth.value[d] = moodsPerMonth.value[i])

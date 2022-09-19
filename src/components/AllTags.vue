@@ -58,7 +58,7 @@ export default {
     const sort1Active = ref(false);
     const sort2Active = ref(false);
     const toggleContainer = ref(true);
-    const currentTag = ref(null);
+    const currentTag = ref("");
     const search = ref("");
 
     const { user } = getUser();

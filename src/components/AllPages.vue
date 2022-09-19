@@ -185,8 +185,8 @@ import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 export default {
   props: ["filterBy"],
-  setup(props) {
-    const isOpen = ref(true);
+  setup(props, context) {
+    const isOpen = ref(false);
     const deleteModal = ref(false);
     const deleteId = ref("");
     const currentColor = ref("default");
@@ -234,6 +234,11 @@ export default {
         }, 100);
       });
       numberOfTotalLists.value = Math.ceil(entries.value.length / 10);
+      if (props.filterBy || !props.filterBy) {
+        currentList.value = 1;
+        start.value = 0;
+        end.value = 10;
+      }
     });
 
     const buttonNavLeft = () => {
@@ -269,27 +274,36 @@ export default {
 
     const selectPagesFromTags = computed(() => {
       if (props.filterBy) {
-        return entries.value.filter((page) =>
+        filterFavouritePages.value = false;
+        filterAllPages.value = false;
+        currentInitialMonth.value = "";
+
+        const filteredArr = entries.value.filter((page) =>
           page.tags.includes(props.filterBy)
-        );
+        ).length;
+        numberOfTotalLists.value = Math.ceil(filteredArr / 10);
+
+        return entries.value
+          .filter((page) => page.tags.includes(props.filterBy))
+          .slice(start.value, end.value);
       }
       if (filterAllPages.value === true) {
         const fullArr = entries.value.length;
         numberOfTotalLists.value = Math.ceil(fullArr / 10);
-
+        // context.emit("clear-from-pages");
         return entries.value.slice(start.value, end.value);
       }
-
       if (filterFavouritePages.value === true) {
         const filteredArr = entries.value.filter(
           (page) => page.favouritePage === true
         ).length;
         numberOfTotalLists.value = Math.ceil(filteredArr / 10);
-
+        context.emit("clear-from-pages");
         return entries.value
           .filter((page) => page.favouritePage === true)
           .slice(start.value, end.value);
       }
+
       if (currentInitialMonth.value === "Jan") {
         postsFromMonth("Jan");
         return entries.value
@@ -370,6 +384,7 @@ export default {
     };
 
     const sortFavourites = () => {
+      context.emit("clear-from-pages");
       filterFavouritePages.value = true;
       filterAllPages.value = false;
       currentInitialMonth.value = "";
@@ -379,6 +394,7 @@ export default {
       end.value = 10;
     };
     const showAllPages = () => {
+      context.emit("clear-from-pages");
       filterAllPages.value = true;
       filterFavouritePages.value = false;
       currentInitialMonth.value = "";
@@ -425,6 +441,7 @@ export default {
       if (month === "Dec") {
         currentInitialMonth.value = "Dec";
       }
+      context.emit("clear-from-pages");
       filterFavouritePages.value = false;
       filterAllPages.value = false;
       currentList.value = 1;
@@ -769,6 +786,7 @@ article {
           .month-initial-active {
             color: #fff;
             background-color: rgba(207, 121, 50, 0.623);
+            border-color: rgba(207, 121, 50, 0.623);
             &:hover {
               color: #fff;
               background-color: rgba(207, 121, 50, 0.623);
