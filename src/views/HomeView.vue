@@ -34,6 +34,9 @@
       </div>
     </div>
     <main v-if="user">
+      <!-- <transition name="advice">
+        <AdviceOnLog />
+      </transition> -->
       <transition appear @before-enter="enterPage" @enter="enterActivePage">
         <div class="allpages">
           <AllPages :filter-by="filterBy" @clearFromPages="clearFromPages" />
@@ -78,6 +81,7 @@
 
 <script>
 import { ref } from "vue";
+// import AdviceOnLog from "@/components/AdviceOnLog.vue";
 import AllPages from "@/components/AllPages.vue";
 import AllNotes from "@/components/AllNotes.vue";
 import AllTags from "@/components/AllTags.vue";
@@ -88,6 +92,7 @@ import gsap from "gsap";
 
 export default {
   components: {
+    // AdviceOnLog,
     AllPages,
     AllNotes,
     AllTags,
@@ -141,34 +146,34 @@ export default {
       gsap.to(el, {
         opacity: 1,
         y: 0,
-        duration: .3,
+        duration: 0.3,
         onComplete: done,
-        delay: 0.45,
+        delay: 0.15,
       });
     };
     const enterActiveTags = (el, done) => {
       gsap.to(el, {
         opacity: 1,
-        y: 0,
-        duration: .3,
+        y: -1,
+        duration: 0.3,
         onComplete: done,
-        delay: 0.3,
+        delay: 0.45,
       });
     };
     const enterActiveNotes = (el, done) => {
       gsap.to(el, {
         opacity: 1,
         y: 0,
-        duration: .3,
+        duration: 0.3,
         onComplete: done,
-        delay: 0.15,
+        delay: 0.3,
       });
     };
     const enterActiveGraph = (el, done) => {
       gsap.to(el, {
         opacity: 1,
         y: 0,
-        duration: .3,
+        duration: 0.3,
         onComplete: done,
       });
     };
@@ -285,7 +290,6 @@ section {
     font-size: 14px;
     display: grid;
     grid-gap: 7px;
-
     .thegraph {
       height: 300px;
       padding: 10px 10px 20px 10px;

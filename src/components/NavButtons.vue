@@ -1,5 +1,5 @@
 <template>
-  <nav :class="{ 'stop-transition': stopTransition }">
+  <nav>
     <div v-if="user" class="home-nav">
       <p class="current-date">{{ currentDate }}</p>
       <div class="menu-intro">
@@ -33,22 +33,18 @@
           class="mobile-drop-button"
         >
           <div class="wrapper-mobile-menu">
-            <button class="button-mobile" @click="handleClick">Log Out</button>
-            <button class="button-desktop" @click="showMenu">
-              Log Out
-            </button>
-            <!-- <span @click="hideMenu" class="material-symbols-outlined close"
-              >close</span
-            > -->
+            <button @click="handleClick">Log Out</button>
+            <span @click="hideMenu" class="material-symbols-outlined arrow-up"
+              ></span
+            >
           </div>
         </div>
-
         <div
           :class="{ 'toggle-overlay': toggleMobile }"
           @click="hideMenu"
           class="overlay"
         >
-          <LogOutAdvice :toggleMobile="toggleMobile" />
+          <img src="../assets/images/logo.png" alt="journal logo" />
         </div>
       </div>
     </div>
@@ -57,25 +53,16 @@
 
 <script>
 import getUser from "@/composables/getUser";
-
 import { auth } from "../firebase/config";
 import { signOut } from "firebase/auth";
 import { computed, onMounted, ref, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-
-import LogOutAdvice from "./LogOutAdvice.vue";
-
 export default {
-  components: {
-    LogOutAdvice,
-  },
   setup() {
     const { user } = getUser();
     const toggleMobile = ref(false);
     const showButton = ref(false);
-    const stopTransition = ref(false);
     const router = useRouter();
-
     watchEffect(() => {
       if (router.currentRoute.value.name === "home") {
         showButton.value = false;
@@ -86,35 +73,22 @@ export default {
       if (router.currentRoute.value.name === "update") {
         showButton.value = true;
       }
-      let resizeTimer;
-      window.addEventListener("resize", () => {
-        stopTransition.value = true;
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-          stopTransition.value = false;
-        }, 100);
-      });
     });
-
-    // onMounted(() => {
-    //   window.addEventListener("resize", resizeWindow);
-    // });
-    // const resizeWindow = () => {
-    //   const windowWidth = window.innerWidth;
-
-    //   if (windowWidth >= 499) {
-    //     toggleMobile.value = false;
-    //     document.body.style.overflow = "unset";
-    //   }
-    // };
-
+    onMounted(() => {
+      window.addEventListener("resize", resizeWindow);
+    });
+    const resizeWindow = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth >= 499) {
+        toggleMobile.value = false;
+      }
+    };
     const handleClick = () => {
       signOut(auth);
       toggleMobile.value = false;
       router.push("/");
       document.body.style.overflow = "unset";
     };
-
     const showMenu = () => {
       document.body.style.overflow = "hidden";
       toggleMobile.value = true;
@@ -133,7 +107,6 @@ export default {
       showMenu,
       hideMenu,
       onMounted,
-      stopTransition,
       toggleMobile,
       currentDate,
       user,
@@ -208,37 +181,31 @@ nav {
         width: 100%;
         left: 0;
         top: -100px;
+        padding: 10px 0;
         border-radius: 0 0 $radius-big $radius-big;
-        background-color: #e8ede4;
         transition: all 0.15s linear;
         opacity: 0;
         z-index: 55;
         .wrapper-mobile-menu {
-          .button-desktop {
-            display: none;
-          }
+          width: 95%;
+          margin: auto;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: row-reverse;
           button {
             @include button-contour;
             font-weight: 500;
-            position: absolute;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
           }
-          // .close {
-          //   position: absolute;
-          //   top: 17px;
-          //   right: 3%;
-          //   color: $h2;
-          //   align-self: end;
-          //   font-size: 19px;
-          //   cursor: pointer;
-          //   &:hover {
-          //     color: $graph-line-active;
-          //     transform: translateY(-2px);
-          //     transition: all 0.15s ease-in-out;
-          //   }
-          // }
+          .arrow-up {
+            color: $h2;
+            align-self: end;
+            cursor: pointer;
+            &:hover {
+              color: $graph-line-active;
+              transform: translateY(-2px);
+              transition: all 0.15s ease-in-out;
+            }
+          }
         }
       }
       .overlay {
@@ -247,18 +214,28 @@ nav {
         bottom: 100%;
         left: 0;
         width: 100%;
-        background-color: transparent;
-        backdrop-filter: blur(3px);
+        background-color: $background-modal;
         cursor: pointer;
         opacity: 0;
         z-index: 50;
         transition: all 0.1s linear;
+        img {
+          position: absolute;
+          width: 40%;
+          max-width: 200px;
+          bottom: 40px;
+          left: 50%;
+          transform:scale(0) translateX(-50%) ;
+        }
       }
       .toggle-overlay {
         bottom: 0;
         opacity: 1;
-        background-color: rgba(100, 98, 98, 0.02);
+        background-color: $background-modal;
         transition: all 0.1s linear;
+        img {
+          transform:scale(1) translateX(-50%) ;
+        }
       }
       .toggle-menu {
         position: fixed;
@@ -273,7 +250,8 @@ nav {
     margin: auto;
     .home-nav {
       .icon-expand,
-      .close {
+      .arrow-up,
+      .overlay {
         display: none;
         transition: unset;
       }
@@ -318,19 +296,6 @@ nav {
             margin: unset;
             display: unset;
             justify-content: unset;
-            .button-mobile {
-              display: none;
-            }
-            .button-desktop {
-              display: block;
-            }
-            button {
-              position: unset;
-              top: unset;
-              left: unset;
-              transform: unset;
-              // transition: unset;
-            }
           }
         }
       }
@@ -361,34 +326,6 @@ nav {
             transform: scale(0.9);
           }
         }
-      }
-    }
-  }
-}
-.stop-transition {
-  .home-nav {
-    .buttons {
-      transition: unset;
-      .compose {
-        transition: unset;
-      }
-      .mobile-drop-button {
-        transition: unset;
-        .wrapper-mobile-menu {
-          transition: unset;
-          button {
-            transition: unset;
-          }
-        }
-      }
-      .overlay {
-        transition: unset;
-      }
-      .toggle-overlay {
-        transition: unset;
-      }
-      .toggle-menu {
-        transition: unset;
       }
     }
   }

@@ -276,7 +276,7 @@ article {
     transition: all 0.2s linear;
   }
   .tags-container {
-    height: 200px;
+    height: 210px;
     width: 100%;
     overflow: scroll;
     overflow-x: hidden;

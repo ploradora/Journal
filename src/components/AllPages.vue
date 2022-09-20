@@ -522,11 +522,6 @@ export default {
   color: $h2;
   display: none;
   @include mobile-end {
-    display: block;
-    position: absolute;
-    top: 88px;
-  }
-  @include desktop-size {
     display: none;
   }
 }
@@ -1411,10 +1406,13 @@ article {
     height: 100%;
     .pages {
       height: 100%;
-      padding-top: 41px;
+      padding-top: 42px;
       &::-webkit-scrollbar-track {
         margin-bottom: 5px;
-        margin-top: 38px;
+        margin-top: 39px;
+      }
+      .pages-nav {
+        top: 0;
       }
       // .pages-months-filter {
       // }
