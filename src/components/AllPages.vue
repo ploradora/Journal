@@ -163,15 +163,6 @@
     <div v-else class="empty">
       <p>Empty</p>
     </div>
-    <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal">
-      <div class="delete-content">
-        <p>Delete this page?</p>
-        <div class="delete-action">
-          <button @click="handleDelete" class="delete">Delete</button>
-          <button @click="closeModal" class="cancel">Cancel</button>
-        </div>
-      </div>
-    </div>
   </article>
 </template>
 
@@ -450,24 +441,13 @@ export default {
     };
 
     const openDelete = (page) => {
-      document.body.style.overflow = "hidden";
+      // document.body.style.overflow = "hidden";
       deleteModal.value = true;
       deleteId.value = page.id;
+      context.emit("open-delete", true);
+      context.emit("the-delete-id", deleteId.value);
     };
 
-    const closeModal = () => {
-      document.body.style.overflow = "unset";
-      deleteModal.value = false;
-    };
-
-    const handleDelete = () => {
-      const docRef = doc(db, "entries", deleteId.value);
-      deleteDoc(docRef);
-      setTimeout(() => {
-        deleteModal.value = false;
-        document.body.style.overflow = "unset";
-      }, 200);
-    };
     const toggleFavouritePage = (page) => {
       const docRef = doc(db, "entries", page.id);
       updateDoc(docRef, {
@@ -504,8 +484,6 @@ export default {
       showAllPages,
       openDelete,
       showPages,
-      handleDelete,
-      closeModal,
       toggleFavouritePage,
       buttonNavLeft,
       buttonNavRight,
@@ -551,52 +529,6 @@ article {
   padding-bottom: unset;
   border: 1.5px solid $input-line;
   border-radius: $radius-big;
-  .delete-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    max-height: 100vh;
-    width: 100%;
-    transform: scale(0);
-    opacity: 0;
-    z-index: 55;
-    background-color: #e8ede4;
-    display: grid;
-    place-items: center;
-    .delete-content {
-      width: 90%;
-      font-weight: 500;
-      color: $h2;
-      p {
-        text-align: center;
-      }
-      .delete-action {
-        margin-top: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .delete {
-          @include button-full;
-          margin-right: 7px;
-          color: $background;
-          background-color: $text-buttons;
-          border-color: $text-buttons;
-          &:hover {
-            border-color: darken($text-buttons, 20%);
-            background-color: darken($text-buttons, 20%);
-          }
-        }
-        .cancel {
-          @include button-contour;
-        }
-      }
-    }
-  }
-  .animate-delete-modal {
-    transform: scale(1);
-    opacity: 1;
-  }
   .expand {
     padding: 0 5px 5px 5px;
     display: flex;

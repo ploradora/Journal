@@ -750,7 +750,7 @@ section {
       right: 0;
       display: flex;
       justify-content: space-between;
-      align-items: end;
+      align-items: flex-end;
       width: calc(100% - 25px);
       height: 100%;
       z-index: 5;

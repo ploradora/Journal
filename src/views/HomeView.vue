@@ -39,7 +39,12 @@
       </transition> -->
       <transition appear @before-enter="enterPage" @enter="enterActivePage">
         <div class="allpages">
-          <AllPages :filter-by="filterBy" @clearFromPages="clearFromPages" />
+          <AllPages
+            :filter-by="filterBy"
+            @open-delete="openDelete"
+            @the-delete-id="theDeleteId"
+            @clearFromPages="clearFromPages"
+          />
         </div>
       </transition>
       <div class="tags-notes-container">
@@ -77,11 +82,17 @@
   <div v-else class="loading">
     <img src="../assets/images/spinner-pages.png" alt="" />
   </div>
+  <DeletePage
+    @close-delete="closeDelete"
+    :openDeleteModal="openDeleteModal"
+    :id-delete="idDelete"
+  />
 </template>
 
 <script>
 import { ref } from "vue";
 // import AdviceOnLog from "@/components/AdviceOnLog.vue";
+import DeletePage from "@/components/DeletePage.vue";
 import AllPages from "@/components/AllPages.vue";
 import AllNotes from "@/components/AllNotes.vue";
 import AllTags from "@/components/AllTags.vue";
@@ -97,10 +108,13 @@ export default {
     AllNotes,
     AllTags,
     TheGraph,
+    DeletePage,
   },
   setup() {
     const universalValue = ref(true);
     const filterBy = ref("");
+    const openDeleteModal = ref(false);
+    const idDelete = ref("");
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
@@ -124,6 +138,18 @@ export default {
 
     const clearFromPages = () => {
       filterBy.value = "";
+    };
+
+    const openDelete = (state) => {
+      openDeleteModal.value = state;
+    };
+
+    const closeDelete = (state) => {
+      openDeleteModal.value = state;
+    };
+
+    const theDeleteId = (id) => {
+      idDelete.value = id;
     };
 
     const enterPage = (el) => {
@@ -188,6 +214,11 @@ export default {
       universalValue,
       clearAll,
       clearFromPages,
+      openDelete,
+      closeDelete,
+      theDeleteId,
+      idDelete,
+      openDeleteModal,
       filterBy,
       enterPage,
       enterTags,
