@@ -658,6 +658,7 @@ article {
         }
         .pages-filter {
           button {
+            user-select: none;
             background-color: unset;
             padding: 3px 15px;
             font-size: clamp(11px, 3vw, 13px);
@@ -677,6 +678,7 @@ article {
             }
           }
           .button-active {
+            user-select: none;
             border-color: darken($background-note-card, 10%);
             background-color: darken($background-note-card, 10%);
             color: $background;
@@ -693,6 +695,7 @@ article {
         .first-six,
         .last-six {
           .initial {
+            user-select: none;
             position: relative;
             font-size: 13px;
             width: 100%;
@@ -711,6 +714,7 @@ article {
             }
           }
           .month-initial-active {
+            user-select: none;
             color: #fff;
             background-color: rgba(207, 121, 50, 0.623);
             border-color: rgba(207, 121, 50, 0.623);
@@ -791,6 +795,7 @@ article {
           align-self: end;
           justify-content: space-between;
           a {
+            user-select: none;
             width: fit-content;
             display: flex;
             align-items: center;
@@ -798,6 +803,7 @@ article {
             color: $h2;
           }
           span {
+            user-select: none;
             color: $h2;
             font-size: clamp(16px, 2vw, 18px);
             cursor: pointer;
@@ -806,6 +812,7 @@ article {
             }
           }
           .icon-active {
+            user-select: none;
             color: $graph-line-active;
           }
         }

@@ -172,6 +172,7 @@ article {
       display: flex;
       align-items: center;
       .sort {
+        user-select: none;
         display: flex;
         margin-right: 10px;
         align-items: center;
@@ -188,6 +189,7 @@ article {
           }
         }
         .icon-active {
+          user-select: none;
           color: darken($h2, 70%);
           transition: all 0.1s linear;
           &:hover {
@@ -207,6 +209,7 @@ article {
         z-index: -1;
         transition: all 0.15s linear;
         p {
+          user-select: none;
           padding: 2px 13px;
           margin-right: 5px;
           border-radius: $radius-big;
@@ -218,6 +221,7 @@ article {
           }
         }
         .sort-active {
+          user-select: none;
           background-color: darken($background, 20%);
         }
       }
@@ -291,6 +295,7 @@ article {
       border: 3px solid $background-tag-container-blue;
     }
     .tag {
+      user-select: none;
       display: inline-block;
       margin-right: 5px;
       margin-bottom: 5px;
