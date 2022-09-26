@@ -183,7 +183,7 @@ export default {
         y: -1,
         duration: 0.3,
         onComplete: done,
-        delay: 0.45,
+        delay: 0.3,
       });
     };
     const enterActiveNotes = (el, done) => {
@@ -192,7 +192,7 @@ export default {
         y: 0,
         duration: 0.3,
         onComplete: done,
-        delay: 0.3,
+        delay: 0.2,
       });
     };
     const enterActiveGraph = (el, done) => {
@@ -329,6 +329,9 @@ section {
       background-color: $graph-background;
     }
     .tags-notes-container {
+      position: relative;
+      width: 100%;
+      height: 706px;
       .alltags {
         margin-bottom: 7px;
       }
@@ -347,6 +350,7 @@ section {
     @include tag-note-brake {
       .tags-notes-container {
         display: flex;
+        height: 349px;
         .alltags {
           margin-bottom: unset;
           margin-right: 7px;
@@ -369,13 +373,11 @@ section {
         grid-row: 1 / 2;
       }
       .tags-notes-container {
-        position: relative;
         height: 100%;
         overflow: hidden;
         grid-column: 2/3;
         grid-row: 1 /2;
-        display: grid;
-        grid-template-rows: 1fr 1fr;
+        display: block;
         .alltags {
           margin-bottom: 7px;
           margin-right: unset;

@@ -1,5 +1,10 @@
 <template>
-  <article :class="{ 'container-open': toggleContainer }">
+  <article
+    :class="{
+      'container-toggle': toggleContainer,
+      'stop-transition': stopTransition,
+    }"
+  >
     <div class="notes-nav">
       <p @click="openContainer">Side Notes</p>
       <router-link :to="{ name: 'addnote' }">add a note</router-link>
@@ -16,19 +21,6 @@
         v-for="note in filteredNotes"
         :key="note.id"
       >
-        <div
-          :class="{ 'animate-delete-modal': deleteModal }"
-          class="delete-modal"
-        >
-          <div class="delete-content">
-            <p>Delete this note?</p>
-            <div class="delete-action">
-              <button @click="handleDelete(id)" class="delete">Delete</button>
-              <button @click="closeModal" class="cancel">Cancel</button>
-            </div>
-          </div>
-          <div @click="deleteModal = false" class="delete-overflow"></div>
-        </div>
         <p class="text">{{ note.note }}</p>
         <div class="note-bottom">
           <p class="date-created">{{ note.created }}</p>
@@ -52,7 +44,7 @@
       </div>
     </TransitionGroup>
     <div v-else class="empty">
-      <p>Empty</p>
+      <p>Looks a bit empty</p>
     </div>
     <div class="sort-buttons">
       <button
@@ -74,6 +66,16 @@
         Ongoing
       </button>
     </div>
+    <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal">
+      <div class="delete-content">
+        <p>Delete this note?</p>
+        <div class="delete-action">
+          <button @click="handleDelete(id)" class="delete">Delete</button>
+          <button @click="closeModal" class="cancel">Cancel</button>
+        </div>
+      </div>
+      <div @click="deleteModal = false" class="delete-overflow"></div>
+    </div>
   </article>
 </template>
 
@@ -90,6 +92,7 @@ export default {
     const isChecked = ref(false);
     const isWriteOpen = ref(false);
     const deleteModal = ref(false);
+    const stopTransition = ref(false);
     const deleteId = ref("");
     const toggleContainer = ref(true);
     const currentFilter = ref("all");
@@ -114,21 +117,31 @@ export default {
     watchEffect(() => {
       toggleContainer.value = props.universalValue;
       if (notes.value === null) notes.value = [];
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        stopTransition.value = true;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          stopTransition.value = false;
+        }, 100);
+      });
     });
 
     const openContainer = () => {
       toggleContainer.value = !toggleContainer.value;
+      if (window.innerWidth < 1000) {
+        toggleContainer.value = false;
+      }
       context.emit("value-from-notes", toggleContainer.value);
     };
 
     const openDelete = (note) => {
-      document.body.style.overflow = "hidden";
       deleteModal.value = true;
       deleteId.value = note.id;
       return deleteId.value;
     };
     const closeModal = () => {
-      document.body.style.overflow = "unset";
       deleteModal.value = false;
     };
     const handleUpdate = (note) => {
@@ -144,10 +157,6 @@ export default {
       document.body.style.overflow = "unset";
       const docRef = doc(db, "notes", id);
       deleteDoc(docRef);
-      // setTimeout(() => {
-      //   deleteModal.value = false;
-      //   document.body.style.overflow = "unset";
-      // }, 200);
     };
     const handleWriteNote = () => {
       isWriteOpen.value = true;
@@ -176,6 +185,7 @@ export default {
       deleteModal,
       deleteId,
       toggleContainer,
+      stopTransition,
       openContainer,
       handleWriteNote,
       openDelete,
@@ -193,19 +203,37 @@ export default {
 @import "../assets/globalStyles.scss";
 
 article {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  bottom: 0;
   width: 100%;
-  padding: 10px;
+  height: 350px;
   border-radius: $radius-big;
   color: $h2;
   background-color: $background-note;
+  transition: all 0.35s ease-in-out;
+  p {
+    margin: 0;
+  }
   .notes-nav {
-    margin-bottom: 10px;
+    position: relative;
+    height: 44px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    p {
+      user-select: none;
+      text-align: center;
+      position: absolute;
+      height: 44px;
+      top: 0;
+      left: 0;
+      padding: 10px;
+      cursor: pointer;
+    }
     a {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
       text-decoration: none;
       font-size: 12px;
       color: $h2;
@@ -236,10 +264,16 @@ article {
     transition: none;
   }
   .notes-move {
-    transition: all 0.15s linear;
+    transition: all 0.35s linear;
   }
   .notes-container {
-    height: 200px;
+    position: absolute;
+    left: 50%;
+    top: 50px;
+    transform: translateX(-50%);
+    height: 253px;
+    width: calc(100% - 20px);
+    font-size: 14px;
     overflow-x: hidden;
     @include scrollbar;
     &::-webkit-scrollbar-track {
@@ -261,8 +295,8 @@ article {
       }
       .delete-modal {
         position: fixed;
-        top: 0;
-        bottom: 100%;
+        top: 100%;
+        bottom: 0;
         max-height: 100vh;
         left: 0;
         right: 0;
@@ -393,14 +427,23 @@ article {
     }
   }
   .empty {
+    position: absolute;
+    height: calc(100% - 97px);
+    width: calc(100% - 16px);
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: $radius-big;
     background-color: darken($background-note, 5%);
-    margin-bottom: 15px;
+    overflow: hidden;
     @include empty;
-    height: 200px;
   }
   .sort-buttons {
-    margin-top: 9px;
-    position: relative;
+    position: absolute;
+    bottom: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 16px);
     &:after {
       position: absolute;
       content: "";
@@ -434,100 +477,208 @@ article {
       }
     }
   }
-  @include mobile-end {
-    .notes-container {
-      height: 202px;
+  .delete-modal {
+    position: absolute;
+    width: 100%;
+    height: 0;
+    bottom: 0;
+    display: grid;
+    border-radius: $radius-big;
+    place-items: center;
+    overflow: hidden;
+    font-size: 13px;
+    opacity: 0;
+    transition: all 0.35s ease-in-out;
+    cursor: pointer;
+    .delete-content {
+      width: 300px;
+      padding: 10px;
+      text-align: center;
+      font-weight: 500;
+      color: $h2;
+      border-radius: $radius-big;
+      border: 2px solid $placeholder-border;
+      background-color: $background;
+      opacity: 0;
+      transition: all 0.15s ease-in-out;
+      cursor: auto;
+      .delete-action {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .delete {
+          @include button-full;
+          margin-right: 7px;
+          color: $background;
+          background-color: $text-buttons;
+          border-color: $text-buttons;
+          font-size: 12px;
+          &:hover {
+            border-color: darken($text-buttons, 20%);
+            background-color: darken($text-buttons, 20%);
+          }
+        }
+        .cancel {
+          @include button-contour;
+          font-size: 12px;
+        }
+      }
     }
+    .delete-overflow {
+      position: absolute;
+      width: 100%;
+      height: 0;
+      bottom: 0;
+      background-color: #e8ede4;
+      z-index: -1;
+      cursor: pointer;
+      transition: all 0.35s ease-in-out;
+    }
+  }
+  .animate-delete-modal {
+    height: 100%;
+    z-index: 60;
+    opacity: 1;
+    transition: all 0.35s ease-in-out;
+    .delete-content {
+      opacity: 1;
+      transition: all 0.15s ease-in-out;
+    }
+    .delete-overflow {
+      z-index: -1;
+      height: 100%;
+      transition: all 0.35s ease-in-out;
+    }
+  }
+  @include tag-note-brake {
+    position: relative;
   }
   @include desktop-size {
     position: absolute;
-    bottom: 0;
-    height: calc(100% - 48px);
-    display: block;
-    padding: unset;
-    &:hover {
-      transition: unset;
-      background-color: $background-note;
-      cursor: auto;
-    }
+    height: calc(100% - 50px);
+    transition: all 0.35s ease-in-out;
     .notes-nav {
-      margin-bottom: 10px;
       p {
-        padding: 10px;
-
-        text-align: unset;
-        width: fit-content;
-        cursor: pointer;
+        width: 94px;
+        transition: all 0.35s ease-in-out;
       }
       a {
-        margin-right: 10px;
-        display: block;
+        z-index: unset;
+        opacity: 1;
+        right: 10px;
+        transition: all 0.35s ease-in-out;
       }
     }
     .notes-container {
-      position: absolute;
-      right: 0;
-      left: 0;
-      margin-right: 10px;
-      margin-left: 10px;
-      height: calc(100% - 97px);
-    }
-    .spinner {
-      display: none;
-    }
-    .empty {
-      margin: auto;
-      height: calc(100% - 102px);
-      width: calc(100% - 15px);
-      overflow: unset;
+      z-index: unset;
+      height: calc(100% - 98px);
+      opacity: 1;
+      transition: all 0.35s ease-in-out;
     }
     .sort-buttons {
-      position: absolute;
-      right: 0;
-      left: 0;
-      bottom: 10px;
-      margin-left: 10px;
-      margin-right: 10px;
-      overflow: unset;
-      margin-bottom: auto;
-      height: unset;
+      height: 26px;
+      z-index: unset;
+      opacity: 1;
+      transition: all 0.35s ease-in-out;
+    }
+    .delete-modal {
+      height: 0;
+      opacity: 0;
+      cursor: pointer;
+      transition: all 0.35s ease-in-out;
+    }
+    .animate-delete-modal {
+      height: 100%;
+      opacity: 1;
+      transition: all 0.35s ease-in-out;
     }
   }
 }
-.container-open {
+
+.container-toggle {
   @include desktop-size {
     position: absolute;
     bottom: 0;
-    height: unset;
-    &:hover {
-      color: darken($h2, 10%);
-      background-color: darken($background-note, 10%);
-      cursor: pointer;
-    }
+    height: 44px;
+    overflow: hidden;
+    transition: all 0.35s ease-in-out;
     .notes-nav {
-      height: unset;
-      margin-bottom: unset;
       p {
         width: 100%;
-        text-align: center;
-        cursor: pointer;
+        transition: all 0.35s ease-in-out;
+        &:hover {
+          color: darken($h2, 10%);
+          background-color: darken($background-note, 10%);
+        }
       }
       a {
-        display: none;
+        opacity: 0;
+        right: 50px;
+        z-index: -1;
+        transition: all 0.35s ease-in-out;
       }
     }
     .notes-container {
-      height: 0px;
-    }
-    .empty {
-      height: 0;
-      overflow: hidden;
-      margin-bottom: unset;
+      opacity: 0;
+      visibility: 0;
+      z-index: -1;
+      transition: all 0.35s ease-in-out;
     }
     .sort-buttons {
-      margin-top: unset;
-      height: 0px;
+      height: 0;
+      opacity: 0;
+      z-index: -1;
       overflow: hidden;
+      transition: all 0.35s ease-in-out;
+    }
+    .delete-modal {
+      z-index: -1;
+      height: 0;
+      opacity: 0;
+      transition: all 0.35s ease-in-out;
+      .delete-content {
+        transition: all 0.15s ease-in-out;
+      }
+    }
+    .animate-delete-modal {
+      opacity: 0;
+      height: 0;
+      transition: all 0.35s ease-in-out;
+      .delete-content {
+        transition: all 0.15s ease-in-out;
+      }
+    }
+  }
+}
+
+.stop-transition {
+  transition: none !important;
+  .notes-nav {
+    transition: none !important;
+    p {
+      transition: none !important;
+    }
+    a {
+      transition: none !important;
+    }
+  }
+  .delete-modal {
+    transition: none !important;
+    .delete-content {
+      transition: none !important;
+    }
+    .delete-overflow {
+      transition: none !important;
+    }
+  }
+  .animate-delete-modal {
+    transition: none !important;
+    .delete-content {
+      transition: none !important;
+    }
+    .delete-overflow {
+      transition: none !important;
     }
   }
 }

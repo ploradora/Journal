@@ -161,7 +161,7 @@
       </div>
     </div>
     <div v-else class="empty">
-      <p>Empty</p>
+      <p>Looks a bit empty</p>
     </div>
   </article>
 </template>
@@ -172,7 +172,7 @@ import getUser from "@/composables/getUser";
 
 import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
-import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default {
   props: ["filterBy"],

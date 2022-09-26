@@ -276,6 +276,8 @@ $scroll-thumb-creme: #d0ccbc;
 }
 
 @mixin empty {
+  // position: absolute;
+  // width: 100%;
   display: grid;
   place-items: center;
   border-radius: $radius-big;

@@ -1,5 +1,10 @@
 <template>
-  <article :class="{ 'container-open': toggleContainer }">
+  <article
+    :class="{
+      'container-toggle': toggleContainer,
+      'stop-transition': stopTransition,
+    }"
+  >
     <div class="header-search">
       <div class="title-container">
         <div class="sort">
@@ -41,7 +46,7 @@
       </div>
     </TransitionGroup>
     <div v-else class="empty">
-      <p>Empty</p>
+      <p>Looks a bit empty</p>
     </div>
   </article>
 </template>
@@ -58,13 +63,24 @@ export default {
     const sort1Active = ref(false);
     const sort2Active = ref(false);
     const toggleContainer = ref(true);
+    const stopTransition = ref(false);
     const currentTag = ref("");
     const search = ref("");
 
     const { user } = getUser();
     const { tags } = useTags("entries", ["userUid", "==", user.value.uid]);
+
     watchEffect(() => {
       if (tags.value === null) tags.value = [];
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        stopTransition.value = true;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          stopTransition.value = false;
+        }, 100);
+      });
     });
 
     onMounted(() => {
@@ -144,6 +160,7 @@ export default {
       searchTag,
       toggleContainer,
       currentTag,
+      stopTransition,
       sortAlphabetical,
       sortRandom,
       filterPagesbyTag,
@@ -153,34 +170,45 @@ export default {
   },
 };
 </script>
-
 <style scoped lang="scss">
 @import "../assets/globalStyles.scss";
 
 article {
-  height: 300px;
+  position: absolute;
+  top: 0;
   width: 100%;
-  padding: 10px;
+  height: 350px;
   border-radius: $radius-big;
+  overflow: hidden;
   color: $h2;
   background-color: $background-tag-container-blue;
+  transition: all 0.35s ease-in-out;
+  p {
+    margin: 0;
+  }
   .header-search {
-    margin-bottom: 7px;
     .title-container {
-      margin-bottom: 20px;
       position: relative;
+      height: 44px;
       display: flex;
       align-items: center;
       .sort {
-        user-select: none;
         display: flex;
-        margin-right: 10px;
         align-items: center;
         p {
-          margin-right: 7px;
-          color: darken($h2, 10%);
+          user-select: none;
+          text-align: center;
+          position: absolute;
+          height: 44px;
+          top: 0;
+          left: 0;
+          padding: 10px;
+          cursor: pointer;
+          transition: all 0.35s ease-in-out;
         }
         .sort-icon {
+          position: absolute;
+          left: 55px;
           font-size: 19px;
           color: darken($h2, 10%);
           cursor: pointer;
@@ -189,7 +217,6 @@ article {
           }
         }
         .icon-active {
-          user-select: none;
           color: darken($h2, 70%);
           transition: all 0.1s linear;
           &:hover {
@@ -200,16 +227,15 @@ article {
       .sort-type {
         position: absolute;
         top: 50%;
-        left: 60px;
+        left: 75px;
         transform: translateY(-50%);
         opacity: 0;
         display: flex;
         align-items: center;
         font-size: clamp(11px, 2vw, 12px);
         z-index: -1;
-        transition: all 0.15s linear;
+        transition: all 0.25s linear;
         p {
-          user-select: none;
           padding: 2px 13px;
           margin-right: 5px;
           border-radius: $radius-big;
@@ -221,34 +247,39 @@ article {
           }
         }
         .sort-active {
-          user-select: none;
           background-color: darken($background, 20%);
         }
       }
+      .show-filter {
+        left: 85px;
+        opacity: 1;
+        z-index: 1;
+        transition: all 0.25s linear;
+      }
       .all {
-        display: block;
         position: absolute;
-        right: 0;
-        top: 0;
+        top: 50%;
+        right: 10px;
+        transform: translateY(-50%);
         border-radius: $radius-big;
         padding: 2px 13px;
-        margin-left: auto;
+        user-select: none;
         cursor: pointer;
+        transition: all 0.15s linear;
         &:hover {
           color: darken($tag-text, 10%);
           background-color: darken($background-tag-blue, 5%);
+          transition: all 0.15s linear;
         }
-      }
-      .show-filter {
-        left: 70px;
-        opacity: 1;
-        z-index: 1;
-        transition: all 0.15s linear;
       }
     }
     input {
       border: unset;
-      width: 100%;
+      position: absolute;
+      left: 50%;
+      top: 50px;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
       font-size: 14px;
       background-color: unset;
       padding-bottom: 2px;
@@ -258,7 +289,6 @@ article {
         color: $placeholder-border;
       }
       &:focus {
-        position: relative;
         outline: unset;
         border-bottom: 1px solid #7d9ca6;
         box-shadow: inset 0 -1px #7d9ca6;
@@ -280,8 +310,12 @@ article {
     transition: all 0.2s linear;
   }
   .tags-container {
-    height: 210px;
-    width: 100%;
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 263px;
+    width: calc(100% - 16px);
     overflow: scroll;
     overflow-x: hidden;
     @include scrollbar;
@@ -295,7 +329,6 @@ article {
       border: 3px solid $background-tag-container-blue;
     }
     .tag {
-      user-select: none;
       display: inline-block;
       margin-right: 5px;
       margin-bottom: 5px;
@@ -331,131 +364,141 @@ article {
         }
       }
     }
-    @include details-brake-3 {
-      height: 204px;
-    }
   }
   .empty {
-    height: calc(100% - 70px);
+    position: absolute;
+    height: calc(100% - 85px);
+    width: calc(100% - 16px);
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: $radius-big;
     background-color: darken($background-tag-container-blue, 5%);
     @include empty;
   }
-  .spinner {
-    @include spin;
-    height: 200px;
-    position: relative;
-  }
   @include tag-note-brake {
-    height: 100%;
-  }
-  @include desktop-size {
-    height: unset;
-    overflow: hidden;
-    padding: unset;
-
-    &:hover {
-      background-color: darken($background-tag-container-blue, 5%);
-      cursor: pointer;
-    }
-    .header-search {
-      margin-bottom: unset;
-      .title-container {
-        margin-bottom: unset;
-        text-align: center;
-        .sort {
-          margin-right: unset;
-          width: 100%;
-          p {
-            padding: 10px;
-            margin-right: unset;
-            width: 100%;
-            cursor: pointer;
-          }
-          span {
-            visibility: hidden;
-            width: 0px;
-            opacity: 0;
-          }
-        }
-        .sort-type {
-          display: none;
-        }
-        .all {
-          display: none;
-        }
-      }
-      input {
-        display: none;
-      }
-    }
-    .tags-container {
-      height: 0px;
-      overflow: hidden;
-    }
-    .empty {
-      height: 0;
-      overflow: hidden;
-    }
-  }
-}
-.container-open {
-  &:hover {
-    transition: unset;
-    background-color: $background-tag-container-blue;
-    cursor: auto;
+    position: relative;
   }
   @include desktop-size {
     position: absolute;
-    height: calc(100% - 48px);
-    display: block;
-
+    height: 44px;
+    transition: all 0.35s ease-in-out;
     .header-search {
-      padding: 10px 10px 0 10px;
-      margin-bottom: 7px;
       .title-container {
-        margin-bottom: 15px;
-        text-align: unset;
         .sort {
-          width: unset;
-          display: flex;
-          margin-right: 10px;
           p {
-            padding: unset;
-            margin-right: 5px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.35s ease-in-out;
+            &:hover {
+              background-color: darken($background-tag-container-blue, 5%);
+            }
           }
-          span {
-            width: unset;
-            visibility: visible;
-            opacity: 1;
+          .sort-icon {
+            left: calc(50% + 25px);
+            z-index: -1;
+            opacity: 0;
+            transition: all 0.35s ease-in-out;
           }
         }
         .sort-type {
-          display: flex;
+          left: 170px;
+          opacity: 0;
+          z-index: -1;
+          transition: all 0.3s ease-in-out;
+        }
+        .show-filter {
+          left: 180px;
         }
         .all {
-          display: block;
+          top: -10px;
+          opacity: 0;
+          z-index: -1;
+          transition: all 0.35s ease-in-out;
         }
-      }
-      input {
-        display: unset;
       }
     }
     .tags-container {
-      width: unset;
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: calc(100% - 84px);
-      overflow: scroll;
-      overflow-x: hidden;
-      margin-left: 10px;
-      margin-right: 10px;
+      height: calc(100% - 85px);
     }
-    .empty {
-      height: calc(100% - 83px);
-      width: calc(100% - 15px);
-      margin: auto;
-      overflow: unset;
+  }
+}
+.container-toggle {
+  @include desktop-size {
+    position: absolute;
+    display: block;
+    height: calc(100% - 50px);
+    transition: all 0.35s ease-in-out;
+    .header-search {
+      .title-container {
+        .sort {
+          p {
+            width: 50px;
+            text-align: center;
+            transition: all 0.35s ease-in-out;
+            &:hover {
+              background-color: unset;
+            }
+          }
+          .sort-icon {
+            z-index: unset;
+            left: 55px;
+            opacity: 1;
+            transition: all 0.35s ease-in-out;
+          }
+        }
+        .sort-type {
+          z-index: unset;
+          width: unset;
+          left: 75px;
+          opacity: 0;
+          transition: all 0.3s ease-in-out;
+        }
+        .show-filter {
+          z-index: unset;
+          opacity: 1;
+          left: 85px;
+        }
+        .all {
+          top: 50%;
+          z-index: unset;
+          opacity: 1;
+          transition: all 0.25s ease-in-out 0.15s;
+          &:hover {
+            transition: all 0.15s linear;
+          }
+        }
+      }
+    }
+  }
+}
+
+.stop-transition {
+  transition: none !important;
+  .header-search {
+    .title-container {
+      transition: none !important;
+      .sort {
+        transition: none !important;
+        p {
+          transition: none !important;
+        }
+        .sort-icon {
+          transition: none !important;
+        }
+        .icon-active {
+          transition: none !important;
+        }
+      }
+      .sort-type {
+        transition: none !important;
+      }
+      .show-filter {
+        transition: none !important;
+      }
+      .all {
+        transition: none !important;
+      }
     }
   }
 }
