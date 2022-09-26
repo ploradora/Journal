@@ -44,7 +44,7 @@
       </div>
     </TransitionGroup>
     <div v-else class="empty">
-      <p>Looks a bit empty</p>
+      <p>No no no nooootes</p>
     </div>
     <div class="sort-buttons">
       <button
@@ -131,7 +131,7 @@ export default {
     const openContainer = () => {
       toggleContainer.value = !toggleContainer.value;
       if (window.innerWidth < 1000) {
-        toggleContainer.value = false;
+        toggleContainer.value = null;
       }
       context.emit("value-from-notes", toggleContainer.value);
     };

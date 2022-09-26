@@ -161,7 +161,8 @@
       </div>
     </div>
     <div v-else class="empty">
-      <p>Looks a bit empty</p>
+      <!-- <p>Looks a bit empty</p> -->
+      <p>Ready when you are</p>
     </div>
   </article>
 </template>

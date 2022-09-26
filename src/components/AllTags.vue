@@ -46,7 +46,7 @@
       </div>
     </TransitionGroup>
     <div v-else class="empty">
-      <p>Looks a bit empty</p>
+      <p>Tag cloud looks a bit empty</p>
     </div>
   </article>
 </template>
@@ -101,7 +101,7 @@ export default {
     const openContainer = () => {
       toggleContainer.value = !toggleContainer.value;
       if (window.innerWidth < 1000) {
-        toggleContainer.value = true;
+        toggleContainer.value = null;
       }
       context.emit("value-from-tags", toggleContainer.value);
     };

@@ -183,7 +183,7 @@ export default {
         y: -1,
         duration: 0.3,
         onComplete: done,
-        delay: 0.45,
+        delay: 0.2,
       });
     };
     const enterActiveNotes = (el, done) => {
@@ -192,7 +192,6 @@ export default {
         y: 0,
         duration: 0.3,
         onComplete: done,
-        delay: 0.3,
       });
     };
     const enterActiveGraph = (el, done) => {
