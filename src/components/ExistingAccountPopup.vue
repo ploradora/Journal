@@ -6,7 +6,7 @@
       <p>
         The content of this user is all dummy text, articles from wikipedia, reddit's writing prompts or blog posts which includes a variety of topics unrelated to the goal of this app.
         Its sole purpose is to have a bird's eye perspective on a product that’s
-        been used throught the year.
+        been used throughout the year.
       </p>
       <p class="para2">
         Although functional, I would kindly ask you not to delete any of the
