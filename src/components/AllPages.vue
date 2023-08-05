@@ -161,16 +161,8 @@
       </div>
     </div>
     <div v-else class="empty">
-      <p>Empty</p>
-    </div>
-    <div :class="{ 'animate-delete-modal': deleteModal }" class="delete-modal">
-      <div class="delete-content">
-        <p>Delete this page?</p>
-        <div class="delete-action">
-          <button @click="handleDelete" class="delete">Delete</button>
-          <button @click="closeModal" class="cancel">Cancel</button>
-        </div>
-      </div>
+      <!-- <p>Looks a bit empty</p> -->
+      <p>Ready when you are</p>
     </div>
   </article>
 </template>
@@ -181,7 +173,7 @@ import getUser from "@/composables/getUser";
 
 import { onMounted, ref, computed, watchEffect } from "vue";
 import { db } from "../firebase/config";
-import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
 export default {
   props: ["filterBy"],
@@ -450,24 +442,13 @@ export default {
     };
 
     const openDelete = (page) => {
-      document.body.style.overflow = "hidden";
+      // document.body.style.overflow = "hidden";
       deleteModal.value = true;
       deleteId.value = page.id;
+      context.emit("open-delete", true);
+      context.emit("the-delete-id", deleteId.value);
     };
 
-    const closeModal = () => {
-      document.body.style.overflow = "unset";
-      deleteModal.value = false;
-    };
-
-    const handleDelete = () => {
-      const docRef = doc(db, "entries", deleteId.value);
-      deleteDoc(docRef);
-      setTimeout(() => {
-        deleteModal.value = false;
-        document.body.style.overflow = "unset";
-      }, 200);
-    };
     const toggleFavouritePage = (page) => {
       const docRef = doc(db, "entries", page.id);
       updateDoc(docRef, {
@@ -504,8 +485,6 @@ export default {
       showAllPages,
       openDelete,
       showPages,
-      handleDelete,
-      closeModal,
       toggleFavouritePage,
       buttonNavLeft,
       buttonNavRight,
@@ -551,52 +530,6 @@ article {
   padding-bottom: unset;
   border: 1.5px solid $input-line;
   border-radius: $radius-big;
-  .delete-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    max-height: 100vh;
-    width: 100%;
-    transform: scale(0);
-    opacity: 0;
-    z-index: 55;
-    background-color: #e8ede4;
-    display: grid;
-    place-items: center;
-    .delete-content {
-      width: 90%;
-      font-weight: 500;
-      color: $h2;
-      p {
-        text-align: center;
-      }
-      .delete-action {
-        margin-top: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .delete {
-          @include button-full;
-          margin-right: 7px;
-          color: $background;
-          background-color: $text-buttons;
-          border-color: $text-buttons;
-          &:hover {
-            border-color: darken($text-buttons, 20%);
-            background-color: darken($text-buttons, 20%);
-          }
-        }
-        .cancel {
-          @include button-contour;
-        }
-      }
-    }
-  }
-  .animate-delete-modal {
-    transform: scale(1);
-    opacity: 1;
-  }
   .expand {
     padding: 0 5px 5px 5px;
     display: flex;
@@ -726,6 +659,7 @@ article {
         }
         .pages-filter {
           button {
+            user-select: none;
             background-color: unset;
             padding: 3px 15px;
             font-size: clamp(11px, 3vw, 13px);
@@ -745,6 +679,7 @@ article {
             }
           }
           .button-active {
+            user-select: none;
             border-color: darken($background-note-card, 10%);
             background-color: darken($background-note-card, 10%);
             color: $background;
@@ -761,6 +696,7 @@ article {
         .first-six,
         .last-six {
           .initial {
+            user-select: none;
             position: relative;
             font-size: 13px;
             width: 100%;
@@ -779,6 +715,7 @@ article {
             }
           }
           .month-initial-active {
+            user-select: none;
             color: #fff;
             background-color: rgba(207, 121, 50, 0.623);
             border-color: rgba(207, 121, 50, 0.623);
@@ -859,6 +796,7 @@ article {
           align-self: end;
           justify-content: space-between;
           a {
+            user-select: none;
             width: fit-content;
             display: flex;
             align-items: center;
@@ -866,6 +804,7 @@ article {
             color: $h2;
           }
           span {
+            user-select: none;
             color: $h2;
             font-size: clamp(16px, 2vw, 18px);
             cursor: pointer;
@@ -874,6 +813,7 @@ article {
             }
           }
           .icon-active {
+            user-select: none;
             color: $graph-line-active;
           }
         }

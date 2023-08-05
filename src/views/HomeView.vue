@@ -39,7 +39,12 @@
       </transition> -->
       <transition appear @before-enter="enterPage" @enter="enterActivePage">
         <div class="allpages">
-          <AllPages :filter-by="filterBy" @clearFromPages="clearFromPages" />
+          <AllPages
+            :filter-by="filterBy"
+            @open-delete="openDelete"
+            @the-delete-id="theDeleteId"
+            @clearFromPages="clearFromPages"
+          />
         </div>
       </transition>
       <div class="tags-notes-container">
@@ -77,11 +82,17 @@
   <div v-else class="loading">
     <img src="../assets/images/spinner-pages.png" alt="" />
   </div>
+  <DeletePage
+    @close-delete="closeDelete"
+    :openDeleteModal="openDeleteModal"
+    :id-delete="idDelete"
+  />
 </template>
 
 <script>
 import { ref } from "vue";
 // import AdviceOnLog from "@/components/AdviceOnLog.vue";
+import DeletePage from "@/components/DeletePage.vue";
 import AllPages from "@/components/AllPages.vue";
 import AllNotes from "@/components/AllNotes.vue";
 import AllTags from "@/components/AllTags.vue";
@@ -97,10 +108,13 @@ export default {
     AllNotes,
     AllTags,
     TheGraph,
+    DeletePage,
   },
   setup() {
     const universalValue = ref(true);
     const filterBy = ref("");
+    const openDeleteModal = ref(false);
+    const idDelete = ref("");
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
@@ -124,6 +138,18 @@ export default {
 
     const clearFromPages = () => {
       filterBy.value = "";
+    };
+
+    const openDelete = (state) => {
+      openDeleteModal.value = state;
+    };
+
+    const closeDelete = (state) => {
+      openDeleteModal.value = state;
+    };
+
+    const theDeleteId = (id) => {
+      idDelete.value = id;
     };
 
     const enterPage = (el) => {
@@ -157,7 +183,7 @@ export default {
         y: -1,
         duration: 0.3,
         onComplete: done,
-        delay: 0.45,
+        delay: 0.2,
       });
     };
     const enterActiveNotes = (el, done) => {
@@ -166,7 +192,6 @@ export default {
         y: 0,
         duration: 0.3,
         onComplete: done,
-        delay: 0.3,
       });
     };
     const enterActiveGraph = (el, done) => {
@@ -188,6 +213,11 @@ export default {
       universalValue,
       clearAll,
       clearFromPages,
+      openDelete,
+      closeDelete,
+      theDeleteId,
+      idDelete,
+      openDeleteModal,
       filterBy,
       enterPage,
       enterTags,
@@ -298,6 +328,9 @@ section {
       background-color: $graph-background;
     }
     .tags-notes-container {
+      position: relative;
+      width: 100%;
+      height: 706px;
       .alltags {
         margin-bottom: 7px;
       }
@@ -316,6 +349,7 @@ section {
     @include tag-note-brake {
       .tags-notes-container {
         display: flex;
+        height: 349px;
         .alltags {
           margin-bottom: unset;
           margin-right: 7px;
@@ -338,13 +372,11 @@ section {
         grid-row: 1 / 2;
       }
       .tags-notes-container {
-        position: relative;
         height: 100%;
         overflow: hidden;
         grid-column: 2/3;
         grid-row: 1 /2;
-        display: grid;
-        grid-template-rows: 1fr 1fr;
+        display: block;
         .alltags {
           margin-bottom: 7px;
           margin-right: unset;

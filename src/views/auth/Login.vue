@@ -110,6 +110,26 @@ export default {
   max-height: 100vh;
   position: fixed;
   overflow: hidden;
-  @include existing-user-link;
+  .journal-user-log {
+    position: absolute;
+    width: 70%;
+    max-width: 250px;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 15px;
+    border-radius: $radius-big;
+    font-size: 13px;
+    text-align: center;
+    color: $background;
+    background-color: darken($background-note, 15%);
+    transition: all 0.1s linear;
+    cursor: pointer;
+    &:hover {
+      color: $background;
+      background-color: $note-icon-completed;
+      transition: all 0.1s linear;
+    }
+  }
 }
 </style>
