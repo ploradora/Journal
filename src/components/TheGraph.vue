@@ -558,8 +558,12 @@ export default {
         currentYear.value = year;
         closeAllFilterLists();
       }
+      if(year === 2023) {
+      selectedMonth.value = []
+      }
       if (year === year) {
         currentYear.value = year;
+        console.log(year, currentYear.value)
         closeAllFilterLists();
       }
     };
