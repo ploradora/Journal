@@ -555,8 +555,12 @@ export default {
         currentYear.value = year;
         closeAllFilterLists();
       }
+      if(year === 2023) {
+      selectedMonth.value = []
+      }
       if (year === year) {
         currentYear.value = year;
+        console.log(year, currentYear.value)
         closeAllFilterLists();
       }
     };
@@ -750,7 +754,7 @@ section {
       right: 0;
       display: flex;
       justify-content: space-between;
-      align-items: end;
+      align-items: flex-end;
       width: calc(100% - 25px);
       height: 100%;
       z-index: 5;
