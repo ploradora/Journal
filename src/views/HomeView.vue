@@ -31,6 +31,9 @@
             >Sign Up</router-link
           >
         </div>
+        <div @click="handleLogin" class="journal-user-log">
+            Log into an existing account
+        </div>
       </div>
     </div>
     <main v-if="user">
@@ -100,6 +103,7 @@ import TheGraph from "@/components/TheGraph.vue";
 import getUser from "@/composables/getUser";
 import getCollection from "@/composables/getCollection";
 import gsap from "gsap";
+import useLogin from "@/composables/useLogin";
 
 export default {
   components: {
@@ -115,6 +119,10 @@ export default {
     const filterBy = ref("");
     const openDeleteModal = ref(false);
     const idDelete = ref("");
+    const { error, login } = useLogin();
+    const email = ref("journal@google.com");
+    const password = ref("journal1234");
+    const showPopup = ref(false);
 
     const { user } = getUser();
     const { documents: entries } = getCollection("entries");
@@ -125,6 +133,19 @@ export default {
     const tagVal = (val) => {
       universalValue.value = val;
     };
+
+    const handleLogin = async () => {
+      await login(email.value, password.value);
+      if (!error.value) {
+        router.push("/");
+      }
+      context.emit("close-popup", false);
+    };
+
+    const closePopup = () => {
+      context.emit("close-popup", false);
+    };
+
     const noteVal = (val) => {
       universalValue.value = val;
     };
@@ -224,6 +245,9 @@ export default {
       enterNotes,
       enterGraph,
       enterActivePage,
+      // journalUser,
+      handleLogin,
+      closePopup,
       enterActiveTags,
       enterActiveNotes,
       enterActiveGraph,
@@ -286,6 +310,24 @@ section {
             background-color: darken($graph-background, 10%);
             color: darken($text-buttons, 15%);
           }
+        }
+      }
+      .journal-user-log {
+        margin: auto;
+        margin-top: 15px;
+        max-width: 235px;
+        padding: 15px 15px;
+        border-radius: $radius-big;
+        font-size: 13px;
+        text-align: center;
+        color: $background;
+        background-color: darken($background-note, 15%);
+        transition: all 0.1s linear;
+        cursor: pointer;
+        &:hover {
+          color: $background;
+          background-color: $note-icon-completed;
+          transition: all 0.1s linear;
         }
       }
     }

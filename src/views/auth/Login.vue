@@ -24,9 +24,6 @@
         <p class="error" v-if="error">{{ error }}</p>
       </form>
     </div>
-    <p @click="journalUser" class="journal-user-log">
-      Log into an existing account
-    </p>
     <ExistingAccountPopup
       @close-popup="closePopup"
       :email="email"
