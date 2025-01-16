@@ -17,7 +17,7 @@
       <button @click="handleLogin">Log in</button>
     </div>
   </div>
-</template>
+</template> 
 
 <script>
 import useLogin from "@/composables/useLogin";
