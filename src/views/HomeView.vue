@@ -32,7 +32,7 @@
           >
         </div>
         <div @click="handleLogin" class="journal-user-log">
-            Log into an existing account
+            Demo Acccount
         </div>
       </div>
     </div>
