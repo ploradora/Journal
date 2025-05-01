@@ -94,6 +94,7 @@
 
 <script>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 // import AdviceOnLog from "@/components/AdviceOnLog.vue";
 import DeletePage from "@/components/DeletePage.vue";
 import AllPages from "@/components/AllPages.vue";
@@ -115,6 +116,7 @@ export default {
     DeletePage,
   },
   setup() {
+    const router = useRouter();
     const universalValue = ref(true);
     const filterBy = ref("");
     const openDeleteModal = ref(false);
@@ -139,11 +141,11 @@ export default {
       if (!error.value) {
         router.push("/");
       }
-      context.emit("close-popup", false);
+      // emit("close-popup", false);
     };
 
     const closePopup = () => {
-      context.emit("close-popup", false);
+      // emit("close-popup", false);
     };
 
     const noteVal = (val) => {

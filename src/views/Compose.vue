@@ -110,7 +110,7 @@
 import { ref, watchEffect } from "vue";
 import getUser from "@/composables/getUser";
 import { db } from "@/firebase/config";
-import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "vue-router";
 import getCollection from "@/composables/getCollection";
 export default {
@@ -360,7 +360,7 @@ section {
               align-items: center;
               justify-content: center;
               input {
-                -webkit-appearance: none;
+                // -webkit-appearance: none;
                 padding-left: unset;
                 padding-bottom: unset;
                 border-bottom: unset;
